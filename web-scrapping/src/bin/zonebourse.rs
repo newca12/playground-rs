@@ -27,28 +27,18 @@ fn get_info(zonebourse_id: &str) -> Vec<String> {
 
     let body = resp.text().unwrap();
     let fragment = Html::parse_document(&body);
-    let max_selector = Selector::parse(
+    let selectors = [
         "tr.RC_tr0:nth-child(5) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
-    )
-    .unwrap();
-    let moy_selector = Selector::parse(
         "tr.RC_tr1:nth-child(6) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
-    )
-    .unwrap();
-    let min_selector = Selector::parse(
-        ".Bord > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
-    )
-    .unwrap();
+        ".Bord > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)"
+    ];
 
-    let consensus_max = fragment.select(&max_selector).next();
-    let consensus_max = consensus_max.unwrap().text().next();
-    result.push(consensus_max.unwrap().to_string());
-    let consensus_moy = fragment.select(&moy_selector).next();
-    let consensus_moy = consensus_moy.unwrap().text().next();
-    result.push(consensus_moy.unwrap().to_string());
-    let consensus_min = fragment.select(&min_selector).next();
-    let consensus_min = consensus_min.unwrap().text().next();
-    result.push(consensus_min.unwrap().to_string());
+    for selector in std::array::IntoIter::new(selectors) {
+        let selector = Selector::parse(selector).unwrap();
+        let consensus = fragment.select(&selector).next();
+        let consensus = consensus.unwrap().text().next();
+        result.push(consensus.unwrap().to_string());
+    }
 
     result
 }
