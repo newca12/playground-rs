@@ -1,0 +1,17 @@
+[package]
+name = "parsing"
+version = "0.1.0"
+authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
+edition = "2018"
+
+[dependencies]
+regex = "1.5.4"
+nom = "6.1.2"
+criterion = "0.3.4"
+
+[profile.dev]
+split-debuginfo = "unpacked"
+
+[[bench]]
+name = "regex"
+harness = false
