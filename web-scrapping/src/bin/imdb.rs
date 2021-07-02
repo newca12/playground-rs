@@ -37,7 +37,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     ];
 
     let rating_selector = match fallback {
-        false => Selector::parse(".AggregateRatingButton__RatingScore-sc-1il8omz-1").unwrap(),
+        false => Selector::parse(".TitleBlock__HideableRatingBar-sc-1nlhx7j-4 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
         true => Selector::parse(".ratingValue > strong:nth-child(1) > span:nth-child(1)").unwrap(),
     };
 
@@ -60,7 +60,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
             .any(|v| high_contain(std::array::IntoIter::new(not_theatrical), v))
     });
 
-    if rating.is_none() && !fallback {
+    if rating.is_none() && theatrical.is_none() && !fallback {
         get_info_with_fallback(fragment, true)
     } else {
         (rating, theatrical)
@@ -87,7 +87,7 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.1), Some(true)),
+        get_info("tt4049416") == (Some(5.2), Some(true)),
         "tt4049416"
     );
 }
