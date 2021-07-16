@@ -46,5 +46,4 @@ fn main() {
         .filter_map(|n| Some((n, caps.name(n)?.as_str())))
         .collect();
     println!("{:#?}", dict);
- 
 }
