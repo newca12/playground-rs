@@ -28,8 +28,8 @@ fn get_info(zonebourse_id: &str) -> Vec<String> {
     let body = resp.text().unwrap();
     let fragment = Html::parse_document(&body);
     let selectors = [
-        "tr.RC_tr0:nth-child(5) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
-        "tr.RC_tr1:nth-child(6) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
+        ".Bord > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
+        ".Bord > tbody:nth-child(1) > tr:nth-child(5) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
         ".Bord > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)"
     ];
 
