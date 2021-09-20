@@ -73,10 +73,11 @@ pub type LocalTokenFactory<'input> = CommonTokenFactory;
 
 type From<'a> = <LocalTokenFactory<'a> as TokenFactory<'a> >::From;
 
-#[derive(Tid)]
 pub struct LabeledExprLexer<'input, Input:CharStream<From<'input> >> {
 	base: BaseLexer<'input,LabeledExprLexerActions,Input,LocalTokenFactory<'input>>,
 }
+
+antlr_rust::tid! { impl<'input,Input> TidAble<'input> for LabeledExprLexer<'input,Input> where Input:CharStream<From<'input> > }
 
 impl<'input, Input:CharStream<From<'input> >> Deref for LabeledExprLexer<'input,Input>{
 	type Target = BaseLexer<'input,LabeledExprLexerActions,Input,LocalTokenFactory<'input>>;
@@ -110,7 +111,7 @@ impl<'input, Input:CharStream<From<'input> >> LabeledExprLexer<'input,Input>{
     }
 
 	pub fn new_with_token_factory(input: Input, tf: &'input LocalTokenFactory<'input>) -> Self {
-		antlr_rust::recognizer::check_version("0","2");
+		antlr_rust::recognizer::check_version("0","3");
     	Self {
 			base: BaseLexer::new_base_lexer(
 				input,

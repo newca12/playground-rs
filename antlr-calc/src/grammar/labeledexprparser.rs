@@ -104,7 +104,7 @@ where
     }
 
     pub fn with_strategy(input: I, strategy: H) -> Self {
-		antlr_rust::recognizer::check_version("0","2");
+		antlr_rust::recognizer::check_version("0","3");
 		let interpreter = Arc::new(ParserATNSimulator::new(
 			_ATN.clone(),
 			_decision_to_DFA.clone(),
@@ -152,6 +152,8 @@ pub trait LabeledExprParserContext<'input>:
 	ParserRuleContext<'input, TF=LocalTokenFactory<'input>, Ctx=LabeledExprParserContextType>
 {}
 
+antlr_rust::coerce_from!{ 'input : LabeledExprParserContext<'input> }
+
 impl<'input, 'x, T> VisitableDyn<T> for dyn LabeledExprParserContext<'input> + 'input
 where
     T: LabeledExprVisitor<'input> + 'x,
@@ -164,14 +166,12 @@ where
 impl<'input> LabeledExprParserContext<'input> for TerminalNode<'input,LabeledExprParserContextType> {}
 impl<'input> LabeledExprParserContext<'input> for ErrorNode<'input,LabeledExprParserContextType> {}
 
-#[antlr_rust::impl_tid]
-impl<'input> antlr_rust::TidAble<'input> for dyn LabeledExprParserContext<'input> + 'input{}
+antlr_rust::tid! { impl<'input> TidAble<'input> for dyn LabeledExprParserContext<'input> + 'input }
 
-#[antlr_rust::impl_tid]
-impl<'input> antlr_rust::TidAble<'input> for dyn LabeledExprListener<'input> + 'input{}
+antlr_rust::tid! { impl<'input> TidAble<'input> for dyn LabeledExprListener<'input> + 'input }
 
 pub struct LabeledExprParserContextType;
-antlr_rust::type_id!{LabeledExprParserContextType}
+antlr_rust::tid!{LabeledExprParserContextType}
 
 impl<'input> ParserNodeType<'input> for LabeledExprParserContextType{
 	type TF = LocalTokenFactory<'input>;
@@ -261,14 +261,14 @@ ph:PhantomData<&'input str>
 impl<'input> LabeledExprParserContext<'input> for ProgContext<'input>{}
 
 impl<'input,'a> Listenable<dyn LabeledExprListener<'input> + 'a> for ProgContext<'input>{
-	fn enter(&self,listener: &mut (dyn LabeledExprListener<'input> + 'a)) {
-		listener.enter_every_rule(self);
-		listener.enter_prog(self);
-	}
-	fn exit(&self,listener: &mut (dyn LabeledExprListener<'input> + 'a)) {
-		listener.exit_prog(self);
-		listener.exit_every_rule(self);
-	}
+		fn enter(&self,listener: &mut (dyn LabeledExprListener<'input> + 'a)) {
+			listener.enter_every_rule(self);
+			listener.enter_prog(self);
+		}
+		fn exit(&self,listener: &mut (dyn LabeledExprListener<'input> + 'a)) {
+			listener.exit_prog(self);
+			listener.exit_every_rule(self);
+		}
 }
 
 impl<'input,'a> Visitable<dyn LabeledExprVisitor<'input> + 'a> for ProgContext<'input>{
@@ -283,7 +283,7 @@ impl<'input> CustomRuleContext<'input> for ProgContextExt<'input>{
 	fn get_rule_index(&self) -> usize { RULE_prog }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_prog }
 }
-antlr_rust::type_id!{ProgContextExt<'a>}
+antlr_rust::tid!{ProgContextExt<'a>}
 
 impl<'input> ProgContextExt<'input>{
 	fn new(parent: Option<Rc<dyn LabeledExprParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<ProgContextAll<'input>> {
@@ -320,8 +320,8 @@ where
 		let mut _localctx = ProgContextExt::new(_parentctx.clone(), recog.base.get_state());
         recog.base.enter_rule(_localctx.clone(), 0, RULE_prog);
         let mut _localctx: Rc<ProgContextAll> = _localctx;
-		let mut _la: isize;
-		let result: Result<(), ANTLRError> = try {
+		let mut _la: isize = -1;
+		let result: Result<(), ANTLRError> = (|| {
 
 			//recog.base.enter_outer_alt(_localctx.clone(), 1);
 			recog.base.enter_outer_alt(None, 1);
@@ -344,7 +344,8 @@ where
 				if !((((_la) & !0x3f) == 0 && ((1usize << _la) & ((1usize << T__1) | (1usize << ID) | (1usize << INT) | (1usize << NEWLINE))) != 0)) {break}
 			}
 			}
-		};
+			Ok(())
+		})();
 		match result {
 		Ok(_)=>{},
         Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
@@ -367,7 +368,7 @@ pub enum StatContextAll<'input>{
 	AssignContext(AssignContext<'input>),
 Error(StatContext<'input>)
 }
-antlr_rust::type_id!{StatContextAll<'a>}
+antlr_rust::tid!{StatContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for StatContextAll<'input>{}
 
@@ -416,7 +417,7 @@ impl<'input> CustomRuleContext<'input> for StatContextExt<'input>{
 	fn get_rule_index(&self) -> usize { RULE_stat }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_stat }
 }
-antlr_rust::type_id!{StatContextExt<'a>}
+antlr_rust::tid!{StatContextExt<'a>}
 
 impl<'input> StatContextExt<'input>{
 	fn new(parent: Option<Rc<dyn LabeledExprParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<StatContextAll<'input>> {
@@ -454,7 +455,7 @@ pub struct BlankContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{BlankContextExt<'a>}
+antlr_rust::tid!{BlankContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for BlankContext<'input>{}
 
@@ -524,7 +525,7 @@ pub struct PrintExprContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{PrintExprContextExt<'a>}
+antlr_rust::tid!{PrintExprContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for PrintExprContext<'input>{}
 
@@ -599,7 +600,7 @@ pub struct AssignContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{AssignContextExt<'a>}
+antlr_rust::tid!{AssignContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for AssignContext<'input>{}
 
@@ -661,7 +662,7 @@ where
 		let mut _localctx = StatContextExt::new(_parentctx.clone(), recog.base.get_state());
         recog.base.enter_rule(_localctx.clone(), 2, RULE_stat);
         let mut _localctx: Rc<StatContextAll> = _localctx;
-		let result: Result<(), ANTLRError> = try {
+		let result: Result<(), ANTLRError> = (|| {
 
 			recog.base.set_state(20);
 			recog.err_handler.sync(&mut recog.base)?;
@@ -715,7 +716,8 @@ where
 
 				_ => {}
 			}
-		};
+			Ok(())
+		})();
 		match result {
 		Ok(_)=>{},
         Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
@@ -740,7 +742,7 @@ pub enum ExprContextAll<'input>{
 	IntContext(IntContext<'input>),
 Error(ExprContext<'input>)
 }
-antlr_rust::type_id!{ExprContextAll<'a>}
+antlr_rust::tid!{ExprContextAll<'a>}
 
 impl<'input> antlr_rust::parser_rule_context::DerefSeal for ExprContextAll<'input>{}
 
@@ -791,7 +793,7 @@ impl<'input> CustomRuleContext<'input> for ExprContextExt<'input>{
 	fn get_rule_index(&self) -> usize { RULE_expr }
 	//fn type_rule_index() -> usize where Self: Sized { RULE_expr }
 }
-antlr_rust::type_id!{ExprContextExt<'a>}
+antlr_rust::tid!{ExprContextExt<'a>}
 
 impl<'input> ExprContextExt<'input>{
 	fn new(parent: Option<Rc<dyn LabeledExprParserContext<'input> + 'input > >, invoking_state: isize) -> Rc<ExprContextAll<'input>> {
@@ -827,7 +829,7 @@ pub struct ParensContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{ParensContextExt<'a>}
+antlr_rust::tid!{ParensContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for ParensContext<'input>{}
 
@@ -906,7 +908,7 @@ pub struct MulDivContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{MulDivContextExt<'a>}
+antlr_rust::tid!{MulDivContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for MulDivContext<'input>{}
 
@@ -986,7 +988,7 @@ pub struct AddSubContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{AddSubContextExt<'a>}
+antlr_rust::tid!{AddSubContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for AddSubContext<'input>{}
 
@@ -1054,7 +1056,7 @@ pub struct IdContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{IdContextExt<'a>}
+antlr_rust::tid!{IdContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for IdContext<'input>{}
 
@@ -1121,7 +1123,7 @@ pub struct IntContextExt<'input>{
 	ph:PhantomData<&'input str>
 }
 
-antlr_rust::type_id!{IntContextExt<'a>}
+antlr_rust::tid!{IntContextExt<'a>}
 
 impl<'input> LabeledExprParserContext<'input> for IntContext<'input>{}
 
@@ -1191,8 +1193,8 @@ where
 	    let mut _localctx: Rc<ExprContextAll> = _localctx;
         let mut _prevctx = _localctx.clone();
 		let _startState = 4;
-		let mut _la: isize;
-		let result: Result<(), ANTLRError> = try {
+		let mut _la: isize = -1;
+		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: isize;
 			//recog.base.enter_outer_alt(_localctx.clone(), 1);
 			recog.base.enter_outer_alt(None, 1);
@@ -1337,7 +1339,8 @@ where
 				_alt = recog.interpreter.adaptive_predict(4,&mut recog.base)?;
 			}
 			}
-		};
+			Ok(())
+		})();
 		match result {
 		Ok(_) => {},
         Err(e @ ANTLRError::FallThrough(_)) => return Err(e),

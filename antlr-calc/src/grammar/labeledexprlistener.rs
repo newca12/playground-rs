@@ -4,7 +4,6 @@ use antlr_rust::tree::ParseTreeListener;
 use super::labeledexprparser::*;
 
 pub trait LabeledExprListener<'input> : ParseTreeListener<'input,LabeledExprParserContextType>{
-
 /**
  * Enter a parse tree produced by {@link LabeledExprParser#prog}.
  * @param ctx the parse tree
@@ -15,7 +14,6 @@ fn enter_prog(&mut self, _ctx: &ProgContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_prog(&mut self, _ctx: &ProgContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code printExpr}
  * labeled alternative in {@link LabeledExprParser#stat}.
@@ -28,7 +26,6 @@ fn enter_printExpr(&mut self, _ctx: &PrintExprContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_printExpr(&mut self, _ctx: &PrintExprContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code assign}
  * labeled alternative in {@link LabeledExprParser#stat}.
@@ -41,7 +38,6 @@ fn enter_assign(&mut self, _ctx: &AssignContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_assign(&mut self, _ctx: &AssignContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code blank}
  * labeled alternative in {@link LabeledExprParser#stat}.
@@ -54,7 +50,6 @@ fn enter_blank(&mut self, _ctx: &BlankContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_blank(&mut self, _ctx: &BlankContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code parens}
  * labeled alternative in {@link LabeledExprParser#expr}.
@@ -67,7 +62,6 @@ fn enter_parens(&mut self, _ctx: &ParensContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_parens(&mut self, _ctx: &ParensContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code MulDiv}
  * labeled alternative in {@link LabeledExprParser#expr}.
@@ -80,7 +74,6 @@ fn enter_MulDiv(&mut self, _ctx: &MulDivContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_MulDiv(&mut self, _ctx: &MulDivContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code AddSub}
  * labeled alternative in {@link LabeledExprParser#expr}.
@@ -93,7 +86,6 @@ fn enter_AddSub(&mut self, _ctx: &AddSubContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_AddSub(&mut self, _ctx: &AddSubContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code id}
  * labeled alternative in {@link LabeledExprParser#expr}.
@@ -106,7 +98,6 @@ fn enter_id(&mut self, _ctx: &IdContext<'input>) { }
  * @param ctx the parse tree
  */
 fn exit_id(&mut self, _ctx: &IdContext<'input>) { }
-
 /**
  * Enter a parse tree produced by the {@code int}
  * labeled alternative in {@link LabeledExprParser#expr}.
@@ -121,3 +112,7 @@ fn enter_int(&mut self, _ctx: &IntContext<'input>) { }
 fn exit_int(&mut self, _ctx: &IntContext<'input>) { }
 
 }
+
+antlr_rust::coerce_from!{ 'input : LabeledExprListener<'input> }
+
+
