@@ -1,4 +1,5 @@
 use antlr_calc::str_to_calc;
+use antlr_calc::str_to_calc_v3;
 
 fn main() {
     let data = r#"
@@ -13,5 +14,7 @@ fn main() {
     "#;
 
     let result = str_to_calc(data);
+    println!("{:?}", result);
+    let result = str_to_calc_v3(data);
     println!("{:?}", result);
 }

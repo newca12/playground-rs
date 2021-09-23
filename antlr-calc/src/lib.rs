@@ -1,13 +1,17 @@
 #![feature(try_blocks)]
 
-pub use calc_parser::*;
+pub use calc_parser::str_to_calc;
+
+pub use calc_parser_v3::str_to_calc_v3;
+use calc_parser_v3::Calc3;
 pub use grammar::*;
 
 pub mod calc_parser;
+pub mod calc_parser_v3;
 pub mod grammar;
 
-pub fn parse(str: &str) -> Calc {
-    str_to_calc(str)
+pub fn parse(str: &str) -> Calc3 {
+    str_to_calc_v3(str)
 }
 
 #[cfg(test)]
