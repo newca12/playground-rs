@@ -9,5 +9,6 @@ license = "GPL-3.0-or-later"
 members = [
     "antlr-calc",
     "parsing",
+    "tptp",
     "web-scrapping"
 ]

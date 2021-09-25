@@ -1,0 +1,8 @@
+[package]
+name = "tptp"
+version = "0.1.0"
+authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
+edition = "2018"
+
+[dependencies]
+antlr-rust = { path = "../../antlr4/runtime/Rust" }
