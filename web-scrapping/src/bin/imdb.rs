@@ -57,7 +57,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     let theatrical = raw_threatrical.map(|r| {
         r.text()
             .into_iter()
-            .any(|v| high_contain(std::array::IntoIter::new(not_theatrical), v))
+            .any(|v| high_contain(IntoIterator::into_iter(not_theatrical), v))
     });
 
     if rating.is_none() && theatrical.is_none() && !fallback {
@@ -87,7 +87,7 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.2), Some(true)),
+        get_info("tt4049416") == (Some(5.4), Some(true)),
         "tt4049416"
     );
 }
