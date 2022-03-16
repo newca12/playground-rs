@@ -3,6 +3,7 @@ use std::fmt::Write;
 
 fn main() {
     println!("{:?}", get_info("tt5031232"));
+    println!("{:?}", get_info("tt0304584"));
 }
 
 //https://users.rust-lang.org/t/check-if-a-string-in-a-list-exist/29316
@@ -38,7 +39,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
 
     let rating_selector = match fallback {
         false => Selector::parse(".TitleBlock__HideableRatingBar-sc-1nlhx7j-4 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
-        true => Selector::parse(".ratingValue > strong:nth-child(1) > span:nth-child(1)").unwrap(),
+        true => Selector::parse(".sc-94726ce4-4 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
     };
 
     let rating = fragment.select(&rating_selector).next();
@@ -50,7 +51,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
             Selector::parse(".TitleBlockMetaData__MetaDataList-sc-12ein40-0 > li:nth-child(1)")
                 .unwrap()
         }
-        true => Selector::parse(".subtext").unwrap(),
+        true => Selector::parse(".sc-94726ce4-3").unwrap(),
     };
 
     let raw_threatrical = fragment.select(&theatrical_selector).next();
@@ -74,7 +75,7 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt1390411"
     );
     assert!(
-        get_info("tt0304584") == (Some(4.4), Some(true)),
+        get_info("tt0304584") == (Some(4.2), Some(true)),
         "tt0304584"
     );
     assert!(
@@ -83,11 +84,11 @@ fn get_correct_ratings_and_detect_theatrical_film() {
     );
     assert!(get_info("tt0001539") == (None, Some(false)), "tt0001539");
     assert!(
-        get_info("tt5031232") == (Some(8.8), Some(true)),
+        get_info("tt5031232") == (Some(8.7), Some(true)),
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.4), Some(true)),
+        get_info("tt4049416") == (Some(5.3), Some(true)),
         "tt4049416"
     );
 }
