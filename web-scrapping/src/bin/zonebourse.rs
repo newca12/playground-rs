@@ -11,7 +11,7 @@ fn main() {
         "TECHNICOLOR-6411898",
         "WORLDLINE-16783982",
     ];
-    for stock in std::array::IntoIter::new(stocks) {
+    for stock in IntoIterator::into_iter(stocks) {
         println!("{} : {:?}", stock, get_info(stock));
     }
 }
@@ -28,12 +28,12 @@ fn get_info(zonebourse_id: &str) -> Vec<String> {
     let body = resp.text().unwrap();
     let fragment = Html::parse_document(&body);
     let selectors = [
-        ".Bord > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
-        ".Bord > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)",
-        ".Bord > tbody:nth-child(1) > tr:nth-child(8) > td:nth-child(2) > b:nth-child(1) > font:nth-child(1)"
+        ".Bord > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > b:nth-child(1) > b:nth-child(1) > font:nth-child(1)",
+        ".Bord > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(2) > b:nth-child(1) > b:nth-child(1) > font:nth-child(1)",
+        ".Bord > tbody:nth-child(1) > tr:nth-child(8) > td:nth-child(2) > b:nth-child(1) > b:nth-child(1) > font:nth-child(1)"
     ];
 
-    for selector in std::array::IntoIter::new(selectors) {
+    for selector in IntoIterator::into_iter(selectors) {
         let selector = Selector::parse(selector).unwrap();
         let consensus = fragment.select(&selector).next();
         let consensus = consensus.unwrap().text().next();
