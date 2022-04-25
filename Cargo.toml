@@ -10,5 +10,6 @@ members = [
     "antlr-calc",
     "parsing",
     "tptp",
-    "web-scrapping"
+    "web-scrapping",
+    "thumbnail"
 ]
