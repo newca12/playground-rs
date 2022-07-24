@@ -3,7 +3,6 @@
 use antlr_rust::tree::{ParseTreeVisitor,ParseTreeVisitorCompat};
 use super::labeledexprparser::*;
 
-
 /**
  * This interface defines a complete generic visitor for a parse tree produced
  * by {@link LabeledExprParser}.

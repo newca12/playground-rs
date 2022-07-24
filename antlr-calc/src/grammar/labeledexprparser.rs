@@ -5,6 +5,7 @@
 #![allow(nonstandard_style)]
 #![allow(unused_imports)]
 #![allow(unused_mut)]
+#![allow(unused_braces)]
 use antlr_rust::PredictionContextCache;
 use antlr_rust::parser::{Parser, BaseParser, ParserRecog, ParserNodeType};
 use antlr_rust::token_stream::TokenStream;
@@ -72,7 +73,7 @@ use std::any::{Any,TypeId};
 
 
 type BaseParserType<'input, I> =
-	BaseParser<'input,LabeledExprParserExt, I, LabeledExprParserContextType , dyn LabeledExprListener<'input> + 'input >;
+	BaseParser<'input,LabeledExprParserExt<'input>, I, LabeledExprParserContextType , dyn LabeledExprListener<'input> + 'input >;
 
 type TokenType<'input> = <LocalTokenFactory<'input> as TokenFactory<'input>>::Tok;
 pub type LocalTokenFactory<'input> = CommonTokenFactory;
@@ -115,6 +116,7 @@ where
 				input,
 				Arc::clone(&interpreter),
 				LabeledExprParserExt{
+					_pd: Default::default(),
 				}
 			),
 			interpreter,
@@ -200,20 +202,21 @@ where
     }
 }
 
-pub struct LabeledExprParserExt{
+pub struct LabeledExprParserExt<'input>{
+	_pd: PhantomData<&'input str>,
 }
 
-impl LabeledExprParserExt{
+impl<'input> LabeledExprParserExt<'input>{
 }
+antlr_rust::tid! { LabeledExprParserExt<'a> }
 
-
-impl<'input> TokenAware<'input> for LabeledExprParserExt{
+impl<'input> TokenAware<'input> for LabeledExprParserExt<'input>{
 	type TF = LocalTokenFactory<'input>;
 }
 
-impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> ParserRecog<'input, BaseParserType<'input,I>> for LabeledExprParserExt{}
+impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> ParserRecog<'input, BaseParserType<'input,I>> for LabeledExprParserExt<'input>{}
 
-impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> Actions<'input, BaseParserType<'input,I>> for LabeledExprParserExt{
+impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> Actions<'input, BaseParserType<'input,I>> for LabeledExprParserExt<'input>{
 	fn get_grammar_file_name(&self) -> & str{ "LabeledExpr.g4"}
 
    	fn get_rule_names(&self) -> &[& str] {&ruleNames}

@@ -5,5 +5,5 @@ authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
-antlr-rust = { path = "../../antlr4/runtime/Rust" }
+antlr-rust = "0.3.0-beta"
 serde = { version = "1.0", features = ["derive"] }

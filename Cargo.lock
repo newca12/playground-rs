@@ -15,13 +15,30 @@ dependencies = [
 name = "antlr-calc"
 version = "0.1.0"
 dependencies = [
- "antlr-rust",
+ "antlr-rust 0.3.0-beta (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
 ]
 
 [[package]]
 name = "antlr-rust"
-version = "0.2.0"
+version = "0.3.0-beta"
+dependencies = [
+ "better_any",
+ "bit-set",
+ "byteorder",
+ "lazy_static",
+ "murmur3",
+ "once_cell",
+ "parking_lot",
+ "typed-arena",
+ "uuid",
+]
+
+[[package]]
+name = "antlr-rust"
+version = "0.3.0-beta"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfc6ab5594c6b2b7aa8719f4ecb785a268b2e0c2529042046035d5cebe9fa7d7"
 dependencies = [
  "better_any",
  "bit-set",
@@ -65,23 +82,9 @@ checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
 
 [[package]]
 name = "better_any"
-version = "0.1.1"
+version = "0.2.0-dev.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b359aebd937c17c725e19efcb661200883f04c49c53e7132224dac26da39d4a0"
-dependencies = [
- "better_typeid_derive",
-]
-
-[[package]]
-name = "better_typeid_derive"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3deeecb812ca5300b7d3f66f730cc2ebd3511c3d36c691dd79c165d5b19a26e3"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
+checksum = "cad0e12c5910bf40715b2204434ac301b4456bbf7327229fa89efbe6da0e1971"
 
 [[package]]
 name = "bit-set"
@@ -1684,7 +1687,7 @@ checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
 name = "tptp"
 version = "0.1.0"
 dependencies = [
- "antlr-rust",
+ "antlr-rust 0.3.0-beta",
 ]
 
 [[package]]

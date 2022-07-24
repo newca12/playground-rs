@@ -1,5 +1,3 @@
-#![feature(try_blocks)]
-
 pub use calc_parser::str_to_calc;
 
 pub use calc_parser_v3::str_to_calc_v3;
