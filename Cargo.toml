@@ -8,8 +8,12 @@ license = "GPL-3.0-or-later"
 [workspace]
 members = [
     "antlr-calc",
+    "ast",
+    "math",
     "parsing",
+    "pattern-visitor",
     "tptp",
     "web-scrapping",
-    "thumbnail"
+    "thumbnail",
+    "prop"
 ]

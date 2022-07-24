@@ -1,8 +1,13 @@
 [package]
-name = "tptp"
+name = "pattern-visitor"
 version = "0.1.0"
 authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
-antlr-rust = "0.3.0-beta"
+failure = "0.1.1"
+lalrpop-util = "0.19.5"
+regex = "1.5.4"
+
+[build-dependencies]
+lalrpop = "0.19.5"

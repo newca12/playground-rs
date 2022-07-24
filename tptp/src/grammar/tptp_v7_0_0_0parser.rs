@@ -5,6 +5,7 @@
 #![allow(nonstandard_style)]
 #![allow(unused_imports)]
 #![allow(unused_mut)]
+#![allow(unused_braces)]
 use antlr_rust::PredictionContextCache;
 use antlr_rust::parser::{Parser, BaseParser, ParserRecog, ParserNodeType};
 use antlr_rust::token_stream::TokenStream;
@@ -432,7 +433,7 @@ use std::any::{Any,TypeId};
 
 
 type BaseParserType<'input, I> =
-	BaseParser<'input,tptp_v7_0_0_0ParserExt, I, tptp_v7_0_0_0ParserContextType , dyn tptp_v7_0_0_0Listener<'input> + 'input >;
+	BaseParser<'input,tptp_v7_0_0_0ParserExt<'input>, I, tptp_v7_0_0_0ParserContextType , dyn tptp_v7_0_0_0Listener<'input> + 'input >;
 
 type TokenType<'input> = <LocalTokenFactory<'input> as TokenFactory<'input>>::Tok;
 pub type LocalTokenFactory<'input> = CommonTokenFactory;
@@ -475,6 +476,7 @@ where
 				input,
 				Arc::clone(&interpreter),
 				tptp_v7_0_0_0ParserExt{
+					_pd: Default::default(),
 				}
 			),
 			interpreter,
@@ -560,20 +562,21 @@ where
     }
 }
 
-pub struct tptp_v7_0_0_0ParserExt{
+pub struct tptp_v7_0_0_0ParserExt<'input>{
+	_pd: PhantomData<&'input str>,
 }
 
-impl tptp_v7_0_0_0ParserExt{
+impl<'input> tptp_v7_0_0_0ParserExt<'input>{
 }
+antlr_rust::tid! { tptp_v7_0_0_0ParserExt<'a> }
 
-
-impl<'input> TokenAware<'input> for tptp_v7_0_0_0ParserExt{
+impl<'input> TokenAware<'input> for tptp_v7_0_0_0ParserExt<'input>{
 	type TF = LocalTokenFactory<'input>;
 }
 
-impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> ParserRecog<'input, BaseParserType<'input,I>> for tptp_v7_0_0_0ParserExt{}
+impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> ParserRecog<'input, BaseParserType<'input,I>> for tptp_v7_0_0_0ParserExt<'input>{}
 
-impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> Actions<'input, BaseParserType<'input,I>> for tptp_v7_0_0_0ParserExt{
+impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>> Actions<'input, BaseParserType<'input,I>> for tptp_v7_0_0_0ParserExt<'input>{
 	fn get_grammar_file_name(&self) -> & str{ "tptp_v7_0_0_0.g4"}
 
    	fn get_rule_names(&self) -> &[& str] {&ruleNames}
@@ -801,7 +804,7 @@ where
 			recog.base.set_state(405);
 			recog.err_handler.sync(&mut recog.base)?;
 			_la = recog.base.input.la(1);
-			while (((_la) & !0x3f) == 0 && ((1usize << _la) & ((1usize << T__0) | (1usize << T__3) | (1usize << T__4) | (1usize << T__5) | (1usize << T__6) | (1usize << T__7) | (1usize << T__8) | (1usize << T__37))) != 0) {
+			while (((_la) & !0x3f) == 0 && ((1usize << _la) & ((1usize << T__0) | (1usize << T__3) | (1usize << T__4) | (1usize << T__5) | (1usize << T__6) | (1usize << T__7) | (1usize << T__8))) != 0) || _la==T__37 {
 				{
 				{
 				/*InvokeRule tptp_input*/
@@ -17729,7 +17732,7 @@ where
 			{
 			recog.base.set_state(1315);
 			_la = recog.base.input.la(1);
-			if { !((((_la) & !0x3f) == 0 && ((1usize << _la) & ((1usize << Iff) | (1usize << Impl) | (1usize << If) | (1usize << Niff) | (1usize << Nor) | (1usize << Nand))) != 0)) } {
+			if { !(((((_la - 46)) & !0x3f) == 0 && ((1usize << (_la - 46)) & ((1usize << (Iff - 46)) | (1usize << (Impl - 46)) | (1usize << (If - 46)) | (1usize << (Niff - 46)) | (1usize << (Nor - 46)) | (1usize << (Nand - 46)))) != 0)) } {
 				recog.err_handler.recover_inline(&mut recog.base)?;
 
 			}
