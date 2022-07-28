@@ -79,16 +79,16 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt0304584"
     );
     assert!(
-        get_info("tt0827521") == (Some(5.5), Some(true)),
+        get_info("tt0827521") == (Some(5.4), Some(true)),
         "tt0827521"
     );
     assert!(get_info("tt0001539") == (None, Some(false)), "tt0001539");
     assert!(
-        get_info("tt5031232") == (Some(8.7), Some(true)),
+        get_info("tt5031232") == (Some(8.6), Some(true)),
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.3), Some(true)),
+        get_info("tt4049416") == (Some(5.0), Some(true)),
         "tt4049416"
     );
 }
