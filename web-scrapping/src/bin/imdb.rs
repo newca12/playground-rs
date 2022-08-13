@@ -2,8 +2,18 @@ use scraper::{Html, Selector};
 use std::fmt::Write;
 
 fn main() {
-    println!("{:?}", get_info("tt5031232"));
-    println!("{:?}", get_info("tt0304584"));
+    let imdb_id = vec![
+        "tt1390411",
+        "tt0304584",
+        "tt0827521",
+        "tt0001539",
+        "tt5031232",
+        "tt4049416",
+    ];
+
+    for id in imdb_id {
+        println!("{} {:?}", id, get_info(id));
+    }
 }
 
 //https://users.rust-lang.org/t/check-if-a-string-in-a-list-exist/29316
@@ -38,7 +48,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     ];
 
     let rating_selector = match fallback {
-        false => Selector::parse(".TitleBlock__HideableRatingBar-sc-1nlhx7j-4 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        false => Selector::parse(".sc-80d4314-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
         true => Selector::parse(".sc-94726ce4-4 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
     };
 
@@ -47,10 +57,7 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     let rating = rating.map(|r| r.parse::<f64>().unwrap());
 
     let theatrical_selector = match fallback {
-        false => {
-            Selector::parse(".TitleBlockMetaData__MetaDataList-sc-12ein40-0 > li:nth-child(1)")
-                .unwrap()
-        }
+        false => Selector::parse(".sc-8c396aa2-0 > li:nth-child(1)").unwrap(),
         true => Selector::parse(".sc-94726ce4-3").unwrap(),
     };
 
@@ -88,7 +95,7 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.0), Some(true)),
+        get_info("tt4049416") == (Some(5.1), Some(true)),
         "tt4049416"
     );
 }
