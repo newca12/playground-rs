@@ -5,10 +5,11 @@ fn main() {
         "ATOS-SE-4612",
         "BIC-4617",
         "DBV-TECHNOLOGIES-10189744",
-        "EDF-4998",
         "GENFIT-16311755",
         "NICOX-25281955",
         "TECHNICOLOR-6411898",
+        "TECHNICOLOR-CREATIVE-STUD-143774950",
+        "VANTIVA-6411898",
         "WORLDLINE-16783982",
     ];
     for stock in IntoIterator::into_iter(stocks) {

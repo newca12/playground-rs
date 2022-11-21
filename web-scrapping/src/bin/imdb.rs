@@ -1,3 +1,4 @@
+use reqwest::Url;
 use scraper::{Html, Selector};
 use std::fmt::Write;
 
@@ -9,6 +10,7 @@ fn main() {
         "tt0001539",
         "tt5031232",
         "tt4049416",
+        "tt17061910",
     ];
 
     for id in imdb_id {
@@ -24,7 +26,14 @@ fn high_contain<'a>(mut strings: impl Iterator<Item = &'a str>, key: &'a str) ->
 fn get_info(imdb_id: &str) -> (Option<f64>, Option<bool>) {
     let mut url = "https://www.imdb.com/title/".to_string();
     write!(url, "{}", imdb_id).unwrap();
-    let resp = reqwest::blocking::get(url).unwrap();
+    //let resp = reqwest::blocking::get(url).unwrap();
+    let client = reqwest::blocking::Client::builder()
+        .user_agent(
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
+        )
+        .build()
+        .unwrap();
+    let resp = client.get(Url::parse(&url).unwrap()).send().unwrap();
     assert!(resp.status().is_success());
     let body = resp.text().unwrap();
 
@@ -95,7 +104,11 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.1), Some(true)),
+        get_info("tt4049416") == (Some(5.3), Some(true)),
         "tt4049416"
+    );
+    assert!(
+        get_info("tt17061910") == (Some(7.2), Some(true)),
+        "redirect tt17061910"
     );
 }
