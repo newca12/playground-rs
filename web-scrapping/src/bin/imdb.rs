@@ -57,8 +57,8 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     ];
 
     let rating_selector = match fallback {
-        false => Selector::parse(".sc-80d4314-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
-        true => Selector::parse(".sc-94726ce4-4 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        false => Selector::parse(".sc-b5e8e7ce-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        true => Selector::parse(".sc-80d4314-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
     };
 
     let rating = fragment.select(&rating_selector).next();
@@ -66,8 +66,8 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     let rating = rating.map(|r| r.parse::<f64>().unwrap());
 
     let theatrical_selector = match fallback {
-        false => Selector::parse(".sc-8c396aa2-0 > li:nth-child(1)").unwrap(),
-        true => Selector::parse(".sc-94726ce4-3").unwrap(),
+        false => Selector::parse(".sc-b5e8e7ce-2").unwrap(),
+        true => Selector::parse(".sc-8c396aa2-0 > li:nth-child(1)").unwrap(),
     };
 
     let raw_threatrical = fragment.select(&theatrical_selector).next();
@@ -104,7 +104,7 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.3), Some(true)),
+        get_info("tt4049416") == (Some(5.2), Some(true)),
         "tt4049416"
     );
     assert!(
