@@ -57,8 +57,8 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     ];
 
     let rating_selector = match fallback {
-        false => Selector::parse(".sc-b5e8e7ce-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
-        true => Selector::parse(".sc-80d4314-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        false => Selector::parse(".sc-b5e8e7ce-3 > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        true => Selector::parse("div.sc-c6e5278a-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
     };
 
     let rating = fragment.select(&rating_selector).next();
@@ -66,8 +66,8 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     let rating = rating.map(|r| r.parse::<f64>().unwrap());
 
     let theatrical_selector = match fallback {
-        false => Selector::parse(".sc-b5e8e7ce-2").unwrap(),
-        true => Selector::parse(".sc-8c396aa2-0 > li:nth-child(1)").unwrap(),
+        false => Selector::parse("ul.ipc-inline-list--show-dividers:nth-child(2)").unwrap(),
+        true => Selector::parse("ul.ipc-inline-list:nth-child(2)").unwrap(),
     };
 
     let raw_threatrical = fragment.select(&theatrical_selector).next();
@@ -77,8 +77,11 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
             .any(|v| high_contain(IntoIterator::into_iter(not_theatrical), v))
     });
 
-    if rating.is_none() && theatrical.is_none() && !fallback {
-        get_info_with_fallback(fragment, true)
+    if (rating.is_none() || theatrical.is_none()) && !fallback {
+        let (r, t) = get_info_with_fallback(fragment, true);
+        let sr = if r.is_none() { rating } else { r };
+        let st = if t.is_none() { theatrical } else { t };
+        (sr, st)
     } else {
         (rating, theatrical)
     }
