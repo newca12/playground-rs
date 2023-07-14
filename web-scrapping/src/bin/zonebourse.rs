@@ -29,9 +29,9 @@ fn get_info(zonebourse_id: &str) -> Vec<String> {
     let body = resp.text().unwrap();
     let fragment = Html::parse_document(&body);
     let selectors = [
-        ".Bord > tbody:nth-child(1) > tr:nth-child(10) > td:nth-child(2) > b:nth-child(1) > b:nth-child(1) > font:nth-child(1)",
-        ".Bord > tbody:nth-child(1) > tr:nth-child(6) > td:nth-child(2) > b:nth-child(1) > b:nth-child(1) > font:nth-child(1)",
-        ".Bord > tbody:nth-child(1) > tr:nth-child(8) > td:nth-child(2) > b:nth-child(1) > b:nth-child(1) > font:nth-child(1)"
+        "div.grid:nth-child(10) > div:nth-child(2) > span:nth-child(1)",
+        "div.grid:nth-child(6) > div:nth-child(2) > span:nth-child(1)",
+        "div.grid:nth-child(8) > div:nth-child(2) > span:nth-child(1)",
     ];
 
     for selector in IntoIterator::into_iter(selectors) {
