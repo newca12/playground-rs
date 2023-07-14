@@ -67,14 +67,13 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
     let rating = rating.map(|r| r.parse::<f64>().unwrap());
 
     let theatrical_selector = match fallback {
-        false => Selector::parse("ul.ipc-inline-list--show-dividers:nth-child(2)").unwrap(),
-        true => Selector::parse("ul.ipc-inline-list:nth-child(2)").unwrap(),
+        false => Selector::parse("ul.ipc-inline-list:nth-child(3) > li:nth-child(1)").unwrap(),
+        true => Selector::parse("ul.ipc-inline-list--show-dividers:nth-child(2)").unwrap(),
     };
 
     let raw_threatrical = fragment.select(&theatrical_selector).next();
     let theatrical = raw_threatrical.map(|r| {
         r.text()
-            .into_iter()
             .any(|v| high_contain(IntoIterator::into_iter(not_theatrical), v))
     });
 
@@ -108,7 +107,7 @@ fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.2), Some(true)),
+        get_info("tt4049416") == (Some(5.3), Some(true)),
         "tt4049416"
     );
     assert!(
