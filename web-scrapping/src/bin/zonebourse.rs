@@ -1,6 +1,8 @@
 use scraper::{Html, Selector};
+use tokio::task::JoinSet;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let stocks = [
         "ATOS-SE-4612",
         "BIC-4617",
@@ -12,21 +14,26 @@ fn main() {
         "VANTIVA-6411898",
         "WORLDLINE-16783982",
     ];
+
+    let mut join_set = JoinSet::new();
     for stock in IntoIterator::into_iter(stocks) {
-        println!("{} : {:?}", stock, get_info(stock));
+        join_set.spawn(async move { println!("{} : {:?}", stock, get_info(stock).await) });
     }
+    while let Some(_res) = join_set.join_next().await {}
+    Ok(())
 }
 
-fn get_info(zonebourse_id: &str) -> Vec<String> {
+async fn get_info(zonebourse_id: &str) -> Vec<String> {
     let mut result = Vec::new();
-    let resp = reqwest::blocking::get(format!(
+    let resp = reqwest::get(format!(
         "https://www.zonebourse.com/cours/action/{}/consensus/",
         zonebourse_id
     ))
+    .await
     .unwrap();
     assert!(resp.status().is_success());
 
-    let body = resp.text().unwrap();
+    let body = resp.text().await.unwrap();
     let fragment = Html::parse_document(&body);
     let selectors = [
         "div.grid:nth-child(10) > div:nth-child(2) > span:nth-child(1)",

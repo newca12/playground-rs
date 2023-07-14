@@ -5,5 +5,6 @@ authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
 edition = "2021"
 
 [dependencies]
-reqwest = { version = "0.11.18", features = ["blocking"] }
+reqwest = "0.11.18"
 scraper = "0.17.1"
+tokio = { version = "1.29.1", features = ["full"] }

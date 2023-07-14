@@ -1,8 +1,9 @@
-use reqwest::Url;
+use reqwest::{Client, Url};
 use scraper::{Html, Selector};
-use std::fmt::Write;
+use tokio::task::JoinSet;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let imdb_id = vec![
         "tt1390411",
         "tt0304584",
@@ -13,9 +14,20 @@ fn main() {
         "tt17061910",
     ];
 
+    let client = reqwest::Client::builder()
+        .user_agent(
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
+        )
+        .build()
+        .unwrap();
+
+    let mut join_set = JoinSet::new();
     for id in imdb_id {
-        println!("{} {:?}", id, get_info(id));
+        let client = client.clone();
+        join_set.spawn(async move { println!("{} {:?}", id, get_info(client, id).await) });
     }
+    while let Some(_res) = join_set.join_next().await {}
+    Ok(())
 }
 
 //https://users.rust-lang.org/t/check-if-a-string-in-a-list-exist/29316
@@ -23,23 +35,19 @@ fn high_contain<'a>(mut strings: impl Iterator<Item = &'a str>, key: &'a str) ->
     strings.any(|item| key.contains(item))
 }
 
-fn get_info(imdb_id: &str) -> (Option<f64>, Option<bool>) {
-    let mut url = "https://www.imdb.com/title/".to_string();
-    write!(url, "{}", imdb_id).unwrap();
-    //let resp = reqwest::blocking::get(url).unwrap();
-    let client = reqwest::blocking::Client::builder()
-        .user_agent(
-            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
-        )
-        .build()
+async fn get_info(client: Client, id: &str) -> (Option<f64>, Option<bool>) {
+    let url = format!("https://www.imdb.com/title/{}", id);
+    let resp = client
+        .get(Url::parse(url.as_str()).unwrap())
+        .send()
+        .await
         .unwrap();
-    let resp = client.get(Url::parse(&url).unwrap()).send().unwrap();
     assert!(resp.status().is_success());
-    let body = resp.text().unwrap();
+    let body = resp.text().await.unwrap();
 
     //For debugging purpose only
     //let mut debug_file = "/tmp/debug".to_string();
-    //write!(debug_file, "{}", imdb_id).unwrap();
+    //write!(debug_file, "{}", url).unwrap();
     //std::fs::write(debug_file, body.clone()).unwrap();
 
     let fragment = Html::parse_document(&body);
@@ -86,32 +94,40 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
         (rating, theatrical)
     }
 }
-
-#[test]
-fn get_correct_ratings_and_detect_theatrical_film() {
+#[tokio::test]
+async fn get_correct_ratings_and_detect_theatrical_film() {
+    let client = reqwest::Client::builder()
+        .user_agent(
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
+        )
+        .build()
+        .unwrap();
     assert!(
-        get_info("tt1390411") == (Some(6.9), Some(false)),
+        get_info(client.clone(), "tt1390411").await == (Some(6.9), Some(false)),
         "tt1390411"
     );
     assert!(
-        get_info("tt0304584") == (Some(4.2), Some(true)),
+        get_info(client.clone(), "tt0304584").await == (Some(4.2), Some(true)),
         "tt0304584"
     );
     assert!(
-        get_info("tt0827521") == (Some(5.4), Some(true)),
+        get_info(client.clone(), "tt0827521").await == (Some(5.4), Some(true)),
         "tt0827521"
     );
-    assert!(get_info("tt0001539") == (None, Some(false)), "tt0001539");
     assert!(
-        get_info("tt5031232") == (Some(8.6), Some(true)),
+        get_info(client.clone(), "tt0001539").await == (None, Some(false)),
+        "tt0001539"
+    );
+    assert!(
+        get_info(client.clone(), "tt5031232").await == (Some(8.6), Some(true)),
         "tt5031232"
     );
     assert!(
-        get_info("tt4049416") == (Some(5.3), Some(true)),
+        get_info(client.clone(), "tt4049416").await == (Some(5.3), Some(true)),
         "tt4049416"
     );
     assert!(
-        get_info("tt17061910") == (Some(7.2), Some(true)),
+        get_info(client.clone(), "tt17061910").await == (Some(7.2), Some(true)),
         "redirect tt17061910"
     );
 }
