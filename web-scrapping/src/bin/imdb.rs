@@ -111,7 +111,7 @@ async fn get_correct_ratings_and_detect_theatrical_film() {
         "tt0304584"
     );
     assert!(
-        get_info(client.clone(), "tt0827521").await == (Some(5.4), Some(true)),
+        get_info(client.clone(), "tt0827521").await == (Some(5.5), Some(true)),
         "tt0827521"
     );
     assert!(
@@ -123,7 +123,7 @@ async fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info(client.clone(), "tt4049416").await == (Some(5.3), Some(true)),
+        get_info(client.clone(), "tt4049416").await == (Some(5.2), Some(true)),
         "tt4049416"
     );
     assert!(

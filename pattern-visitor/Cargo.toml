@@ -2,12 +2,12 @@
 name = "pattern-visitor"
 version = "0.1.0"
 authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-failure = "0.1.1"
-lalrpop-util = "0.19.5"
-regex = "1.5.4"
+failure = "0.1.8"
+lalrpop-util = { version = "0.20.0", features = ["lexer"] }
+regex = "1.9.4"
 
 [build-dependencies]
-lalrpop = "0.19.5"
+lalrpop = "0.20.0"

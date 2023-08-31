@@ -1,15 +1,16 @@
-
-use antlr_rust::{InputStream, common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory};
+use antlr_rust::{
+    common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory, InputStream,
+};
 
 use crate::mathlistener::MathListener;
 use crate::mathvisitor::MathVisitor;
 use mathlexer::MathLexer;
 use mathparser::*;
 
+mod mathlexer;
 mod mathlistener;
 mod mathparser;
 mod mathvisitor;
-mod mathlexer;
 
 fn main() {
     println!("Start math");
@@ -20,6 +21,6 @@ fn main() {
     let mut parser = MathParser::new(token_source);
     //parser.add_parse_listener(Box::new(MathListener));
     let result = parser.compileUnit().expect("parsed unsuccessfully");
-    println!("{:#?}",  result.expr().unwrap().to_string_tree(&*parser));
+    println!("{:#?}", result.expr().unwrap().to_string_tree(&*parser));
     //let listener = MathTreeWalker::walk(parser, &*result);
 }
