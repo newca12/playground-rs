@@ -123,11 +123,11 @@ async fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info(client.clone(), "tt4049416").await == (Some(5.2), Some(true)),
+        get_info(client.clone(), "tt4049416").await == (Some(5.3), Some(true)),
         "tt4049416"
     );
     assert!(
-        get_info(client.clone(), "tt17061910").await == (Some(7.2), Some(true)),
+        get_info(client.clone(), "tt17061910").await == (Some(7.1), Some(true)),
         "redirect tt17061910"
     );
 }
