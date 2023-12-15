@@ -16,7 +16,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut join_set = JoinSet::new();
     for stock in IntoIterator::into_iter(stocks) {
-        join_set.spawn(async move { println!("{} : {:?}", stock, get_info(stock).await) });
+        join_set.spawn(async move { display(stock).await });
     }
     while let Some(_res) = join_set.join_next().await {}
     Ok(())
@@ -48,4 +48,13 @@ async fn get_info(zonebourse_id: &str) -> Vec<String> {
     }
 
     result
+}
+
+async fn display(stock: &str) {
+    let infos = get_info(stock).await;
+    let infos: Vec<String> = infos
+        .iter()
+        .map(|info| info.replace('\u{a0}', ""))
+        .collect();
+    println!("{} : {:?}", stock, infos);
 }
