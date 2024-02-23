@@ -9,7 +9,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "DBV-TECHNOLOGIES-10189744",
         "GENFIT-16311755",
         "NICOX-SA-25281955",
-        "TECHNICOLOR-CREATIVE-STUD-143774950",
         "VANTIVA-6411898",
         "WORLDLINE-16783982",
     ];
