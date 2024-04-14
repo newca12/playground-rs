@@ -1,7 +1,6 @@
 use winnow::{
-    ascii::space1,
+    ascii::{dec_uint, space1},
     combinator::{delimited, preceded},
-    error::StrContext,
     prelude::*,
     seq,
     token::take_till,
@@ -39,10 +38,11 @@ fn parser_common<'a>(s: &mut &'a str) -> PResult<CommonPrefix<'a>> {
             server: take_till(1.., |c| c==' '),
             _:" ",
             process: take_till(1.., |x| x =='[' || x == ':'),
-            pid: delimited("[", take_till(1.., |c| c==']'), "]").map(|x: &str |x.parse::<u32>().unwrap()),
+            pid: delimited("[", dec_uint, "]"),
             _:":"
         }
-    }.parse_next(s)
+    }
+    .parse_next(s)
 }
 
 fn parser_common_copy(s: &mut &str) -> PResult<CommonCopyPrefix> {
@@ -53,10 +53,11 @@ fn parser_common_copy(s: &mut &str) -> PResult<CommonCopyPrefix> {
             server: take_till(1.., |c| c==' ').map(|x: &str| x.to_string()),
             _:" ",
             process: take_till(1.., |x| x =='[' || x == ':').map(|x: &str| x.to_string()),
-            pid: delimited("[", take_till(1.., |c| c==']'), "]").map(|x: &str |x.parse::<u32>().unwrap()),
+            pid: delimited("[", dec_uint , "]"),
             _:":"
         }
-    }.parse_next(s)
+    }
+    .parse_next(s)
 }
 
 fn parser_client_login_copy(s: &mut &str) -> PResult<SmtpdClientLoginCopy> {
@@ -82,8 +83,8 @@ fn parser_client_login<'a>(s: &mut &'a str) -> PResult<SmtpdClientLogin<'a>> {
             _:space1,
             qid: take_till(1.., |c| c==':'),
             _: ": client=",
-            domain: take_till(1.., |c| c=='[').context(StrContext::Label("domain")),
-            ip: delimited("[", take_till(1.., |c| c==']'), "]").context(StrContext::Label("ip")),
+            domain: take_till(1.., |c| c=='['),
+            ip: delimited("[", take_till(1.., |c| c==']'), "]"),
             _:(":",take_till(1..,|c| c==','),", "),
             sasl_method: preceded("sasl_method=", take_till(1..,|c| c==',')),
             _: ", ",
