@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::{Common, CommonCopy, SmtpdClientLogin, SmtpdClientLoginCopy};
+    use crate::{CommonCopyPrefix, CommonPrefix, SmtpdClientLogin, SmtpdClientLoginCopy};
 
     pub fn check(tuple: (&str, &str, &str, &str, &str, &str, &str)) {
         assert_eq!(tuple.0, "Aug 29 10:01:02");
@@ -15,11 +15,11 @@ pub mod tests {
         assert_eq!(tuple.6, "sent");
     }
 
-    pub fn check_s(tuple: (String, String, String, String, String, String, String)) {
+    pub fn check_s(tuple: (String, String, String, u32, String, String, String)) {
         assert_eq!(tuple.0, "Aug 29 10:01:02");
         assert_eq!(tuple.1, "server0303");
         assert_eq!(tuple.2, "postfix_auth/smtpd_abo");
-        assert_eq!(tuple.3, "27339");
+        assert_eq!(tuple.3, 27339);
         assert_eq!(
             tuple.4,
             "server000000000000000003435583@1100.back02-mail01-01.null.org"
@@ -28,12 +28,11 @@ pub mod tests {
         assert_eq!(tuple.6, "sent");
     }
 
-    pub fn check_common(common: Common) {
-        assert_eq!(common.timestamp, "2024-03-04T12:02:32.509549+01:00");
+    pub fn check_common(common: CommonPrefix) {
+        assert_eq!(common.date, "2024-03-04T12:02:32.509549+01:00");
         assert_eq!(common.server, "server0101");
-        assert_eq!(common.prefix, "postfix_auth");
-        assert_eq!(common.process, "smtps/smtpd");
-        assert_eq!(common.pid, Some("221317"))
+        assert_eq!(common.process, "postfix_auth/smtps/smtpd");
+        assert_eq!(common.pid, 221317)
     }
 
     pub fn check_smtpd_client_login(smtpd_client_login: SmtpdClientLogin) {
@@ -47,12 +46,11 @@ pub mod tests {
         assert_eq!(smtpd_client_login.sasl_username, "john@doe.org");
     }
 
-    pub fn check_common_copy(common: CommonCopy) {
-        assert_eq!(common.timestamp, "2024-03-04T12:02:32.509549+01:00");
+    pub fn check_common_copy(common: CommonCopyPrefix) {
+        assert_eq!(common.date, "2024-03-04T12:02:32.509549+01:00");
         assert_eq!(common.server, "server0101");
-        assert_eq!(common.prefix, "postfix_auth");
-        assert_eq!(common.process, "smtps/smtpd");
-        assert_eq!(common.pid, Some("221317".to_string()))
+        assert_eq!(common.process, "postfix_auth/smtps/smtpd");
+        assert_eq!(common.pid, 221317)
     }
 
     pub fn check_smtpd_client_login_copy(smtpd_client_login: SmtpdClientLoginCopy) {

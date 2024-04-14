@@ -8,21 +8,19 @@ pub static TEXT: &str = "Aug 29 10:01:02 server0303 postfix_auth/smtpd_abo[27339
 pub static TEXT2: &str = "2024-03-04T12:02:32.509549+01:00 server0101 postfix_auth/smtps/smtpd[221317]: 4TpG4S3ZxfzFpTZ: client=lfbn-idf2-1-974-19.w86-238.null.org[1.2.3.4]:53192, sasl_method=PLAIN, sasl_username=john@doe.org";
 
 #[derive(Debug, PartialEq)]
-pub struct Common<'a> {
-    pub timestamp: &'a str,
+pub struct CommonPrefix<'a> {
+    pub date: &'a str,
     pub server: &'a str,
-    pub prefix: &'a str,
     pub process: &'a str,
-    pub pid: Option<&'a str>,
+    pub pid: u32,
 }
 
 #[derive(Debug, PartialEq)]
-pub struct CommonCopy {
-    pub timestamp: String,
+pub struct CommonCopyPrefix {
+    pub date: String,
     pub server: String,
-    pub prefix: String,
     pub process: String,
-    pub pid: Option<String>,
+    pub pid: u32,
 }
 
 #[derive(Debug, PartialEq)]

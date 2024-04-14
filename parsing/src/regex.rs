@@ -2,7 +2,7 @@ use ::regex::Regex;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
-use crate::{CommonCopy, SmtpdClientLoginCopy, TEXT, TEXT2};
+use crate::{CommonCopyPrefix, SmtpdClientLoginCopy, TEXT, TEXT2};
 
 pub static RE: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"^(.{15}) (.{9,12}) (\S+?)\[(\d+)\] to=<([^>]*)>, orig_to=<([^>]*)>.*status=(\S+)")
@@ -13,7 +13,7 @@ pub static RE_NAMED: Lazy<Regex> = Lazy::new(|| {
 });
 
 pub static RE2: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"^(.{32}) (.{9,12}) (\S+?)/(\S+?)\[(\d+)\]: (.*): client=(.*)\[(.*)\]:\d+(?:, sasl_method=(.*), sasl_username=(.*))?").unwrap()
+    Regex::new(r"^(.{32}) (.{9,12}) (\S+?)\[(\d+)\]: (.*): client=(.*)\[(.*)\]:\d+(?:, sasl_method=(.*), sasl_username=(.*))?").unwrap()
 });
 
 pub fn regex_sample() {
@@ -62,13 +62,13 @@ pub fn unamed_tuple<'a>(
 pub fn unamed_owned_tuple<'a>(
     text: &'a str,
     re_named: &'a Regex,
-) -> (String, String, String, String, String, String, String) {
+) -> (String, String, String, u32, String, String, String) {
     let cap = re_named.captures(text).unwrap();
     (
         cap[1].to_owned(),
         cap[2].to_owned(),
         cap[3].to_owned(),
-        cap[4].to_owned(),
+        cap[4].parse().unwrap(),
         cap[5].to_owned(),
         cap[6].to_owned(),
         cap[7].to_owned(),
@@ -102,35 +102,34 @@ pub fn named_tuple<'a>(
 pub fn named_owned_tuple<'a>(
     text: &'a str,
     re_named: &'a Regex,
-) -> (String, String, String, String, String, String, String) {
+) -> (String, String, String, u32, String, String, String) {
     let cap = re_named.captures(text).unwrap();
     (
         cap["date"].to_owned(),
         cap["server"].to_owned(),
         cap["service"].to_owned(),
-        cap["pid"].to_owned(),
+        cap["pid"].parse().unwrap(),
         cap["to"].to_owned(),
         cap["orig_to"].to_owned(),
         cap["status"].to_owned(),
     )
 }
 
-pub fn regex_maillog(s: &str) -> (CommonCopy, SmtpdClientLoginCopy) {
+pub fn regex_maillog(s: &str) -> (CommonCopyPrefix, SmtpdClientLoginCopy) {
     let cap = RE2.captures(s).unwrap();
     (
-        CommonCopy {
-            timestamp: cap[1].to_string(),
+        CommonCopyPrefix {
+            date: cap[1].to_string(),
             server: cap[2].to_string(),
-            prefix: cap[3].to_string(),
-            process: cap[4].to_string(),
-            pid: Some(cap[5].to_string()),
+            process: cap[3].to_string(),
+            pid: cap[4].parse().unwrap(),
         },
         SmtpdClientLoginCopy {
-            qid: cap[6].to_string(),
-            domain: cap[7].to_string(),
-            ip: cap[8].to_string(),
-            sasl_method: cap[9].to_string(),
-            sasl_username: cap[10].to_string(),
+            qid: cap[5].to_string(),
+            domain: cap[6].to_string(),
+            ip: cap[7].to_string(),
+            sasl_method: cap[8].to_string(),
+            sasl_username: cap[9].to_string(),
         },
     )
 }

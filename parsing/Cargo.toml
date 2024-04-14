@@ -14,5 +14,5 @@ winnow =  {version="0.6.6"}
 split-debuginfo = "unpacked"
 
 [[bench]]
-name = "regex"
+name = "ring"
 harness = false
