@@ -6,9 +6,8 @@ edition = "2021"
 
 [dependencies]
 criterion = "0.5.1"
-once_cell = "1.19.0"
-regex = "1.10.4"
-winnow =  {version="0.6.6"}
+regex = "1.11.1"
+winnow =  {version="0.6.20"}
 
 [profile.dev]
 split-debuginfo = "unpacked"

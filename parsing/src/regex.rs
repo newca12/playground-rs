@@ -1,18 +1,18 @@
 use ::regex::Regex;
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 use std::collections::HashMap;
 
 use crate::{CommonCopyPrefix, SmtpdClientLoginCopy, TEXT, TEXT2};
 
-pub static RE: Lazy<Regex> = Lazy::new(|| {
+pub static RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^(.{15}) (.{9,12}) (\S+?)\[(\d+)\] to=<([^>]*)>, orig_to=<([^>]*)>.*status=(\S+)")
         .unwrap()
 });
-pub static RE_NAMED: Lazy<Regex> = Lazy::new(|| {
+pub static RE_NAMED: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^(?P<date>.{15}) (?P<server>.{9,12}) (?P<service>\S+?)\[(?P<pid>\d+)\] to=<(?P<to>[^>]*)>, orig_to=<(?P<orig_to>[^>]*)>.*status=(?P<status>\S+)").unwrap()
 });
 
-pub static RE2: Lazy<Regex> = Lazy::new(|| {
+pub static RE2: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^(.{32}) (.{9,12}) (\S+?)\[(\d+)\]: (.*): client=(.*)\[(.*)\]:\d+(?:, sasl_method=(.*), sasl_username=(.*))?").unwrap()
 });
 
