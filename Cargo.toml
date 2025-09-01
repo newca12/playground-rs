@@ -12,8 +12,8 @@ members = [
     "math",
     "parsing",
     "pattern-visitor",
+    "prop",
+    "thumbnail",
     "tptp",
     "web-scrapping",
-    "thumbnail",
-    "prop"
 ]

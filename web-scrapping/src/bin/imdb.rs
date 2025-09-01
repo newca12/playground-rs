@@ -66,8 +66,8 @@ fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Optio
 
     //
     let rating_selector = match fallback {
-        false => Selector::parse("div.sc-3a4309f8-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
-        true => Selector::parse("div.sc-c6e5278a-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        false => Selector::parse("div.sc-8e956c5c-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
+        true => Selector::parse("div.sc-3a4309f8-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
     };
 
     let rating = fragment.select(&rating_selector).next();
