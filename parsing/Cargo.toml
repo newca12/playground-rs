@@ -2,12 +2,12 @@
 name = "parsing"
 version = "0.1.0"
 authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-criterion = "0.5.1"
-regex = "1.11.1"
-winnow =  {version="0.6.20"}
+criterion = "0.7.0"
+regex = "1.11.2"
+winnow = "0.7.13"
 
 [profile.dev]
 split-debuginfo = "unpacked"

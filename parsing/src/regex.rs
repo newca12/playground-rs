@@ -1,6 +1,6 @@
 use ::regex::Regex;
-use std::sync::LazyLock;
 use std::collections::HashMap;
+use std::sync::LazyLock;
 
 use crate::{CommonCopyPrefix, SmtpdClientLoginCopy, TEXT, TEXT2};
 

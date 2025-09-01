@@ -1,4 +1,5 @@
 use winnow::{
+    Result,
     ascii::{dec_uint, space1},
     combinator::{delimited, preceded},
     prelude::*,
@@ -22,7 +23,7 @@ pub fn winnow_maillog_copy(s: &str) -> (CommonCopyPrefix, SmtpdClientLoginCopy) 
     (common, client_login)
 }
 
-pub fn winnow_maillog(s: &str) -> (CommonPrefix, SmtpdClientLogin) {
+pub fn winnow_maillog(s: &'_ str) -> (CommonPrefix<'_>, SmtpdClientLogin<'_>) {
     let mut data = s;
     let (common, client_login) = (parser_common, parser_client_login)
         .parse_next(&mut data)
@@ -30,7 +31,7 @@ pub fn winnow_maillog(s: &str) -> (CommonPrefix, SmtpdClientLogin) {
     (common, client_login)
 }
 
-fn parser_common<'a>(s: &mut &'a str) -> PResult<CommonPrefix<'a>> {
+fn parser_common<'a>(s: &mut &'a str) -> Result<CommonPrefix<'a>> {
     seq! {
         CommonPrefix {
             date: take_till(1.., |c| c==' '),
@@ -45,7 +46,7 @@ fn parser_common<'a>(s: &mut &'a str) -> PResult<CommonPrefix<'a>> {
     .parse_next(s)
 }
 
-fn parser_common_copy(s: &mut &str) -> PResult<CommonCopyPrefix> {
+fn parser_common_copy(s: &mut &str) -> Result<CommonCopyPrefix> {
     seq! {
         CommonCopyPrefix {
             date: take_till(1.., |c| c==' ').map(|x: &str| x.to_string()),
@@ -60,7 +61,7 @@ fn parser_common_copy(s: &mut &str) -> PResult<CommonCopyPrefix> {
     .parse_next(s)
 }
 
-fn parser_client_login_copy(s: &mut &str) -> PResult<SmtpdClientLoginCopy> {
+fn parser_client_login_copy(s: &mut &str) -> Result<SmtpdClientLoginCopy> {
     seq! {
         SmtpdClientLoginCopy {
             _:space1,
@@ -77,7 +78,7 @@ fn parser_client_login_copy(s: &mut &str) -> PResult<SmtpdClientLoginCopy> {
     .parse_next(s)
 }
 
-fn parser_client_login<'a>(s: &mut &'a str) -> PResult<SmtpdClientLogin<'a>> {
+fn parser_client_login<'a>(s: &mut &'a str) -> Result<SmtpdClientLogin<'a>> {
     seq! {
         SmtpdClientLogin {
             _:space1,
@@ -97,11 +98,11 @@ fn parser_client_login<'a>(s: &mut &'a str) -> PResult<SmtpdClientLogin<'a>> {
 #[cfg(test)]
 mod tests {
     use crate::{
+        TEXT2,
         test_commons::tests::{
             check_common, check_common_copy, check_smtpd_client_login,
             check_smtpd_client_login_copy,
         },
-        TEXT2,
     };
 
     use super::*;

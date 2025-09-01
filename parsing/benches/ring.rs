@@ -1,11 +1,11 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use parsing::{
+    TEXT, TEXT2,
     regex::{
-        named_owned_tuple, named_tuple, regex_maillog, unamed_owned_tuple, unamed_tuple, RE,
-        RE_NAMED,
+        RE, RE_NAMED, named_owned_tuple, named_tuple, regex_maillog, unamed_owned_tuple,
+        unamed_tuple,
     },
     winnow::{winnow_maillog, winnow_maillog_copy},
-    TEXT, TEXT2,
 };
 use regex::{Captures, Regex};
 

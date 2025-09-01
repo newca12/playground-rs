@@ -2,7 +2,7 @@
 name = "web-scrapping"
 version = "0.1.0"
 authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 reqwest = "0.12.9"
