@@ -1,6 +1,6 @@
 #![allow(nonstandard_style)]
-// Generated from LabeledExpr.g4 by ANTLR 4.8
-use antlr_rust::tree::{ParseTreeVisitor,ParseTreeVisitorCompat};
+// Generated from LabeledExpr.g4 by ANTLR 4.13.2
+use antlr4rust::tree::{ParseTreeVisitor,ParseTreeVisitorCompat};
 use super::labeledexprparser::*;
 
 /**

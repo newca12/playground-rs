@@ -1,26 +1,27 @@
-// Generated from propcalc.g4 by ANTLR 4.8
+// Generated from propcalc.g4 by ANTLR 4.13.2
 #![allow(dead_code)]
 #![allow(nonstandard_style)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
-use antlr_rust::atn::ATN;
-use antlr_rust::char_stream::CharStream;
-use antlr_rust::int_stream::IntStream;
-use antlr_rust::lexer::{BaseLexer, Lexer, LexerRecog};
-use antlr_rust::atn_deserializer::ATNDeserializer;
-use antlr_rust::dfa::DFA;
-use antlr_rust::lexer_atn_simulator::{LexerATNSimulator, ILexerATNSimulator};
-use antlr_rust::PredictionContextCache;
-use antlr_rust::recognizer::{Recognizer,Actions};
-use antlr_rust::error_listener::ErrorListener;
-use antlr_rust::TokenSource;
-use antlr_rust::token_factory::{TokenFactory,CommonTokenFactory,TokenAware};
-use antlr_rust::token::*;
-use antlr_rust::rule_context::{BaseRuleContext,EmptyCustomRuleContext,EmptyContext};
-use antlr_rust::parser_rule_context::{ParserRuleContext,BaseParserRuleContext,cast};
-use antlr_rust::vocabulary::{Vocabulary,VocabularyImpl};
+use antlr4rust::atn::ATN;
+use antlr4rust::char_stream::CharStream;
+use antlr4rust::int_stream::IntStream;
+use antlr4rust::tree::ParseTree;
+use antlr4rust::lexer::{BaseLexer, Lexer, LexerRecog};
+use antlr4rust::atn_deserializer::ATNDeserializer;
+use antlr4rust::dfa::DFA;
+use antlr4rust::lexer_atn_simulator::{LexerATNSimulator, ILexerATNSimulator};
+use antlr4rust::PredictionContextCache;
+use antlr4rust::recognizer::{Recognizer,Actions};
+use antlr4rust::error_listener::ErrorListener;
+use antlr4rust::TokenSource;
+use antlr4rust::token_factory::{TokenFactory,CommonTokenFactory,TokenAware};
+use antlr4rust::token::*;
+use antlr4rust::rule_context::{BaseRuleContext,EmptyCustomRuleContext,EmptyContext};
+use antlr4rust::parser_rule_context::{ParserRuleContext,BaseParserRuleContext,cast};
+use antlr4rust::vocabulary::{Vocabulary,VocabularyImpl};
 
-use antlr_rust::{lazy_static,Tid,TidAble,TidExt};
+use antlr4rust::{lazy_static,Tid,TidAble,TidExt};
 
 use std::sync::Arc;
 use std::cell::RefCell;
@@ -29,18 +30,18 @@ use std::marker::PhantomData;
 use std::ops::{Deref, DerefMut};
 
 
-	pub const T__0:isize=1; 
-	pub const AND:isize=2; 
-	pub const OR:isize=3; 
-	pub const NOT:isize=4; 
-	pub const EQ:isize=5; 
-	pub const IMPLIES:isize=6; 
-	pub const THEREFORE:isize=7; 
-	pub const EQUIV:isize=8; 
-	pub const LPAREN:isize=9; 
-	pub const RPAREN:isize=10; 
-	pub const LETTER:isize=11; 
-	pub const WS:isize=12;
+	pub const T__0:i32=1; 
+	pub const AND:i32=2; 
+	pub const OR:i32=3; 
+	pub const NOT:i32=4; 
+	pub const EQ:i32=5; 
+	pub const IMPLIES:i32=6; 
+	pub const THEREFORE:i32=7; 
+	pub const EQUIV:i32=8; 
+	pub const LPAREN:i32=9; 
+	pub const RPAREN:i32=10; 
+	pub const LETTER:i32=11; 
+	pub const WS:i32=12;
 	pub const channelNames: [&'static str;0+2] = [
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	];
@@ -79,7 +80,7 @@ pub struct propcalcLexer<'input, Input:CharStream<From<'input> >> {
 	base: BaseLexer<'input,propcalcLexerActions,Input,LocalTokenFactory<'input>>,
 }
 
-antlr_rust::tid! { impl<'input,Input> TidAble<'input> for propcalcLexer<'input,Input> where Input:CharStream<From<'input> > }
+antlr4rust::tid! { impl<'input,Input> TidAble<'input> for propcalcLexer<'input,Input> where Input:CharStream<From<'input> > }
 
 impl<'input, Input:CharStream<From<'input> >> Deref for propcalcLexer<'input,Input>{
 	type Target = BaseLexer<'input,propcalcLexerActions,Input,LocalTokenFactory<'input>>;
@@ -113,7 +114,7 @@ impl<'input, Input:CharStream<From<'input> >> propcalcLexer<'input,Input>{
     }
 
 	pub fn new_with_token_factory(input: Input, tf: &'input LocalTokenFactory<'input>) -> Self {
-		antlr_rust::recognizer::check_version("0","3");
+		antlr4rust::recognizer::check_version("0","3");
     	Self {
 			base: BaseLexer::new_base_lexer(
 				input,
@@ -161,11 +162,11 @@ impl<'input, Input:CharStream<From<'input> >> TokenSource<'input> for propcalcLe
         self.base.next_token()
     }
 
-    fn get_line(&self) -> isize {
+    fn get_line(&self) -> i32 {
         self.base.get_line()
     }
 
-    fn get_char_position_in_line(&self) -> isize {
+    fn get_char_position_in_line(&self) -> i32 {
         self.base.get_char_position_in_line()
     }
 
@@ -183,55 +184,46 @@ impl<'input, Input:CharStream<From<'input> >> TokenSource<'input> for propcalcLe
 }
 
 
-
-	lazy_static! {
+		lazy_static!{
 	    static ref _ATN: Arc<ATN> =
-	        Arc::new(ATNDeserializer::new(None).deserialize(_serializedATN.chars()));
-	    static ref _decision_to_DFA: Arc<Vec<antlr_rust::RwLock<DFA>>> = {
+	        Arc::new(ATNDeserializer::new(None).deserialize(&mut _serializedATN.into_iter()));
+	    static ref _decision_to_DFA: Arc<Vec<antlr4rust::RwLock<DFA>>> = {
 	        let mut dfa = Vec::new();
-	        let size = _ATN.decision_to_state.len();
+	        let size = _ATN.decision_to_state.len() as i32;
 	        for i in 0..size {
 	            dfa.push(DFA::new(
 	                _ATN.clone(),
 	                _ATN.get_decision_state(i),
-	                i as isize,
+	                i,
 	            ).into())
 	        }
 	        Arc::new(dfa)
 	    };
-	}
-
-
-
-	const _serializedATN:&'static str =
-		"\x03\u{608b}\u{a72a}\u{8133}\u{b9ed}\u{417c}\u{3be7}\u{7786}\u{5964}\x02\
-		\x0e\x3d\x08\x01\x04\x02\x09\x02\x04\x03\x09\x03\x04\x04\x09\x04\x04\x05\
-		\x09\x05\x04\x06\x09\x06\x04\x07\x09\x07\x04\x08\x09\x08\x04\x09\x09\x09\
-		\x04\x0a\x09\x0a\x04\x0b\x09\x0b\x04\x0c\x09\x0c\x04\x0d\x09\x0d\x03\x02\
-		\x03\x02\x03\x03\x03\x03\x03\x04\x03\x04\x03\x05\x03\x05\x03\x06\x03\x06\
-		\x03\x07\x03\x07\x03\x07\x03\x08\x03\x08\x03\x08\x03\x09\x03\x09\x03\x09\
-		\x03\x09\x03\x0a\x03\x0a\x03\x0b\x03\x0b\x03\x0c\x05\x0c\x35\x0a\x0c\x03\
-		\x0d\x06\x0d\x38\x0a\x0d\x0d\x0d\x0e\x0d\x39\x03\x0d\x03\x0d\x02\x02\x0e\
-		\x03\x03\x05\x04\x07\x05\x09\x06\x0b\x07\x0d\x08\x0f\x09\x11\x0a\x13\x0b\
-		\x15\x0c\x17\x0d\x19\x0e\x03\x02\x04\x04\x02\x43\x5c\x63\x7c\x05\x02\x0b\
-		\x0c\x0f\x0f\x22\x22\x02\x3d\x02\x03\x03\x02\x02\x02\x02\x05\x03\x02\x02\
-		\x02\x02\x07\x03\x02\x02\x02\x02\x09\x03\x02\x02\x02\x02\x0b\x03\x02\x02\
-		\x02\x02\x0d\x03\x02\x02\x02\x02\x0f\x03\x02\x02\x02\x02\x11\x03\x02\x02\
-		\x02\x02\x13\x03\x02\x02\x02\x02\x15\x03\x02\x02\x02\x02\x17\x03\x02\x02\
-		\x02\x02\x19\x03\x02\x02\x02\x03\x1b\x03\x02\x02\x02\x05\x1d\x03\x02\x02\
-		\x02\x07\x1f\x03\x02\x02\x02\x09\x21\x03\x02\x02\x02\x0b\x23\x03\x02\x02\
-		\x02\x0d\x25\x03\x02\x02\x02\x0f\x28\x03\x02\x02\x02\x11\x2b\x03\x02\x02\
-		\x02\x13\x2f\x03\x02\x02\x02\x15\x31\x03\x02\x02\x02\x17\x34\x03\x02\x02\
-		\x02\x19\x37\x03\x02\x02\x02\x1b\x1c\x07\x2e\x02\x02\x1c\x04\x03\x02\x02\
-		\x02\x1d\x1e\x07\x60\x02\x02\x1e\x06\x03\x02\x02\x02\x1f\x20\x07\x78\x02\
-		\x02\x20\x08\x03\x02\x02\x02\x21\x22\x07\x23\x02\x02\x22\x0a\x03\x02\x02\
-		\x02\x23\x24\x07\x3f\x02\x02\x24\x0c\x03\x02\x02\x02\x25\x26\x07\x2f\x02\
-		\x02\x26\x27\x07\x40\x02\x02\x27\x0e\x03\x02\x02\x02\x28\x29\x07\x7e\x02\
-		\x02\x29\x2a\x07\x2f\x02\x02\x2a\x10\x03\x02\x02\x02\x2b\x2c\x07\x3e\x02\
-		\x02\x2c\x2d\x07\x2f\x02\x02\x2d\x2e\x07\x40\x02\x02\x2e\x12\x03\x02\x02\
-		\x02\x2f\x30\x07\x2a\x02\x02\x30\x14\x03\x02\x02\x02\x31\x32\x07\x2b\x02\
-		\x02\x32\x16\x03\x02\x02\x02\x33\x35\x09\x02\x02\x02\x34\x33\x03\x02\x02\
-		\x02\x35\x18\x03\x02\x02\x02\x36\x38\x09\x03\x02\x02\x37\x36\x03\x02\x02\
-		\x02\x38\x39\x03\x02\x02\x02\x39\x37\x03\x02\x02\x02\x39\x3a\x03\x02\x02\
-		\x02\x3a\x3b\x03\x02\x02\x02\x3b\x3c\x08\x0d\x02\x02\x3c\x1a\x03\x02\x02\
-		\x02\x05\x02\x34\x39\x03\x02\x03\x02";
+	    }
+	const _serializedATN: [i32; 532] = [
+		4, 0, 12, 59, 6, -1, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 
+		4, 7, 4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 
+		10, 7, 10, 2, 11, 7, 11, 1, 0, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 1, 3, 1, 
+		3, 1, 4, 1, 4, 1, 5, 1, 5, 1, 5, 1, 6, 1, 6, 1, 6, 1, 7, 1, 7, 1, 7, 1, 
+		7, 1, 8, 1, 8, 1, 9, 1, 9, 1, 10, 3, 10, 51, 8, 10, 1, 11, 4, 11, 54, 
+		8, 11, 11, 11, 12, 11, 55, 1, 11, 1, 11, 0, 0, 12, 1, 1, 3, 2, 5, 3, 7, 
+		4, 9, 5, 11, 6, 13, 7, 15, 8, 17, 9, 19, 10, 21, 11, 23, 12, 1, 0, 2, 
+		2, 0, 65, 90, 97, 122, 3, 0, 9, 10, 13, 13, 32, 32, 59, 0, 1, 1, 0, 0, 
+		0, 0, 3, 1, 0, 0, 0, 0, 5, 1, 0, 0, 0, 0, 7, 1, 0, 0, 0, 0, 9, 1, 0, 0, 
+		0, 0, 11, 1, 0, 0, 0, 0, 13, 1, 0, 0, 0, 0, 15, 1, 0, 0, 0, 0, 17, 1, 
+		0, 0, 0, 0, 19, 1, 0, 0, 0, 0, 21, 1, 0, 0, 0, 0, 23, 1, 0, 0, 0, 1, 25, 
+		1, 0, 0, 0, 3, 27, 1, 0, 0, 0, 5, 29, 1, 0, 0, 0, 7, 31, 1, 0, 0, 0, 9, 
+		33, 1, 0, 0, 0, 11, 35, 1, 0, 0, 0, 13, 38, 1, 0, 0, 0, 15, 41, 1, 0, 
+		0, 0, 17, 45, 1, 0, 0, 0, 19, 47, 1, 0, 0, 0, 21, 50, 1, 0, 0, 0, 23, 
+		53, 1, 0, 0, 0, 25, 26, 5, 44, 0, 0, 26, 2, 1, 0, 0, 0, 27, 28, 5, 94, 
+		0, 0, 28, 4, 1, 0, 0, 0, 29, 30, 5, 118, 0, 0, 30, 6, 1, 0, 0, 0, 31, 
+		32, 5, 33, 0, 0, 32, 8, 1, 0, 0, 0, 33, 34, 5, 61, 0, 0, 34, 10, 1, 0, 
+		0, 0, 35, 36, 5, 45, 0, 0, 36, 37, 5, 62, 0, 0, 37, 12, 1, 0, 0, 0, 38, 
+		39, 5, 124, 0, 0, 39, 40, 5, 45, 0, 0, 40, 14, 1, 0, 0, 0, 41, 42, 5, 
+		60, 0, 0, 42, 43, 5, 45, 0, 0, 43, 44, 5, 62, 0, 0, 44, 16, 1, 0, 0, 0, 
+		45, 46, 5, 40, 0, 0, 46, 18, 1, 0, 0, 0, 47, 48, 5, 41, 0, 0, 48, 20, 
+		1, 0, 0, 0, 49, 51, 7, 0, 0, 0, 50, 49, 1, 0, 0, 0, 51, 22, 1, 0, 0, 0, 
+		52, 54, 7, 1, 0, 0, 53, 52, 1, 0, 0, 0, 54, 55, 1, 0, 0, 0, 55, 53, 1, 
+		0, 0, 0, 55, 56, 1, 0, 0, 0, 56, 57, 1, 0, 0, 0, 57, 58, 6, 11, 0, 0, 
+		58, 24, 1, 0, 0, 0, 3, 0, 50, 55, 1, 0, 1, 0
+	];

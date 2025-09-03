@@ -1,6 +1,6 @@
 #![allow(nonstandard_style)]
-// Generated from LabeledExpr.g4 by ANTLR 4.8
-use antlr_rust::tree::ParseTreeListener;
+// Generated from LabeledExpr.g4 by ANTLR 4.13.2
+use antlr4rust::tree::ParseTreeListener;
 use super::labeledexprparser::*;
 
 pub trait LabeledExprListener<'input> : ParseTreeListener<'input,LabeledExprParserContextType>{
@@ -113,6 +113,6 @@ fn exit_int(&mut self, _ctx: &IntContext<'input>) { }
 
 }
 
-antlr_rust::coerce_from!{ 'input : LabeledExprListener<'input> }
+antlr4rust::coerce_from!{ 'input : LabeledExprListener<'input> }
 
 

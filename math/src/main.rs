@@ -1,4 +1,4 @@
-use antlr_rust::{
+use antlr4rust::{
     common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory, InputStream,
 };
 

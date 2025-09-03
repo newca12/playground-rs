@@ -1,6 +1,6 @@
 #![allow(nonstandard_style)]
-// Generated from propcalc.g4 by ANTLR 4.8
-use antlr_rust::tree::ParseTreeListener;
+// Generated from propcalc.g4 by ANTLR 4.13.2
+use antlr4rust::tree::ParseTreeListener;
 use super::propcalcparser::*;
 
 pub trait propcalcListener<'input> : ParseTreeListener<'input,propcalcParserContextType>{
@@ -87,6 +87,6 @@ fn exit_variable(&mut self, _ctx: &VariableContext<'input>) { }
 
 }
 
-antlr_rust::coerce_from!{ 'input : propcalcListener<'input> }
+antlr4rust::coerce_from!{ 'input : propcalcListener<'input> }
 
 

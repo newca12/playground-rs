@@ -1,6 +1,6 @@
-use antlr_rust::tree::{ParseTree, ParseTreeVisitor, Visitable};
-use antlr_rust::InputStream;
-use antlr_rust::{common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory};
+use antlr4rust::tree::{ParseTree, ParseTreeVisitor, Visitable};
+use antlr4rust::InputStream;
+use antlr4rust::{common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 

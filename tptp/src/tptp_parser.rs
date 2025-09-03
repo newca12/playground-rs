@@ -3,11 +3,11 @@
 #![feature(specialization)]
 #![feature(coerce_unsized)]
 
-use antlr_rust::common_token_stream::CommonTokenStream;
-use antlr_rust::token::Token;
-use antlr_rust::token_factory::CommonTokenFactory;
-use antlr_rust::tree::{ParseTree, ParseTreeListener, ParseTreeVisitor};
-use antlr_rust::InputStream;
+use antlr4rust::common_token_stream::CommonTokenStream;
+use antlr4rust::token::Token;
+use antlr4rust::token_factory::CommonTokenFactory;
+use antlr4rust::tree::{ParseTree, ParseTreeListener, ParseTreeVisitor};
+use antlr4rust::InputStream;
 
 use crate::grammar::tptp_v7_0_0_0parser::tptp_v7_0_0_0ParserContextType;
 use crate::{
@@ -86,7 +86,7 @@ struct TptpListener;
 impl<'input> ParseTreeListener<'input, tptp_v7_0_0_0ParserContextType> for TptpListener {
     fn visit_terminal(
         &mut self,
-        node: &antlr_rust::tree::TerminalNode<'input, tptp_v7_0_0_0ParserContextType>,
+        node: &antlr4rust::tree::TerminalNode<'input, tptp_v7_0_0_0ParserContextType>,
     ) {
         println!("terminal node {:#?}", node.symbol.get_text());
     }

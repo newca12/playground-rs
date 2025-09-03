@@ -1,6 +1,6 @@
 #![allow(nonstandard_style)]
-// Generated from tptp_v7_0_0_0.g4 by ANTLR 4.8
-use antlr_rust::tree::ParseTreeListener;
+// Generated from tptp_v7_0_0_0.g4 by ANTLR 4.13.2
+use antlr4rust::tree::ParseTreeListener;
 use super::tptp_v7_0_0_0parser::*;
 
 pub trait tptp_v7_0_0_0Listener<'input> : ParseTreeListener<'input,tptp_v7_0_0_0ParserContextType>{
@@ -2017,6 +2017,6 @@ fn exit_file_name(&mut self, _ctx: &File_nameContext<'input>) { }
 
 }
 
-antlr_rust::coerce_from!{ 'input : tptp_v7_0_0_0Listener<'input> }
+antlr4rust::coerce_from!{ 'input : tptp_v7_0_0_0Listener<'input> }
 
 
