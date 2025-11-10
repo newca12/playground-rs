@@ -3,16 +3,17 @@
 #![feature(specialization)]
 #![feature(coerce_unsized)]
 
+use antlr4rust::InputStream;
 use antlr4rust::common_token_stream::CommonTokenStream;
+use antlr4rust::errors::ANTLRError;
 use antlr4rust::token::Token;
 use antlr4rust::token_factory::CommonTokenFactory;
 use antlr4rust::tree::{ParseTree, ParseTreeListener, ParseTreeVisitor};
-use antlr4rust::InputStream;
 
 use crate::grammar::tptp_v7_0_0_0parser::tptp_v7_0_0_0ParserContextType;
 use crate::{
-    tptp_v7_0_0_0Lexer, tptp_v7_0_0_0Listener, tptp_v7_0_0_0Parser, tptp_v7_0_0_0ParserContext,
-    tptp_v7_0_0_0parser, Tptp_inputContextAttrs,
+    Tptp_inputContextAttrs, tptp_v7_0_0_0Lexer, tptp_v7_0_0_0Listener, tptp_v7_0_0_0Parser,
+    tptp_v7_0_0_0ParserContext, tptp_v7_0_0_0parser,
 };
 
 pub fn str_to_visit<'input>(input: &str) -> () {
@@ -91,22 +92,28 @@ impl<'input> ParseTreeListener<'input, tptp_v7_0_0_0ParserContextType> for TptpL
         println!("terminal node {:#?}", node.symbol.get_text());
     }
 
-    fn enter_every_rule(&mut self, ctx: &dyn tptp_v7_0_0_0ParserContext<'input>) {
-        println!(
+    fn enter_every_rule(
+        &mut self,
+        ctx: &dyn tptp_v7_0_0_0ParserContext<'input>,
+    ) -> Result<(), ANTLRError> {
+        Ok(println!(
             "rule entered {}",
             tptp_v7_0_0_0parser::ruleNames
                 .get(ctx.get_rule_index())
                 .unwrap_or(&"error")
-        )
+        ))
     }
 
-    fn exit_every_rule(&mut self, ctx: &dyn tptp_v7_0_0_0ParserContext<'input>) {
-        println!(
+    fn exit_every_rule(
+        &mut self,
+        ctx: &dyn tptp_v7_0_0_0ParserContext<'input>,
+    ) -> Result<(), ANTLRError> {
+        Ok(println!(
             "rule exited {}",
             tptp_v7_0_0_0parser::ruleNames
                 .get(ctx.get_rule_index())
                 .unwrap_or(&"error")
-        )
+        ))
     }
 }
 

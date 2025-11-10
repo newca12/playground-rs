@@ -91,29 +91,26 @@ pub type propcalcTreeWalker<'input,'a> =
 	ParseTreeWalker<'input, 'a, propcalcParserContextType , dyn propcalcListener<'input> + 'a>;
 
 /// Parser for propcalc grammar
-pub struct propcalcParser<'input,I,H>
+pub struct propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	base:BaseParserType<'input,I>,
 	interpreter:Arc<ParserATNSimulator>,
 	_shared_context_cache: Box<PredictionContextCache>,
-    pub err_handler: H,
+    pub err_handler: Box<dyn ErrorStrategy<'input,BaseParserType<'input,I> > >,
 }
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
-
-    pub fn set_error_strategy(&mut self, strategy: H) {
+    pub fn set_error_strategy(&mut self, strategy: Box<dyn ErrorStrategy<'input,BaseParserType<'input,I> > >) {
         self.err_handler = strategy
     }
 
-    pub fn with_strategy(input: I, strategy: H) -> Self {
-		antlr4rust::recognizer::check_version("0","3");
+    pub fn with_strategy(input: I, strategy: Box<dyn ErrorStrategy<'input,BaseParserType<'input,I> > >) -> Self {
+		antlr4rust::recognizer::check_version("0","5");
 		let interpreter = Arc::new(ParserATNSimulator::new(
 			_ATN.clone(),
 			_decision_to_DFA.clone(),
@@ -137,7 +134,7 @@ where
 
 type DynStrategy<'input,I> = Box<dyn ErrorStrategy<'input,BaseParserType<'input,I>> + 'input>;
 
-impl<'input, I> propcalcParser<'input, I, DynStrategy<'input,I>>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
@@ -146,12 +143,12 @@ where
     }
 }
 
-impl<'input, I> propcalcParser<'input, I, DefaultErrorStrategy<'input,propcalcParserContextType>>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
     pub fn new(input: I) -> Self{
-    	Self::with_strategy(input,DefaultErrorStrategy::new())
+    	Self::with_strategy(input,Box::new(DefaultErrorStrategy::new()))
     }
 }
 
@@ -188,10 +185,9 @@ impl<'input> ParserNodeType<'input> for propcalcParserContextType{
 	type Type = dyn propcalcParserContext<'input> + 'input;
 }
 
-impl<'input, I, H> Deref for propcalcParser<'input, I, H>
+impl<'input, I> Deref for propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
     type Target = BaseParserType<'input,I>;
 
@@ -200,10 +196,9 @@ where
     }
 }
 
-impl<'input, I, H> DerefMut for propcalcParser<'input, I, H>
+impl<'input, I> DerefMut for propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.base
@@ -245,13 +240,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for PropositionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for PropositionContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_proposition(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_proposition(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -298,10 +295,9 @@ fn THEREFORE(&self) -> Option<Rc<TerminalNode<'input,propcalcParserContextType>>
 
 impl<'input> PropositionContextAttrs<'input> for PropositionContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn proposition(&mut self,)
 	-> Result<Rc<PropositionContextAll<'input>>,ANTLRError> {
@@ -312,8 +308,8 @@ where
         let mut _localctx: Rc<PropositionContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule expression*/
 			recog.base.set_state(16);
@@ -338,7 +334,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -357,13 +353,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for ExpressionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for ExpressionContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_expression(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_expression(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -423,10 +421,9 @@ fn OR(&self, i: usize) -> Option<Rc<TerminalNode<'input,propcalcParserContextTyp
 
 impl<'input> ExpressionContextAttrs<'input> for ExpressionContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn expression(&mut self,)
 	-> Result<Rc<ExpressionContextAll<'input>>,ANTLRError> {
@@ -438,8 +435,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule relExpression*/
 			recog.base.set_state(20);
@@ -484,7 +481,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -503,13 +500,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for RelExpressionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for RelExpressionContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_relExpression(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_relExpression(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -554,10 +553,9 @@ fn implies(&self) -> Option<Rc<ImpliesContextAll<'input>>> where Self:Sized{
 
 impl<'input> RelExpressionContextAttrs<'input> for RelExpressionContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn relExpression(&mut self,)
 	-> Result<Rc<RelExpressionContextAll<'input>>,ANTLRError> {
@@ -572,8 +570,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(1,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule atom*/
 					recog.base.set_state(28);
@@ -583,8 +581,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule equiv*/
 					recog.base.set_state(29);
@@ -594,8 +592,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule implies*/
 					recog.base.set_state(30);
@@ -617,7 +615,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -636,13 +634,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for AtomsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for AtomsContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_atoms(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_atoms(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -684,10 +684,9 @@ fn atom(&self, i: usize) -> Option<Rc<AtomContextAll<'input>>> where Self:Sized{
 
 impl<'input> AtomsContextAttrs<'input> for AtomsContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn atoms(&mut self,)
 	-> Result<Rc<AtomsContextAll<'input>>,ANTLRError> {
@@ -699,8 +698,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atom*/
 			recog.base.set_state(33);
@@ -737,7 +736,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -756,13 +755,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for AtomContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for AtomContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_atom(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_atom(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -822,10 +823,9 @@ fn RPAREN(&self) -> Option<Rc<TerminalNode<'input,propcalcParserContextType>>> w
 
 impl<'input> AtomContextAttrs<'input> for AtomContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn atom(&mut self,)
 	-> Result<Rc<AtomContextAll<'input>>,ANTLRError> {
@@ -842,8 +842,8 @@ where
 			propcalc_EOF |propcalc_T__0 |propcalc_AND |propcalc_OR |propcalc_IMPLIES |
 			propcalc_THEREFORE |propcalc_EQUIV |propcalc_RPAREN |propcalc_LETTER 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(41);
@@ -854,8 +854,8 @@ where
 
 			propcalc_NOT 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(42);
 					recog.base.match_token(propcalc_NOT,&mut recog.err_handler)?;
@@ -869,8 +869,8 @@ where
 
 			propcalc_LPAREN 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					recog.base.set_state(44);
 					recog.base.match_token(propcalc_LPAREN,&mut recog.err_handler)?;
@@ -898,7 +898,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -917,13 +917,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for EquivContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for EquivContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_equiv(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_equiv(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -970,10 +972,9 @@ fn EQUIV(&self) -> Option<Rc<TerminalNode<'input,propcalcParserContextType>>> wh
 
 impl<'input> EquivContextAttrs<'input> for EquivContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn equiv(&mut self,)
 	-> Result<Rc<EquivContextAll<'input>>,ANTLRError> {
@@ -984,8 +985,8 @@ where
         let mut _localctx: Rc<EquivContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atom*/
 			recog.base.set_state(50);
@@ -1010,7 +1011,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1029,13 +1030,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for ImpliesContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for ImpliesContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_implies(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_implies(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1082,10 +1085,9 @@ fn IMPLIES(&self) -> Option<Rc<TerminalNode<'input,propcalcParserContextType>>> 
 
 impl<'input> ImpliesContextAttrs<'input> for ImpliesContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn implies(&mut self,)
 	-> Result<Rc<ImpliesContextAll<'input>>,ANTLRError> {
@@ -1096,8 +1098,8 @@ where
         let mut _localctx: Rc<ImpliesContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atom*/
 			recog.base.set_state(54);
@@ -1122,7 +1124,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1141,13 +1143,15 @@ ph:PhantomData<&'input str>
 impl<'input> propcalcParserContext<'input> for VariableContext<'input>{}
 
 impl<'input,'a> Listenable<dyn propcalcListener<'input> + 'a> for VariableContext<'input>{
-		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_variable(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn propcalcListener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_variable(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1192,10 +1196,9 @@ fn LETTER(&self, i: usize) -> Option<Rc<TerminalNode<'input,propcalcParserContex
 
 impl<'input> VariableContextAttrs<'input> for VariableContext<'input>{}
 
-impl<'input, I, H> propcalcParser<'input, I, H>
+impl<'input, I> propcalcParser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn variable(&mut self,)
 	-> Result<Rc<VariableContextAll<'input>>,ANTLRError> {
@@ -1207,8 +1210,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(61);
 			recog.err_handler.sync(&mut recog.base)?;
@@ -1237,14 +1240,14 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
 }
 	lazy_static!{
     static ref _ATN: Arc<ATN> =
-        Arc::new(ATNDeserializer::new(None).deserialize(&mut _serializedATN.into_iter()));
+        Arc::new(ATNDeserializer::new(None).deserialize(&mut _serializedATN.iter()));
     static ref _decision_to_DFA: Arc<Vec<antlr4rust::RwLock<DFA>>> = {
         let mut dfa = Vec::new();
         let size = _ATN.decision_to_state.len() as i32;
@@ -1257,31 +1260,31 @@ where
         }
         Arc::new(dfa)
     };
-    }
-const _serializedATN: [i32; 544] = [
-	4, 1, 12, 65, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 
-	4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 
-	1, 1, 1, 5, 1, 24, 8, 1, 10, 1, 12, 1, 27, 9, 1, 1, 2, 1, 2, 1, 2, 3, 2, 
-	32, 8, 2, 1, 3, 1, 3, 1, 3, 5, 3, 37, 8, 3, 10, 3, 12, 3, 40, 9, 3, 1, 
-	4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 3, 4, 49, 8, 4, 1, 5, 1, 5, 1, 5, 
-	1, 5, 1, 6, 1, 6, 1, 6, 1, 6, 1, 7, 5, 7, 60, 8, 7, 10, 7, 12, 7, 63, 9, 
-	7, 1, 7, 0, 0, 8, 0, 2, 4, 6, 8, 10, 12, 14, 0, 1, 1, 0, 2, 3, 63, 0, 16, 
-	1, 0, 0, 0, 2, 20, 1, 0, 0, 0, 4, 31, 1, 0, 0, 0, 6, 33, 1, 0, 0, 0, 8, 
-	48, 1, 0, 0, 0, 10, 50, 1, 0, 0, 0, 12, 54, 1, 0, 0, 0, 14, 61, 1, 0, 0, 
-	0, 16, 17, 3, 2, 1, 0, 17, 18, 5, 7, 0, 0, 18, 19, 3, 2, 1, 0, 19, 1, 1, 
-	0, 0, 0, 20, 25, 3, 4, 2, 0, 21, 22, 7, 0, 0, 0, 22, 24, 3, 4, 2, 0, 23, 
-	21, 1, 0, 0, 0, 24, 27, 1, 0, 0, 0, 25, 23, 1, 0, 0, 0, 25, 26, 1, 0, 0, 
-	0, 26, 3, 1, 0, 0, 0, 27, 25, 1, 0, 0, 0, 28, 32, 3, 8, 4, 0, 29, 32, 3, 
-	10, 5, 0, 30, 32, 3, 12, 6, 0, 31, 28, 1, 0, 0, 0, 31, 29, 1, 0, 0, 0, 
-	31, 30, 1, 0, 0, 0, 32, 5, 1, 0, 0, 0, 33, 38, 3, 8, 4, 0, 34, 35, 5, 1, 
-	0, 0, 35, 37, 3, 8, 4, 0, 36, 34, 1, 0, 0, 0, 37, 40, 1, 0, 0, 0, 38, 36, 
-	1, 0, 0, 0, 38, 39, 1, 0, 0, 0, 39, 7, 1, 0, 0, 0, 40, 38, 1, 0, 0, 0, 
-	41, 49, 3, 14, 7, 0, 42, 43, 5, 4, 0, 0, 43, 49, 3, 8, 4, 0, 44, 45, 5, 
-	9, 0, 0, 45, 46, 3, 2, 1, 0, 46, 47, 5, 10, 0, 0, 47, 49, 1, 0, 0, 0, 48, 
-	41, 1, 0, 0, 0, 48, 42, 1, 0, 0, 0, 48, 44, 1, 0, 0, 0, 49, 9, 1, 0, 0, 
-	0, 50, 51, 3, 8, 4, 0, 51, 52, 5, 8, 0, 0, 52, 53, 3, 8, 4, 0, 53, 11, 
-	1, 0, 0, 0, 54, 55, 3, 8, 4, 0, 55, 56, 5, 6, 0, 0, 56, 57, 3, 8, 4, 0, 
-	57, 13, 1, 0, 0, 0, 58, 60, 5, 11, 0, 0, 59, 58, 1, 0, 0, 0, 60, 63, 1, 
-	0, 0, 0, 61, 59, 1, 0, 0, 0, 61, 62, 1, 0, 0, 0, 62, 15, 1, 0, 0, 0, 63, 
-	61, 1, 0, 0, 0, 5, 25, 31, 38, 48, 61
-];
+	static ref _serializedATN: Vec<i32> = vec![
+		4, 1, 12, 65, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 
+		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 
+		1, 1, 1, 5, 1, 24, 8, 1, 10, 1, 12, 1, 27, 9, 1, 1, 2, 1, 2, 1, 2, 3, 
+		2, 32, 8, 2, 1, 3, 1, 3, 1, 3, 5, 3, 37, 8, 3, 10, 3, 12, 3, 40, 9, 3, 
+		1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 1, 4, 3, 4, 49, 8, 4, 1, 5, 1, 5, 
+		1, 5, 1, 5, 1, 6, 1, 6, 1, 6, 1, 6, 1, 7, 5, 7, 60, 8, 7, 10, 7, 12, 7, 
+		63, 9, 7, 1, 7, 0, 0, 8, 0, 2, 4, 6, 8, 10, 12, 14, 0, 1, 1, 0, 2, 3, 
+		63, 0, 16, 1, 0, 0, 0, 2, 20, 1, 0, 0, 0, 4, 31, 1, 0, 0, 0, 6, 33, 1, 
+		0, 0, 0, 8, 48, 1, 0, 0, 0, 10, 50, 1, 0, 0, 0, 12, 54, 1, 0, 0, 0, 14, 
+		61, 1, 0, 0, 0, 16, 17, 3, 2, 1, 0, 17, 18, 5, 7, 0, 0, 18, 19, 3, 2, 
+		1, 0, 19, 1, 1, 0, 0, 0, 20, 25, 3, 4, 2, 0, 21, 22, 7, 0, 0, 0, 22, 24, 
+		3, 4, 2, 0, 23, 21, 1, 0, 0, 0, 24, 27, 1, 0, 0, 0, 25, 23, 1, 0, 0, 0, 
+		25, 26, 1, 0, 0, 0, 26, 3, 1, 0, 0, 0, 27, 25, 1, 0, 0, 0, 28, 32, 3, 
+		8, 4, 0, 29, 32, 3, 10, 5, 0, 30, 32, 3, 12, 6, 0, 31, 28, 1, 0, 0, 0, 
+		31, 29, 1, 0, 0, 0, 31, 30, 1, 0, 0, 0, 32, 5, 1, 0, 0, 0, 33, 38, 3, 
+		8, 4, 0, 34, 35, 5, 1, 0, 0, 35, 37, 3, 8, 4, 0, 36, 34, 1, 0, 0, 0, 37, 
+		40, 1, 0, 0, 0, 38, 36, 1, 0, 0, 0, 38, 39, 1, 0, 0, 0, 39, 7, 1, 0, 0, 
+		0, 40, 38, 1, 0, 0, 0, 41, 49, 3, 14, 7, 0, 42, 43, 5, 4, 0, 0, 43, 49, 
+		3, 8, 4, 0, 44, 45, 5, 9, 0, 0, 45, 46, 3, 2, 1, 0, 46, 47, 5, 10, 0, 
+		0, 47, 49, 1, 0, 0, 0, 48, 41, 1, 0, 0, 0, 48, 42, 1, 0, 0, 0, 48, 44, 
+		1, 0, 0, 0, 49, 9, 1, 0, 0, 0, 50, 51, 3, 8, 4, 0, 51, 52, 5, 8, 0, 0, 
+		52, 53, 3, 8, 4, 0, 53, 11, 1, 0, 0, 0, 54, 55, 3, 8, 4, 0, 55, 56, 5, 
+		6, 0, 0, 56, 57, 3, 8, 4, 0, 57, 13, 1, 0, 0, 0, 58, 60, 5, 11, 0, 0, 
+		59, 58, 1, 0, 0, 0, 60, 63, 1, 0, 0, 0, 61, 59, 1, 0, 0, 0, 61, 62, 1, 
+		0, 0, 0, 62, 15, 1, 0, 0, 0, 63, 61, 1, 0, 0, 0, 5, 25, 31, 38, 48, 61
+	];
+}

@@ -1,5 +1,5 @@
 use antlr4rust::{
-    common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory, InputStream,
+    InputStream, common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory,
 };
 
 use crate::mathlistener::MathListener;

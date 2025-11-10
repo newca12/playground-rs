@@ -443,29 +443,26 @@ pub type tptp_v7_0_0_0TreeWalker<'input,'a> =
 	ParseTreeWalker<'input, 'a, tptp_v7_0_0_0ParserContextType , dyn tptp_v7_0_0_0Listener<'input> + 'a>;
 
 /// Parser for tptp_v7_0_0_0 grammar
-pub struct tptp_v7_0_0_0Parser<'input,I,H>
+pub struct tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	base:BaseParserType<'input,I>,
 	interpreter:Arc<ParserATNSimulator>,
 	_shared_context_cache: Box<PredictionContextCache>,
-    pub err_handler: H,
+    pub err_handler: Box<dyn ErrorStrategy<'input,BaseParserType<'input,I> > >,
 }
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
-
-    pub fn set_error_strategy(&mut self, strategy: H) {
+    pub fn set_error_strategy(&mut self, strategy: Box<dyn ErrorStrategy<'input,BaseParserType<'input,I> > >) {
         self.err_handler = strategy
     }
 
-    pub fn with_strategy(input: I, strategy: H) -> Self {
-		antlr4rust::recognizer::check_version("0","3");
+    pub fn with_strategy(input: I, strategy: Box<dyn ErrorStrategy<'input,BaseParserType<'input,I> > >) -> Self {
+		antlr4rust::recognizer::check_version("0","5");
 		let interpreter = Arc::new(ParserATNSimulator::new(
 			_ATN.clone(),
 			_decision_to_DFA.clone(),
@@ -489,7 +486,7 @@ where
 
 type DynStrategy<'input,I> = Box<dyn ErrorStrategy<'input,BaseParserType<'input,I>> + 'input>;
 
-impl<'input, I> tptp_v7_0_0_0Parser<'input, I, DynStrategy<'input,I>>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
@@ -498,12 +495,12 @@ where
     }
 }
 
-impl<'input, I> tptp_v7_0_0_0Parser<'input, I, DefaultErrorStrategy<'input,tptp_v7_0_0_0ParserContextType>>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
     pub fn new(input: I) -> Self{
-    	Self::with_strategy(input,DefaultErrorStrategy::new())
+    	Self::with_strategy(input,Box::new(DefaultErrorStrategy::new()))
     }
 }
 
@@ -540,10 +537,9 @@ impl<'input> ParserNodeType<'input> for tptp_v7_0_0_0ParserContextType{
 	type Type = dyn tptp_v7_0_0_0ParserContext<'input> + 'input;
 }
 
-impl<'input, I, H> Deref for tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> Deref for tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
     type Target = BaseParserType<'input,I>;
 
@@ -552,10 +548,9 @@ where
     }
 }
 
-impl<'input, I, H> DerefMut for tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> DerefMut for tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.base
@@ -586,23 +581,23 @@ impl<'input,I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'i
 			   recog:&mut BaseParserType<'input,I>
 	)->bool{
 		match rule_index {
-					18 => tptp_v7_0_0_0Parser::<'input,I,_>::thf_or_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					19 => tptp_v7_0_0_0Parser::<'input,I,_>::thf_and_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					20 => tptp_v7_0_0_0Parser::<'input,I,_>::thf_apply_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					42 => tptp_v7_0_0_0Parser::<'input,I,_>::thf_xprod_type_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					43 => tptp_v7_0_0_0Parser::<'input,I,_>::thf_union_type_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					54 => tptp_v7_0_0_0Parser::<'input,I,_>::tff_or_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					55 => tptp_v7_0_0_0Parser::<'input,I,_>::tff_and_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					85 => tptp_v7_0_0_0Parser::<'input,I,_>::tff_xprod_type_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					94 => tptp_v7_0_0_0Parser::<'input,I,_>::fof_or_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					95 => tptp_v7_0_0_0Parser::<'input,I,_>::fof_and_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
-					122 => tptp_v7_0_0_0Parser::<'input,I,_>::cnf_disjunction_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					18 => tptp_v7_0_0_0Parser::<'input,I>::thf_or_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					19 => tptp_v7_0_0_0Parser::<'input,I>::thf_and_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					20 => tptp_v7_0_0_0Parser::<'input,I>::thf_apply_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					42 => tptp_v7_0_0_0Parser::<'input,I>::thf_xprod_type_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					43 => tptp_v7_0_0_0Parser::<'input,I>::thf_union_type_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					54 => tptp_v7_0_0_0Parser::<'input,I>::tff_or_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					55 => tptp_v7_0_0_0Parser::<'input,I>::tff_and_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					85 => tptp_v7_0_0_0Parser::<'input,I>::tff_xprod_type_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					94 => tptp_v7_0_0_0Parser::<'input,I>::fof_or_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					95 => tptp_v7_0_0_0Parser::<'input,I>::fof_and_formula_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
+					122 => tptp_v7_0_0_0Parser::<'input,I>::cnf_disjunction_sempred(_localctx.and_then(|x|x.downcast_ref()), pred_index, recog),
 			_ => true
 		}
 	}
 }
 
-impl<'input, I> tptp_v7_0_0_0Parser<'input, I, DefaultErrorStrategy<'input,tptp_v7_0_0_0ParserContextType>>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
 {
@@ -731,13 +726,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tptp_fileContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tptp_fileContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tptp_file(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tptp_file(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -784,10 +781,9 @@ fn tptp_input(&self, i: usize) -> Option<Rc<Tptp_inputContextAll<'input>>> where
 
 impl<'input> Tptp_fileContextAttrs<'input> for Tptp_fileContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tptp_file(&mut self,)
 	-> Result<Rc<Tptp_fileContextAll<'input>>,ANTLRError> {
@@ -799,8 +795,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(405);
 			recog.err_handler.sync(&mut recog.base)?;
@@ -833,7 +829,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -852,13 +848,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tptp_inputContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tptp_inputContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tptp_input(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tptp_input(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -900,10 +898,9 @@ fn include(&self) -> Option<Rc<IncludeContextAll<'input>>> where Self:Sized{
 
 impl<'input> Tptp_inputContextAttrs<'input> for Tptp_inputContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tptp_input(&mut self,)
 	-> Result<Rc<Tptp_inputContextAll<'input>>,ANTLRError> {
@@ -920,8 +917,8 @@ where
 			tptp_v7_0_0_0_T__0 |tptp_v7_0_0_0_T__3 |tptp_v7_0_0_0_T__4 |tptp_v7_0_0_0_T__5 |
 			tptp_v7_0_0_0_T__6 |tptp_v7_0_0_0_T__7 |tptp_v7_0_0_0_T__8 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule annotated_formula*/
 					recog.base.set_state(410);
@@ -932,8 +929,8 @@ where
 
 			tptp_v7_0_0_0_T__37 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule include*/
 					recog.base.set_state(411);
@@ -955,7 +952,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -974,13 +971,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Annotated_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Annotated_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_annotated_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_annotated_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1037,10 +1036,9 @@ fn tpi_annotated(&self) -> Option<Rc<Tpi_annotatedContextAll<'input>>> where Sel
 
 impl<'input> Annotated_formulaContextAttrs<'input> for Annotated_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn annotated_formula(&mut self,)
 	-> Result<Rc<Annotated_formulaContextAll<'input>>,ANTLRError> {
@@ -1056,8 +1054,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__3 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_annotated*/
 					recog.base.set_state(414);
@@ -1068,8 +1066,8 @@ where
 
 			tptp_v7_0_0_0_T__4 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tfx_annotated*/
 					recog.base.set_state(415);
@@ -1080,8 +1078,8 @@ where
 
 			tptp_v7_0_0_0_T__5 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule tff_annotated*/
 					recog.base.set_state(416);
@@ -1092,8 +1090,8 @@ where
 
 			tptp_v7_0_0_0_T__6 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule tcf_annotated*/
 					recog.base.set_state(417);
@@ -1104,8 +1102,8 @@ where
 
 			tptp_v7_0_0_0_T__7 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					/*InvokeRule fof_annotated*/
 					recog.base.set_state(418);
@@ -1116,8 +1114,8 @@ where
 
 			tptp_v7_0_0_0_T__8 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 6);
-					recog.base.enter_outer_alt(None, 6);
+					//recog.base.enter_outer_alt(_localctx.clone(), 6)?;
+					recog.base.enter_outer_alt(None, 6)?;
 					{
 					/*InvokeRule cnf_annotated*/
 					recog.base.set_state(419);
@@ -1128,8 +1126,8 @@ where
 
 			tptp_v7_0_0_0_T__0 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 7);
-					recog.base.enter_outer_alt(None, 7);
+					//recog.base.enter_outer_alt(_localctx.clone(), 7)?;
+					recog.base.enter_outer_alt(None, 7)?;
 					{
 					/*InvokeRule tpi_annotated*/
 					recog.base.set_state(420);
@@ -1151,7 +1149,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1170,13 +1168,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tpi_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tpi_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tpi_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tpi_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1224,10 +1224,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Tpi_annotatedContextAttrs<'input> for Tpi_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tpi_annotated(&mut self,)
 	-> Result<Rc<Tpi_annotatedContextAll<'input>>,ANTLRError> {
@@ -1239,8 +1238,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(423);
 			recog.base.match_token(tptp_v7_0_0_0_T__0,&mut recog.err_handler)?;
@@ -1290,7 +1289,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1309,13 +1308,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tpi_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tpi_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tpi_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tpi_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1354,10 +1355,9 @@ fn fof_formula(&self) -> Option<Rc<Fof_formulaContextAll<'input>>> where Self:Si
 
 impl<'input> Tpi_formulaContextAttrs<'input> for Tpi_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tpi_formula(&mut self,)
 	-> Result<Rc<Tpi_formulaContextAll<'input>>,ANTLRError> {
@@ -1368,8 +1368,8 @@ where
         let mut _localctx: Rc<Tpi_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_formula*/
 			recog.base.set_state(434);
@@ -1387,7 +1387,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1406,13 +1406,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1460,10 +1462,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Thf_annotatedContextAttrs<'input> for Thf_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_annotated(&mut self,)
 	-> Result<Rc<Thf_annotatedContextAll<'input>>,ANTLRError> {
@@ -1475,8 +1476,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(436);
 			recog.base.match_token(tptp_v7_0_0_0_T__3,&mut recog.err_handler)?;
@@ -1526,7 +1527,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1545,13 +1546,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tfx_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tfx_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tfx_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tfx_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1599,10 +1602,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Tfx_annotatedContextAttrs<'input> for Tfx_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tfx_annotated(&mut self,)
 	-> Result<Rc<Tfx_annotatedContextAll<'input>>,ANTLRError> {
@@ -1614,8 +1616,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(447);
 			recog.base.match_token(tptp_v7_0_0_0_T__4,&mut recog.err_handler)?;
@@ -1665,7 +1667,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1684,13 +1686,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1738,10 +1742,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Tff_annotatedContextAttrs<'input> for Tff_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_annotated(&mut self,)
 	-> Result<Rc<Tff_annotatedContextAll<'input>>,ANTLRError> {
@@ -1753,8 +1756,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(458);
 			recog.base.match_token(tptp_v7_0_0_0_T__5,&mut recog.err_handler)?;
@@ -1804,7 +1807,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1823,13 +1826,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tcf_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tcf_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tcf_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tcf_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -1877,10 +1882,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Tcf_annotatedContextAttrs<'input> for Tcf_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tcf_annotated(&mut self,)
 	-> Result<Rc<Tcf_annotatedContextAll<'input>>,ANTLRError> {
@@ -1892,8 +1896,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(469);
 			recog.base.match_token(tptp_v7_0_0_0_T__6,&mut recog.err_handler)?;
@@ -1943,7 +1947,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -1962,13 +1966,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2016,10 +2022,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Fof_annotatedContextAttrs<'input> for Fof_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_annotated(&mut self,)
 	-> Result<Rc<Fof_annotatedContextAll<'input>>,ANTLRError> {
@@ -2031,8 +2036,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(480);
 			recog.base.match_token(tptp_v7_0_0_0_T__7,&mut recog.err_handler)?;
@@ -2082,7 +2087,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2101,13 +2106,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Cnf_annotatedContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Cnf_annotatedContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_cnf_annotated(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_cnf_annotated(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2155,10 +2162,9 @@ fn annotations(&self) -> Option<Rc<AnnotationsContextAll<'input>>> where Self:Si
 
 impl<'input> Cnf_annotatedContextAttrs<'input> for Cnf_annotatedContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn cnf_annotated(&mut self,)
 	-> Result<Rc<Cnf_annotatedContextAll<'input>>,ANTLRError> {
@@ -2170,8 +2176,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(491);
 			recog.base.match_token(tptp_v7_0_0_0_T__8,&mut recog.err_handler)?;
@@ -2221,7 +2227,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2240,13 +2246,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for AnnotationsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for AnnotationsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_annotations(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_annotations(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2288,10 +2296,9 @@ fn optional_info(&self) -> Option<Rc<Optional_infoContextAll<'input>>> where Sel
 
 impl<'input> AnnotationsContextAttrs<'input> for AnnotationsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn annotations(&mut self,)
 	-> Result<Rc<AnnotationsContextAll<'input>>,ANTLRError> {
@@ -2303,8 +2310,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(502);
 			recog.base.match_token(tptp_v7_0_0_0_T__1,&mut recog.err_handler)?;
@@ -2337,7 +2344,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2356,13 +2363,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Formula_roleContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Formula_roleContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_formula_role(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_formula_role(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2403,10 +2412,9 @@ fn Lower_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Formula_roleContextAttrs<'input> for Formula_roleContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn formula_role(&mut self,)
 	-> Result<Rc<Formula_roleContextAll<'input>>,ANTLRError> {
@@ -2417,8 +2425,8 @@ where
         let mut _localctx: Rc<Formula_roleContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(507);
 			recog.base.match_token(tptp_v7_0_0_0_Lower_word,&mut recog.err_handler)?;
@@ -2435,7 +2443,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2454,13 +2462,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2502,10 +2512,9 @@ fn thf_sequent(&self) -> Option<Rc<Thf_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Thf_formulaContextAttrs<'input> for Thf_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_formula(&mut self,)
 	-> Result<Rc<Thf_formulaContextAll<'input>>,ANTLRError> {
@@ -2520,8 +2529,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(11,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_logic_formula*/
 					recog.base.set_state(509);
@@ -2531,8 +2540,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_sequent*/
 					recog.base.set_state(510);
@@ -2554,7 +2563,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2573,13 +2582,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_logic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_logic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_logic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_logic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2627,10 +2638,9 @@ fn thf_subtype(&self) -> Option<Rc<Thf_subtypeContextAll<'input>>> where Self:Si
 
 impl<'input> Thf_logic_formulaContextAttrs<'input> for Thf_logic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_logic_formula(&mut self,)
 	-> Result<Rc<Thf_logic_formulaContextAll<'input>>,ANTLRError> {
@@ -2645,8 +2655,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(12,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_binary_formula*/
 					recog.base.set_state(513);
@@ -2656,8 +2666,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_unitary_formula*/
 					recog.base.set_state(514);
@@ -2667,8 +2677,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_type_formula*/
 					recog.base.set_state(515);
@@ -2678,8 +2688,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule thf_subtype*/
 					recog.base.set_state(516);
@@ -2701,7 +2711,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2720,13 +2730,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_binary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_binary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_binary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_binary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2771,10 +2783,9 @@ fn thf_binary_type(&self) -> Option<Rc<Thf_binary_typeContextAll<'input>>> where
 
 impl<'input> Thf_binary_formulaContextAttrs<'input> for Thf_binary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_binary_formula(&mut self,)
 	-> Result<Rc<Thf_binary_formulaContextAll<'input>>,ANTLRError> {
@@ -2789,8 +2800,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(13,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_binary_pair*/
 					recog.base.set_state(519);
@@ -2800,8 +2811,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_binary_tuple*/
 					recog.base.set_state(520);
@@ -2811,8 +2822,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_binary_type*/
 					recog.base.set_state(521);
@@ -2834,7 +2845,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2853,13 +2864,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_binary_pairContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_binary_pairContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_binary_pair(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_binary_pair(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -2904,10 +2917,9 @@ fn thf_pair_connective(&self) -> Option<Rc<Thf_pair_connectiveContextAll<'input>
 
 impl<'input> Thf_binary_pairContextAttrs<'input> for Thf_binary_pairContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_binary_pair(&mut self,)
 	-> Result<Rc<Thf_binary_pairContextAll<'input>>,ANTLRError> {
@@ -2918,8 +2930,8 @@ where
         let mut _localctx: Rc<Thf_binary_pairContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_unitary_formula*/
 			recog.base.set_state(524);
@@ -2945,7 +2957,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -2964,13 +2976,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_binary_tupleContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_binary_tupleContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_binary_tuple(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_binary_tuple(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3015,10 +3029,9 @@ fn thf_apply_formula(&self) -> Option<Rc<Thf_apply_formulaContextAll<'input>>> w
 
 impl<'input> Thf_binary_tupleContextAttrs<'input> for Thf_binary_tupleContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_binary_tuple(&mut self,)
 	-> Result<Rc<Thf_binary_tupleContextAll<'input>>,ANTLRError> {
@@ -3033,8 +3046,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(14,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_or_formula*/
 					recog.base.set_state(528);
@@ -3044,8 +3057,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_and_formula*/
 					recog.base.set_state(529);
@@ -3055,8 +3068,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_apply_formula*/
 					recog.base.set_state(530);
@@ -3078,7 +3091,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -3097,13 +3110,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_or_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_or_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_or_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_or_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3153,10 +3168,9 @@ fn thf_or_formula(&self) -> Option<Rc<Thf_or_formulaContextAll<'input>>> where S
 
 impl<'input> Thf_or_formulaContextAttrs<'input> for Thf_or_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  thf_or_formula(&mut self,)
 	-> Result<Rc<Thf_or_formulaContextAll<'input>>,ANTLRError> {
@@ -3175,8 +3189,8 @@ where
 		let _startState = 36;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule thf_unitary_formula*/
@@ -3198,13 +3212,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(15,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Thf_or_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_or_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_or_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(538);
 					if !({let _localctx = Some(_localctx.clone());
@@ -3236,7 +3250,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -3255,13 +3269,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_and_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_and_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_and_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_and_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3311,10 +3327,9 @@ fn thf_and_formula(&self) -> Option<Rc<Thf_and_formulaContextAll<'input>>> where
 
 impl<'input> Thf_and_formulaContextAttrs<'input> for Thf_and_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  thf_and_formula(&mut self,)
 	-> Result<Rc<Thf_and_formulaContextAll<'input>>,ANTLRError> {
@@ -3333,8 +3348,8 @@ where
 		let _startState = 38;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule thf_unitary_formula*/
@@ -3356,13 +3371,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(16,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Thf_and_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_and_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_and_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(551);
 					if !({let _localctx = Some(_localctx.clone());
@@ -3394,7 +3409,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -3413,13 +3428,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_apply_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_apply_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_apply_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_apply_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3469,10 +3486,9 @@ fn thf_apply_formula(&self) -> Option<Rc<Thf_apply_formulaContextAll<'input>>> w
 
 impl<'input> Thf_apply_formulaContextAttrs<'input> for Thf_apply_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  thf_apply_formula(&mut self,)
 	-> Result<Rc<Thf_apply_formulaContextAll<'input>>,ANTLRError> {
@@ -3491,8 +3507,8 @@ where
 		let _startState = 40;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule thf_unitary_formula*/
@@ -3514,13 +3530,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(17,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Thf_apply_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_apply_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_apply_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(564);
 					if !({let _localctx = Some(_localctx.clone());
@@ -3552,7 +3568,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -3571,13 +3587,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_unitary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_unitary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_unitary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_unitary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3634,10 +3652,9 @@ fn thf_logic_formula(&self) -> Option<Rc<Thf_logic_formulaContextAll<'input>>> w
 
 impl<'input> Thf_unitary_formulaContextAttrs<'input> for Thf_unitary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_unitary_formula(&mut self,)
 	-> Result<Rc<Thf_unitary_formulaContextAll<'input>>,ANTLRError> {
@@ -3652,8 +3669,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(18,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_quantified_formula*/
 					recog.base.set_state(572);
@@ -3663,8 +3680,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_unary_formula*/
 					recog.base.set_state(573);
@@ -3674,8 +3691,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_atom*/
 					recog.base.set_state(574);
@@ -3685,8 +3702,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule thf_conditional*/
 					recog.base.set_state(575);
@@ -3696,8 +3713,8 @@ where
 				}
 			,
 				5 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					/*InvokeRule thf_let*/
 					recog.base.set_state(576);
@@ -3707,8 +3724,8 @@ where
 				}
 			,
 				6 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 6);
-					recog.base.enter_outer_alt(None, 6);
+					//recog.base.enter_outer_alt(_localctx.clone(), 6)?;
+					recog.base.enter_outer_alt(None, 6)?;
 					{
 					/*InvokeRule thf_tuple*/
 					recog.base.set_state(577);
@@ -3718,8 +3735,8 @@ where
 				}
 			,
 				7 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 7);
-					recog.base.enter_outer_alt(None, 7);
+					//recog.base.enter_outer_alt(_localctx.clone(), 7)?;
+					recog.base.enter_outer_alt(None, 7)?;
 					{
 					recog.base.set_state(578);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -3747,7 +3764,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -3766,13 +3783,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_quantified_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_quantified_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_quantified_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_quantified_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3814,10 +3833,9 @@ fn thf_unitary_formula(&self) -> Option<Rc<Thf_unitary_formulaContextAll<'input>
 
 impl<'input> Thf_quantified_formulaContextAttrs<'input> for Thf_quantified_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_quantified_formula(&mut self,)
 	-> Result<Rc<Thf_quantified_formulaContextAll<'input>>,ANTLRError> {
@@ -3828,8 +3846,8 @@ where
         let mut _localctx: Rc<Thf_quantified_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_quantification*/
 			recog.base.set_state(584);
@@ -3851,7 +3869,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -3870,13 +3888,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_quantificationContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_quantificationContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_quantification(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_quantification(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -3918,10 +3938,9 @@ fn thf_variable_list(&self) -> Option<Rc<Thf_variable_listContextAll<'input>>> w
 
 impl<'input> Thf_quantificationContextAttrs<'input> for Thf_quantificationContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_quantification(&mut self,)
 	-> Result<Rc<Thf_quantificationContextAll<'input>>,ANTLRError> {
@@ -3932,8 +3951,8 @@ where
         let mut _localctx: Rc<Thf_quantificationContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_quantifier*/
 			recog.base.set_state(587);
@@ -3964,7 +3983,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -3983,13 +4002,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_variable_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_variable_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_variable_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_variable_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4031,10 +4052,9 @@ fn thf_variable(&self, i: usize) -> Option<Rc<Thf_variableContextAll<'input>>> w
 
 impl<'input> Thf_variable_listContextAttrs<'input> for Thf_variable_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_variable_list(&mut self,)
 	-> Result<Rc<Thf_variable_listContextAll<'input>>,ANTLRError> {
@@ -4046,8 +4066,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_variable*/
 			recog.base.set_state(593);
@@ -4084,7 +4104,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4103,13 +4123,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_variableContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_variableContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_variable(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_variable(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4151,10 +4173,9 @@ fn variable(&self) -> Option<Rc<VariableContextAll<'input>>> where Self:Sized{
 
 impl<'input> Thf_variableContextAttrs<'input> for Thf_variableContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_variable(&mut self,)
 	-> Result<Rc<Thf_variableContextAll<'input>>,ANTLRError> {
@@ -4169,8 +4190,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(20,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_typed_variable*/
 					recog.base.set_state(601);
@@ -4180,8 +4201,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(602);
@@ -4203,7 +4224,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4222,13 +4243,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_typed_variableContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_typed_variableContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_typed_variable(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_typed_variable(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4270,10 +4293,9 @@ fn thf_top_level_type(&self) -> Option<Rc<Thf_top_level_typeContextAll<'input>>>
 
 impl<'input> Thf_typed_variableContextAttrs<'input> for Thf_typed_variableContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_typed_variable(&mut self,)
 	-> Result<Rc<Thf_typed_variableContextAll<'input>>,ANTLRError> {
@@ -4284,8 +4306,8 @@ where
         let mut _localctx: Rc<Thf_typed_variableContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule variable*/
 			recog.base.set_state(605);
@@ -4310,7 +4332,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4329,13 +4351,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_unary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_unary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_unary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_unary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4377,10 +4401,9 @@ fn thf_logic_formula(&self) -> Option<Rc<Thf_logic_formulaContextAll<'input>>> w
 
 impl<'input> Thf_unary_formulaContextAttrs<'input> for Thf_unary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_unary_formula(&mut self,)
 	-> Result<Rc<Thf_unary_formulaContextAll<'input>>,ANTLRError> {
@@ -4391,8 +4414,8 @@ where
         let mut _localctx: Rc<Thf_unary_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_unary_connective*/
 			recog.base.set_state(609);
@@ -4420,7 +4443,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4439,13 +4462,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_atomContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_atomContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_atom(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_atom(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4493,10 +4518,9 @@ fn thf_conn_term(&self) -> Option<Rc<Thf_conn_termContextAll<'input>>> where Sel
 
 impl<'input> Thf_atomContextAttrs<'input> for Thf_atomContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_atom(&mut self,)
 	-> Result<Rc<Thf_atomContextAll<'input>>,ANTLRError> {
@@ -4513,8 +4537,8 @@ where
 			tptp_v7_0_0_0_Dollar_word |tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Lower_word |
 			tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_function*/
 					recog.base.set_state(614);
@@ -4525,8 +4549,8 @@ where
 
 			tptp_v7_0_0_0_Upper_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(615);
@@ -4537,8 +4561,8 @@ where
 
 			tptp_v7_0_0_0_Real |tptp_v7_0_0_0_Rational |tptp_v7_0_0_0_Integer |tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule defined_term*/
 					recog.base.set_state(616);
@@ -4553,8 +4577,8 @@ where
 			tptp_v7_0_0_0_Infix_equality |tptp_v7_0_0_0_ExistsComb |tptp_v7_0_0_0_ChoiceComb |
 			tptp_v7_0_0_0_DescriptionComb |tptp_v7_0_0_0_EqComb |tptp_v7_0_0_0_Assignment 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule thf_conn_term*/
 					recog.base.set_state(617);
@@ -4576,7 +4600,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4595,13 +4619,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_functionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_functionContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_function(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_function(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4652,10 +4678,9 @@ fn system_functor(&self) -> Option<Rc<System_functorContextAll<'input>>> where S
 
 impl<'input> Thf_functionContextAttrs<'input> for Thf_functionContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_function(&mut self,)
 	-> Result<Rc<Thf_functionContextAll<'input>>,ANTLRError> {
@@ -4670,8 +4695,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(22,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule atom*/
 					recog.base.set_state(620);
@@ -4681,8 +4706,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule functor*/
 					recog.base.set_state(621);
@@ -4702,8 +4727,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule defined_functor*/
 					recog.base.set_state(626);
@@ -4723,8 +4748,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule system_functor*/
 					recog.base.set_state(631);
@@ -4756,7 +4781,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4775,13 +4800,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_conn_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_conn_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_conn_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_conn_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4826,10 +4853,9 @@ fn thf_unary_connective(&self) -> Option<Rc<Thf_unary_connectiveContextAll<'inpu
 
 impl<'input> Thf_conn_termContextAttrs<'input> for Thf_conn_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_conn_term(&mut self,)
 	-> Result<Rc<Thf_conn_termContextAll<'input>>,ANTLRError> {
@@ -4847,8 +4873,8 @@ where
 			tptp_v7_0_0_0_Nor |tptp_v7_0_0_0_Nand |tptp_v7_0_0_0_Infix_inequality |
 			tptp_v7_0_0_0_Infix_equality |tptp_v7_0_0_0_Assignment 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_pair_connective*/
 					recog.base.set_state(638);
@@ -4859,8 +4885,8 @@ where
 
 			tptp_v7_0_0_0_Or |tptp_v7_0_0_0_And 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule assoc_connective*/
 					recog.base.set_state(639);
@@ -4872,8 +4898,8 @@ where
 			tptp_v7_0_0_0_Not |tptp_v7_0_0_0_ForallComb |tptp_v7_0_0_0_ExistsComb |
 			tptp_v7_0_0_0_ChoiceComb |tptp_v7_0_0_0_DescriptionComb |tptp_v7_0_0_0_EqComb 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_unary_connective*/
 					recog.base.set_state(640);
@@ -4895,7 +4921,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -4914,13 +4940,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_conditionalContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_conditionalContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_conditional(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_conditional(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -4962,10 +4990,9 @@ fn thf_logic_formula(&self, i: usize) -> Option<Rc<Thf_logic_formulaContextAll<'
 
 impl<'input> Thf_conditionalContextAttrs<'input> for Thf_conditionalContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_conditional(&mut self,)
 	-> Result<Rc<Thf_conditionalContextAll<'input>>,ANTLRError> {
@@ -4976,8 +5003,8 @@ where
         let mut _localctx: Rc<Thf_conditionalContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(643);
 			recog.base.match_token(tptp_v7_0_0_0_T__14,&mut recog.err_handler)?;
@@ -5015,7 +5042,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5034,13 +5061,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_letContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_letContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_let(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_let(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5082,10 +5111,9 @@ fn thf_formula(&self) -> Option<Rc<Thf_formulaContextAll<'input>>> where Self:Si
 
 impl<'input> Thf_letContextAttrs<'input> for Thf_letContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_let(&mut self,)
 	-> Result<Rc<Thf_letContextAll<'input>>,ANTLRError> {
@@ -5096,8 +5124,8 @@ where
         let mut _localctx: Rc<Thf_letContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(651);
 			recog.base.match_token(tptp_v7_0_0_0_T__15,&mut recog.err_handler)?;
@@ -5128,7 +5156,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5147,13 +5175,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_argumentsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_argumentsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_arguments(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_arguments(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5192,10 +5222,9 @@ fn thf_formula_list(&self) -> Option<Rc<Thf_formula_listContextAll<'input>>> whe
 
 impl<'input> Thf_argumentsContextAttrs<'input> for Thf_argumentsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_arguments(&mut self,)
 	-> Result<Rc<Thf_argumentsContextAll<'input>>,ANTLRError> {
@@ -5206,8 +5235,8 @@ where
         let mut _localctx: Rc<Thf_argumentsContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_formula_list*/
 			recog.base.set_state(657);
@@ -5225,7 +5254,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5244,13 +5273,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_type_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_type_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_type_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_type_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5292,10 +5323,9 @@ fn thf_top_level_type(&self) -> Option<Rc<Thf_top_level_typeContextAll<'input>>>
 
 impl<'input> Thf_type_formulaContextAttrs<'input> for Thf_type_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_type_formula(&mut self,)
 	-> Result<Rc<Thf_type_formulaContextAll<'input>>,ANTLRError> {
@@ -5306,8 +5336,8 @@ where
         let mut _localctx: Rc<Thf_type_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_typeable_formula*/
 			recog.base.set_state(659);
@@ -5332,7 +5362,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5351,13 +5381,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_typeable_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_typeable_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_typeable_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_typeable_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5399,10 +5431,9 @@ fn thf_logic_formula(&self) -> Option<Rc<Thf_logic_formulaContextAll<'input>>> w
 
 impl<'input> Thf_typeable_formulaContextAttrs<'input> for Thf_typeable_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_typeable_formula(&mut self,)
 	-> Result<Rc<Thf_typeable_formulaContextAll<'input>>,ANTLRError> {
@@ -5425,8 +5456,8 @@ where
 			tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Upper_word |tptp_v7_0_0_0_Lower_word |
 			tptp_v7_0_0_0_Single_quoted |tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_atom*/
 					recog.base.set_state(663);
@@ -5437,8 +5468,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(664);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -5466,7 +5497,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5485,13 +5516,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_subtypeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_subtypeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_subtype(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_subtype(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5538,10 +5571,9 @@ fn Subtype_sign(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserConte
 
 impl<'input> Thf_subtypeContextAttrs<'input> for Thf_subtypeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_subtype(&mut self,)
 	-> Result<Rc<Thf_subtypeContextAll<'input>>,ANTLRError> {
@@ -5552,8 +5584,8 @@ where
         let mut _localctx: Rc<Thf_subtypeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_atom*/
 			recog.base.set_state(670);
@@ -5578,7 +5610,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5597,13 +5629,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_top_level_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_top_level_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_top_level_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_top_level_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5648,10 +5682,9 @@ fn thf_apply_type(&self) -> Option<Rc<Thf_apply_typeContextAll<'input>>> where S
 
 impl<'input> Thf_top_level_typeContextAttrs<'input> for Thf_top_level_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_top_level_type(&mut self,)
 	-> Result<Rc<Thf_top_level_typeContextAll<'input>>,ANTLRError> {
@@ -5666,8 +5699,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(25,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_unitary_type*/
 					recog.base.set_state(674);
@@ -5677,8 +5710,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_mapping_type*/
 					recog.base.set_state(675);
@@ -5688,8 +5721,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_apply_type*/
 					recog.base.set_state(676);
@@ -5711,7 +5744,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5730,13 +5763,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_unitary_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_unitary_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_unitary_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_unitary_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5775,10 +5810,9 @@ fn thf_unitary_formula(&self) -> Option<Rc<Thf_unitary_formulaContextAll<'input>
 
 impl<'input> Thf_unitary_typeContextAttrs<'input> for Thf_unitary_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_unitary_type(&mut self,)
 	-> Result<Rc<Thf_unitary_typeContextAll<'input>>,ANTLRError> {
@@ -5789,8 +5823,8 @@ where
         let mut _localctx: Rc<Thf_unitary_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_unitary_formula*/
 			recog.base.set_state(679);
@@ -5808,7 +5842,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5827,13 +5861,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_apply_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_apply_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_apply_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_apply_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5872,10 +5908,9 @@ fn thf_apply_formula(&self) -> Option<Rc<Thf_apply_formulaContextAll<'input>>> w
 
 impl<'input> Thf_apply_typeContextAttrs<'input> for Thf_apply_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_apply_type(&mut self,)
 	-> Result<Rc<Thf_apply_typeContextAll<'input>>,ANTLRError> {
@@ -5886,8 +5921,8 @@ where
         let mut _localctx: Rc<Thf_apply_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_apply_formula*/
 			recog.base.set_state(681);
@@ -5905,7 +5940,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -5924,13 +5959,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_binary_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_binary_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_binary_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_binary_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -5975,10 +6012,9 @@ fn thf_union_type(&self) -> Option<Rc<Thf_union_typeContextAll<'input>>> where S
 
 impl<'input> Thf_binary_typeContextAttrs<'input> for Thf_binary_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_binary_type(&mut self,)
 	-> Result<Rc<Thf_binary_typeContextAll<'input>>,ANTLRError> {
@@ -5993,8 +6029,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(26,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_mapping_type*/
 					recog.base.set_state(683);
@@ -6004,8 +6040,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_xprod_type*/
 					recog.base.set_state(684);
@@ -6015,8 +6051,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule thf_union_type*/
 					recog.base.set_state(685);
@@ -6038,7 +6074,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -6057,13 +6093,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_mapping_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_mapping_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_mapping_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_mapping_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6113,10 +6151,9 @@ fn thf_mapping_type(&self) -> Option<Rc<Thf_mapping_typeContextAll<'input>>> whe
 
 impl<'input> Thf_mapping_typeContextAttrs<'input> for Thf_mapping_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_mapping_type(&mut self,)
 	-> Result<Rc<Thf_mapping_typeContextAll<'input>>,ANTLRError> {
@@ -6131,8 +6168,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(27,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_unitary_type*/
 					recog.base.set_state(688);
@@ -6149,8 +6186,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_unitary_type*/
 					recog.base.set_state(692);
@@ -6179,7 +6216,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -6198,13 +6235,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_xprod_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_xprod_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_xprod_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_xprod_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6254,10 +6293,9 @@ fn thf_xprod_type(&self) -> Option<Rc<Thf_xprod_typeContextAll<'input>>> where S
 
 impl<'input> Thf_xprod_typeContextAttrs<'input> for Thf_xprod_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  thf_xprod_type(&mut self,)
 	-> Result<Rc<Thf_xprod_typeContextAll<'input>>,ANTLRError> {
@@ -6276,8 +6314,8 @@ where
 		let _startState = 84;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule thf_unitary_type*/
@@ -6299,13 +6337,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(28,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Thf_xprod_typeContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_xprod_type);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_xprod_type)?;
 					_localctx = tmp;
 					recog.base.set_state(703);
 					if !({let _localctx = Some(_localctx.clone());
@@ -6337,7 +6375,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -6356,13 +6394,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_union_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_union_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_union_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_union_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6412,10 +6452,9 @@ fn thf_union_type(&self) -> Option<Rc<Thf_union_typeContextAll<'input>>> where S
 
 impl<'input> Thf_union_typeContextAttrs<'input> for Thf_union_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  thf_union_type(&mut self,)
 	-> Result<Rc<Thf_union_typeContextAll<'input>>,ANTLRError> {
@@ -6434,8 +6473,8 @@ where
 		let _startState = 86;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule thf_unitary_type*/
@@ -6457,13 +6496,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(29,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Thf_union_typeContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_union_type);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_thf_union_type)?;
 					_localctx = tmp;
 					recog.base.set_state(716);
 					if !({let _localctx = Some(_localctx.clone());
@@ -6495,7 +6534,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -6514,13 +6553,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_sequentContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_sequentContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_sequent(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_sequent(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6570,10 +6611,9 @@ fn thf_sequent(&self) -> Option<Rc<Thf_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Thf_sequentContextAttrs<'input> for Thf_sequentContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_sequent(&mut self,)
 	-> Result<Rc<Thf_sequentContextAll<'input>>,ANTLRError> {
@@ -6589,8 +6629,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__11 |tptp_v7_0_0_0_T__16 |tptp_v7_0_0_0_T__17 |tptp_v7_0_0_0_T__18 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule thf_tuple*/
 					recog.base.set_state(724);
@@ -6608,8 +6648,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(728);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -6637,7 +6677,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -6656,13 +6696,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_tupleContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_tupleContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_tuple(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_tuple(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6701,10 +6743,9 @@ fn thf_formula_list(&self) -> Option<Rc<Thf_formula_listContextAll<'input>>> whe
 
 impl<'input> Thf_tupleContextAttrs<'input> for Thf_tupleContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_tuple(&mut self,)
 	-> Result<Rc<Thf_tupleContextAll<'input>>,ANTLRError> {
@@ -6720,8 +6761,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(734);
 					recog.base.match_token(tptp_v7_0_0_0_T__16,&mut recog.err_handler)?;
@@ -6731,8 +6772,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(735);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -6749,8 +6790,8 @@ where
 
 			tptp_v7_0_0_0_T__17 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					recog.base.set_state(739);
 					recog.base.match_token(tptp_v7_0_0_0_T__17,&mut recog.err_handler)?;
@@ -6760,8 +6801,8 @@ where
 
 			tptp_v7_0_0_0_T__18 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					recog.base.set_state(740);
 					recog.base.match_token(tptp_v7_0_0_0_T__18,&mut recog.err_handler)?;
@@ -6789,7 +6830,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -6808,13 +6849,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_formula_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_formula_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_formula_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_formula_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6856,10 +6899,9 @@ fn thf_logic_formula(&self, i: usize) -> Option<Rc<Thf_logic_formulaContextAll<'
 
 impl<'input> Thf_formula_listContextAttrs<'input> for Thf_formula_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_formula_list(&mut self,)
 	-> Result<Rc<Thf_formula_listContextAll<'input>>,ANTLRError> {
@@ -6871,8 +6913,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_logic_formula*/
 			recog.base.set_state(746);
@@ -6909,7 +6951,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -6928,13 +6970,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tfx_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tfx_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tfx_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tfx_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -6976,10 +7020,9 @@ fn thf_sequent(&self) -> Option<Rc<Thf_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Tfx_formulaContextAttrs<'input> for Tfx_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tfx_formula(&mut self,)
 	-> Result<Rc<Tfx_formulaContextAll<'input>>,ANTLRError> {
@@ -6994,8 +7037,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(33,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tfx_logic_formula*/
 					recog.base.set_state(754);
@@ -7005,8 +7048,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule thf_sequent*/
 					recog.base.set_state(755);
@@ -7028,7 +7071,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7047,13 +7090,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tfx_logic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tfx_logic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tfx_logic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tfx_logic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7092,10 +7137,9 @@ fn thf_logic_formula(&self) -> Option<Rc<Thf_logic_formulaContextAll<'input>>> w
 
 impl<'input> Tfx_logic_formulaContextAttrs<'input> for Tfx_logic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tfx_logic_formula(&mut self,)
 	-> Result<Rc<Tfx_logic_formulaContextAll<'input>>,ANTLRError> {
@@ -7106,8 +7150,8 @@ where
         let mut _localctx: Rc<Tfx_logic_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule thf_logic_formula*/
 			recog.base.set_state(758);
@@ -7125,7 +7169,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7144,13 +7188,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7195,10 +7241,9 @@ fn tff_sequent(&self) -> Option<Rc<Tff_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Tff_formulaContextAttrs<'input> for Tff_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_formula(&mut self,)
 	-> Result<Rc<Tff_formulaContextAll<'input>>,ANTLRError> {
@@ -7213,8 +7258,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(34,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_logic_formula*/
 					recog.base.set_state(760);
@@ -7224,8 +7269,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_typed_atom*/
 					recog.base.set_state(761);
@@ -7235,8 +7280,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule tff_sequent*/
 					recog.base.set_state(762);
@@ -7258,7 +7303,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7277,13 +7322,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_logic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_logic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_logic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_logic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7328,10 +7375,9 @@ fn tff_subtype(&self) -> Option<Rc<Tff_subtypeContextAll<'input>>> where Self:Si
 
 impl<'input> Tff_logic_formulaContextAttrs<'input> for Tff_logic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_logic_formula(&mut self,)
 	-> Result<Rc<Tff_logic_formulaContextAll<'input>>,ANTLRError> {
@@ -7346,8 +7392,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(35,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_binary_formula*/
 					recog.base.set_state(765);
@@ -7357,8 +7403,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_unitary_formula*/
 					recog.base.set_state(766);
@@ -7368,8 +7414,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule tff_subtype*/
 					recog.base.set_state(767);
@@ -7391,7 +7437,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7410,13 +7456,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_binary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_binary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_binary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_binary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7458,10 +7506,9 @@ fn tff_binary_assoc(&self) -> Option<Rc<Tff_binary_assocContextAll<'input>>> whe
 
 impl<'input> Tff_binary_formulaContextAttrs<'input> for Tff_binary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_binary_formula(&mut self,)
 	-> Result<Rc<Tff_binary_formulaContextAll<'input>>,ANTLRError> {
@@ -7476,8 +7523,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(36,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_binary_nonassoc*/
 					recog.base.set_state(770);
@@ -7487,8 +7534,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_binary_assoc*/
 					recog.base.set_state(771);
@@ -7510,7 +7557,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7529,13 +7576,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_binary_nonassocContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_binary_nonassocContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_binary_nonassoc(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_binary_nonassoc(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7580,10 +7629,9 @@ fn binary_connective(&self) -> Option<Rc<Binary_connectiveContextAll<'input>>> w
 
 impl<'input> Tff_binary_nonassocContextAttrs<'input> for Tff_binary_nonassocContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_binary_nonassoc(&mut self,)
 	-> Result<Rc<Tff_binary_nonassocContextAll<'input>>,ANTLRError> {
@@ -7594,8 +7642,8 @@ where
         let mut _localctx: Rc<Tff_binary_nonassocContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_unitary_formula*/
 			recog.base.set_state(774);
@@ -7621,7 +7669,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7640,13 +7688,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_binary_assocContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_binary_assocContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_binary_assoc(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_binary_assoc(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7688,10 +7738,9 @@ fn tff_and_formula(&self) -> Option<Rc<Tff_and_formulaContextAll<'input>>> where
 
 impl<'input> Tff_binary_assocContextAttrs<'input> for Tff_binary_assocContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_binary_assoc(&mut self,)
 	-> Result<Rc<Tff_binary_assocContextAll<'input>>,ANTLRError> {
@@ -7706,8 +7755,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(37,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_or_formula*/
 					recog.base.set_state(778);
@@ -7717,8 +7766,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_and_formula*/
 					recog.base.set_state(779);
@@ -7740,7 +7789,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -7759,13 +7808,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_or_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_or_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_or_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_or_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7815,10 +7866,9 @@ fn tff_or_formula(&self) -> Option<Rc<Tff_or_formulaContextAll<'input>>> where S
 
 impl<'input> Tff_or_formulaContextAttrs<'input> for Tff_or_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  tff_or_formula(&mut self,)
 	-> Result<Rc<Tff_or_formulaContextAll<'input>>,ANTLRError> {
@@ -7837,8 +7887,8 @@ where
 		let _startState = 108;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule tff_unitary_formula*/
@@ -7860,13 +7910,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(38,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Tff_or_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_tff_or_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_tff_or_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(787);
 					if !({let _localctx = Some(_localctx.clone());
@@ -7898,7 +7948,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -7917,13 +7967,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_and_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_and_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_and_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_and_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -7973,10 +8025,9 @@ fn tff_and_formula(&self) -> Option<Rc<Tff_and_formulaContextAll<'input>>> where
 
 impl<'input> Tff_and_formulaContextAttrs<'input> for Tff_and_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  tff_and_formula(&mut self,)
 	-> Result<Rc<Tff_and_formulaContextAll<'input>>,ANTLRError> {
@@ -7995,8 +8046,8 @@ where
 		let _startState = 110;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule tff_unitary_formula*/
@@ -8018,13 +8069,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(39,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Tff_and_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_tff_and_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_tff_and_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(800);
 					if !({let _localctx = Some(_localctx.clone());
@@ -8056,7 +8107,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -8075,13 +8126,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_unitary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_unitary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_unitary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_unitary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8135,10 +8188,9 @@ fn tff_logic_formula(&self) -> Option<Rc<Tff_logic_formulaContextAll<'input>>> w
 
 impl<'input> Tff_unitary_formulaContextAttrs<'input> for Tff_unitary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_unitary_formula(&mut self,)
 	-> Result<Rc<Tff_unitary_formulaContextAll<'input>>,ANTLRError> {
@@ -8153,8 +8205,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(40,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_quantified_formula*/
 					recog.base.set_state(808);
@@ -8164,8 +8216,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_unary_formula*/
 					recog.base.set_state(809);
@@ -8175,8 +8227,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule tff_atomic_formula*/
 					recog.base.set_state(810);
@@ -8186,8 +8238,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule tff_conditional*/
 					recog.base.set_state(811);
@@ -8197,8 +8249,8 @@ where
 				}
 			,
 				5 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					/*InvokeRule tff_let*/
 					recog.base.set_state(812);
@@ -8208,8 +8260,8 @@ where
 				}
 			,
 				6 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 6);
-					recog.base.enter_outer_alt(None, 6);
+					//recog.base.enter_outer_alt(_localctx.clone(), 6)?;
+					recog.base.enter_outer_alt(None, 6)?;
 					{
 					recog.base.set_state(813);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -8237,7 +8289,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8256,13 +8308,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_quantified_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_quantified_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_quantified_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_quantified_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8307,10 +8361,9 @@ fn tff_unitary_formula(&self) -> Option<Rc<Tff_unitary_formulaContextAll<'input>
 
 impl<'input> Tff_quantified_formulaContextAttrs<'input> for Tff_quantified_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_quantified_formula(&mut self,)
 	-> Result<Rc<Tff_quantified_formulaContextAll<'input>>,ANTLRError> {
@@ -8321,8 +8374,8 @@ where
         let mut _localctx: Rc<Tff_quantified_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_quantifier*/
 			recog.base.set_state(819);
@@ -8357,7 +8410,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8376,13 +8429,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_variable_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_variable_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_variable_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_variable_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8424,10 +8479,9 @@ fn tff_variable(&self, i: usize) -> Option<Rc<Tff_variableContextAll<'input>>> w
 
 impl<'input> Tff_variable_listContextAttrs<'input> for Tff_variable_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_variable_list(&mut self,)
 	-> Result<Rc<Tff_variable_listContextAll<'input>>,ANTLRError> {
@@ -8439,8 +8493,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_variable*/
 			recog.base.set_state(826);
@@ -8477,7 +8531,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8496,13 +8550,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_variableContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_variableContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_variable(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_variable(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8544,10 +8600,9 @@ fn variable(&self) -> Option<Rc<VariableContextAll<'input>>> where Self:Sized{
 
 impl<'input> Tff_variableContextAttrs<'input> for Tff_variableContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_variable(&mut self,)
 	-> Result<Rc<Tff_variableContextAll<'input>>,ANTLRError> {
@@ -8562,8 +8617,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(42,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_typed_variable*/
 					recog.base.set_state(834);
@@ -8573,8 +8628,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(835);
@@ -8596,7 +8651,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8615,13 +8670,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_typed_variableContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_typed_variableContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_typed_variable(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_typed_variable(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8663,10 +8720,9 @@ fn tff_atomic_type(&self) -> Option<Rc<Tff_atomic_typeContextAll<'input>>> where
 
 impl<'input> Tff_typed_variableContextAttrs<'input> for Tff_typed_variableContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_typed_variable(&mut self,)
 	-> Result<Rc<Tff_typed_variableContextAll<'input>>,ANTLRError> {
@@ -8677,8 +8733,8 @@ where
         let mut _localctx: Rc<Tff_typed_variableContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule variable*/
 			recog.base.set_state(838);
@@ -8703,7 +8759,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8722,13 +8778,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_unary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_unary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_unary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_unary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8773,10 +8831,9 @@ fn fof_infix_unary(&self) -> Option<Rc<Fof_infix_unaryContextAll<'input>>> where
 
 impl<'input> Tff_unary_formulaContextAttrs<'input> for Tff_unary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_unary_formula(&mut self,)
 	-> Result<Rc<Tff_unary_formulaContextAll<'input>>,ANTLRError> {
@@ -8792,8 +8849,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Not 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule unary_connective*/
 					recog.base.set_state(842);
@@ -8811,8 +8868,8 @@ where
 			tptp_v7_0_0_0_Dollar_word |tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Upper_word |
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted |tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_infix_unary*/
 					recog.base.set_state(845);
@@ -8834,7 +8891,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8853,13 +8910,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_atomic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_atomic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_atomic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_atomic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8898,10 +8957,9 @@ fn fof_atomic_formula(&self) -> Option<Rc<Fof_atomic_formulaContextAll<'input>>>
 
 impl<'input> Tff_atomic_formulaContextAttrs<'input> for Tff_atomic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_atomic_formula(&mut self,)
 	-> Result<Rc<Tff_atomic_formulaContextAll<'input>>,ANTLRError> {
@@ -8912,8 +8970,8 @@ where
         let mut _localctx: Rc<Tff_atomic_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_atomic_formula*/
 			recog.base.set_state(848);
@@ -8931,7 +8989,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -8950,13 +9008,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_conditionalContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_conditionalContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_conditional(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_conditional(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -8998,10 +9058,9 @@ fn tff_logic_formula(&self, i: usize) -> Option<Rc<Tff_logic_formulaContextAll<'
 
 impl<'input> Tff_conditionalContextAttrs<'input> for Tff_conditionalContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_conditional(&mut self,)
 	-> Result<Rc<Tff_conditionalContextAll<'input>>,ANTLRError> {
@@ -9012,8 +9071,8 @@ where
         let mut _localctx: Rc<Tff_conditionalContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(850);
 			recog.base.match_token(tptp_v7_0_0_0_T__20,&mut recog.err_handler)?;
@@ -9051,7 +9110,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9070,13 +9129,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_letContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_letContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9121,10 +9182,9 @@ fn tff_let_formula_defns(&self) -> Option<Rc<Tff_let_formula_defnsContextAll<'in
 
 impl<'input> Tff_letContextAttrs<'input> for Tff_letContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let(&mut self,)
 	-> Result<Rc<Tff_letContextAll<'input>>,ANTLRError> {
@@ -9140,8 +9200,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__21 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(858);
 					recog.base.match_token(tptp_v7_0_0_0_T__21,&mut recog.err_handler)?;
@@ -9165,8 +9225,8 @@ where
 
 			tptp_v7_0_0_0_T__22 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(864);
 					recog.base.match_token(tptp_v7_0_0_0_T__22,&mut recog.err_handler)?;
@@ -9201,7 +9261,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9220,13 +9280,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_term_defnsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_term_defnsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_term_defns(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_term_defns(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9268,10 +9330,9 @@ fn tff_let_term_list(&self) -> Option<Rc<Tff_let_term_listContextAll<'input>>> w
 
 impl<'input> Tff_let_term_defnsContextAttrs<'input> for Tff_let_term_defnsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_term_defns(&mut self,)
 	-> Result<Rc<Tff_let_term_defnsContextAll<'input>>,ANTLRError> {
@@ -9287,8 +9348,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__9 |tptp_v7_0_0_0_Forall |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_let_term_defn*/
 					recog.base.set_state(872);
@@ -9299,8 +9360,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(873);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -9328,7 +9389,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9347,13 +9408,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_term_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_term_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_term_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_term_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9395,10 +9458,9 @@ fn tff_let_term_defn(&self, i: usize) -> Option<Rc<Tff_let_term_defnContextAll<'
 
 impl<'input> Tff_let_term_listContextAttrs<'input> for Tff_let_term_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_term_list(&mut self,)
 	-> Result<Rc<Tff_let_term_listContextAll<'input>>,ANTLRError> {
@@ -9410,8 +9472,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_let_term_defn*/
 			recog.base.set_state(879);
@@ -9448,7 +9510,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9467,13 +9529,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_term_defnContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_term_defnContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_term_defn(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_term_defn(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9523,10 +9587,9 @@ fn tff_let_term_binding(&self) -> Option<Rc<Tff_let_term_bindingContextAll<'inpu
 
 impl<'input> Tff_let_term_defnContextAttrs<'input> for Tff_let_term_defnContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_term_defn(&mut self,)
 	-> Result<Rc<Tff_let_term_defnContextAll<'input>>,ANTLRError> {
@@ -9542,8 +9605,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Forall 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(887);
 					recog.base.match_token(tptp_v7_0_0_0_Forall,&mut recog.err_handler)?;
@@ -9570,8 +9633,8 @@ where
 
 			tptp_v7_0_0_0_T__9 |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_let_term_binding*/
 					recog.base.set_state(894);
@@ -9593,7 +9656,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9612,13 +9675,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_term_bindingContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_term_bindingContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_term_binding(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_term_binding(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9668,10 +9733,9 @@ fn tff_let_term_binding(&self) -> Option<Rc<Tff_let_term_bindingContextAll<'inpu
 
 impl<'input> Tff_let_term_bindingContextAttrs<'input> for Tff_let_term_bindingContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_term_binding(&mut self,)
 	-> Result<Rc<Tff_let_term_bindingContextAll<'input>>,ANTLRError> {
@@ -9687,8 +9751,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_plain_term*/
 					recog.base.set_state(897);
@@ -9706,8 +9770,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(901);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -9735,7 +9799,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9754,13 +9818,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_formula_defnsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_formula_defnsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_formula_defns(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_formula_defns(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9802,10 +9868,9 @@ fn tff_let_formula_list(&self) -> Option<Rc<Tff_let_formula_listContextAll<'inpu
 
 impl<'input> Tff_let_formula_defnsContextAttrs<'input> for Tff_let_formula_defnsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_formula_defns(&mut self,)
 	-> Result<Rc<Tff_let_formula_defnsContextAll<'input>>,ANTLRError> {
@@ -9821,8 +9886,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__9 |tptp_v7_0_0_0_Forall |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_let_formula_defn*/
 					recog.base.set_state(907);
@@ -9833,8 +9898,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(908);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -9862,7 +9927,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -9881,13 +9946,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_formula_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_formula_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_formula_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_formula_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -9929,10 +9996,9 @@ fn tff_let_formula_defn(&self, i: usize) -> Option<Rc<Tff_let_formula_defnContex
 
 impl<'input> Tff_let_formula_listContextAttrs<'input> for Tff_let_formula_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_formula_list(&mut self,)
 	-> Result<Rc<Tff_let_formula_listContextAll<'input>>,ANTLRError> {
@@ -9944,8 +10010,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_let_formula_defn*/
 			recog.base.set_state(914);
@@ -9982,7 +10048,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10001,13 +10067,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_formula_defnContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_formula_defnContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_formula_defn(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_formula_defn(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10057,10 +10125,9 @@ fn tff_let_formula_binding(&self) -> Option<Rc<Tff_let_formula_bindingContextAll
 
 impl<'input> Tff_let_formula_defnContextAttrs<'input> for Tff_let_formula_defnContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_formula_defn(&mut self,)
 	-> Result<Rc<Tff_let_formula_defnContextAll<'input>>,ANTLRError> {
@@ -10076,8 +10143,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Forall 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(922);
 					recog.base.match_token(tptp_v7_0_0_0_Forall,&mut recog.err_handler)?;
@@ -10104,8 +10171,8 @@ where
 
 			tptp_v7_0_0_0_T__9 |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_let_formula_binding*/
 					recog.base.set_state(929);
@@ -10127,7 +10194,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10146,13 +10213,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_formula_bindingContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_formula_bindingContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_formula_binding(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_formula_binding(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10202,10 +10271,9 @@ fn tff_let_formula_binding(&self) -> Option<Rc<Tff_let_formula_bindingContextAll
 
 impl<'input> Tff_let_formula_bindingContextAttrs<'input> for Tff_let_formula_bindingContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_formula_binding(&mut self,)
 	-> Result<Rc<Tff_let_formula_bindingContextAll<'input>>,ANTLRError> {
@@ -10221,8 +10289,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_plain_atomic_formula*/
 					recog.base.set_state(932);
@@ -10240,8 +10308,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(936);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -10269,7 +10337,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10288,13 +10356,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_sequentContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_sequentContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_sequent(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_sequent(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10344,10 +10414,9 @@ fn tff_sequent(&self) -> Option<Rc<Tff_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Tff_sequentContextAttrs<'input> for Tff_sequentContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_sequent(&mut self,)
 	-> Result<Rc<Tff_sequentContextAll<'input>>,ANTLRError> {
@@ -10363,8 +10432,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__11 |tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_formula_tuple*/
 					recog.base.set_state(942);
@@ -10382,8 +10451,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(946);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -10411,7 +10480,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10430,13 +10499,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_formula_tupleContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_formula_tupleContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_formula_tuple(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_formula_tuple(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10475,10 +10546,9 @@ fn tff_formula_tuple_list(&self) -> Option<Rc<Tff_formula_tuple_listContextAll<'
 
 impl<'input> Tff_formula_tupleContextAttrs<'input> for Tff_formula_tupleContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_formula_tuple(&mut self,)
 	-> Result<Rc<Tff_formula_tupleContextAll<'input>>,ANTLRError> {
@@ -10494,8 +10564,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(952);
 					recog.base.match_token(tptp_v7_0_0_0_T__16,&mut recog.err_handler)?;
@@ -10505,8 +10575,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(953);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -10534,7 +10604,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10553,13 +10623,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_formula_tuple_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_formula_tuple_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_formula_tuple_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_formula_tuple_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10601,10 +10673,9 @@ fn tff_logic_formula(&self, i: usize) -> Option<Rc<Tff_logic_formulaContextAll<'
 
 impl<'input> Tff_formula_tuple_listContextAttrs<'input> for Tff_formula_tuple_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_formula_tuple_list(&mut self,)
 	-> Result<Rc<Tff_formula_tuple_listContextAll<'input>>,ANTLRError> {
@@ -10616,8 +10687,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_logic_formula*/
 			recog.base.set_state(959);
@@ -10654,7 +10725,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10673,13 +10744,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_typed_atomContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_typed_atomContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_typed_atom(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_typed_atom(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10724,10 +10797,9 @@ fn tff_typed_atom(&self) -> Option<Rc<Tff_typed_atomContextAll<'input>>> where S
 
 impl<'input> Tff_typed_atomContextAttrs<'input> for Tff_typed_atomContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_typed_atom(&mut self,)
 	-> Result<Rc<Tff_typed_atomContextAll<'input>>,ANTLRError> {
@@ -10743,8 +10815,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule untyped_atom*/
 					recog.base.set_state(967);
@@ -10762,8 +10834,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(971);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -10791,7 +10863,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10810,13 +10882,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_subtypeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_subtypeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_subtype(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_subtype(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10863,10 +10937,9 @@ fn atom(&self) -> Option<Rc<AtomContextAll<'input>>> where Self:Sized{
 
 impl<'input> Tff_subtypeContextAttrs<'input> for Tff_subtypeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_subtype(&mut self,)
 	-> Result<Rc<Tff_subtypeContextAll<'input>>,ANTLRError> {
@@ -10877,8 +10950,8 @@ where
         let mut _localctx: Rc<Tff_subtypeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule untyped_atom*/
 			recog.base.set_state(977);
@@ -10903,7 +10976,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -10922,13 +10995,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_top_level_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_top_level_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_top_level_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_top_level_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -10976,10 +11051,9 @@ fn tff_top_level_type(&self) -> Option<Rc<Tff_top_level_typeContextAll<'input>>>
 
 impl<'input> Tff_top_level_typeContextAttrs<'input> for Tff_top_level_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_top_level_type(&mut self,)
 	-> Result<Rc<Tff_top_level_typeContextAll<'input>>,ANTLRError> {
@@ -10994,8 +11068,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(57,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_atomic_type*/
 					recog.base.set_state(981);
@@ -11005,8 +11079,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_mapping_type*/
 					recog.base.set_state(982);
@@ -11016,8 +11090,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule tf1_quantified_type*/
 					recog.base.set_state(983);
@@ -11027,8 +11101,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					recog.base.set_state(984);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -11056,7 +11130,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11075,13 +11149,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tf1_quantified_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tf1_quantified_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tf1_quantified_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tf1_quantified_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11128,10 +11204,9 @@ fn tff_monotype(&self) -> Option<Rc<Tff_monotypeContextAll<'input>>> where Self:
 
 impl<'input> Tf1_quantified_typeContextAttrs<'input> for Tf1_quantified_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tf1_quantified_type(&mut self,)
 	-> Result<Rc<Tf1_quantified_typeContextAll<'input>>,ANTLRError> {
@@ -11142,8 +11217,8 @@ where
         let mut _localctx: Rc<Tf1_quantified_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(990);
 			recog.base.match_token(tptp_v7_0_0_0_TyForall,&mut recog.err_handler)?;
@@ -11177,7 +11252,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11196,13 +11271,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_monotypeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_monotypeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_monotype(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_monotype(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11244,10 +11321,9 @@ fn tff_mapping_type(&self) -> Option<Rc<Tff_mapping_typeContextAll<'input>>> whe
 
 impl<'input> Tff_monotypeContextAttrs<'input> for Tff_monotypeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_monotype(&mut self,)
 	-> Result<Rc<Tff_monotypeContextAll<'input>>,ANTLRError> {
@@ -11264,8 +11340,8 @@ where
 			tptp_v7_0_0_0_Dollar_word |tptp_v7_0_0_0_Upper_word |tptp_v7_0_0_0_Lower_word |
 			tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_atomic_type*/
 					recog.base.set_state(997);
@@ -11276,8 +11352,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(998);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -11305,7 +11381,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11324,13 +11400,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_unitary_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_unitary_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_unitary_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_unitary_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11372,10 +11450,9 @@ fn tff_xprod_type(&self) -> Option<Rc<Tff_xprod_typeContextAll<'input>>> where S
 
 impl<'input> Tff_unitary_typeContextAttrs<'input> for Tff_unitary_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_unitary_type(&mut self,)
 	-> Result<Rc<Tff_unitary_typeContextAll<'input>>,ANTLRError> {
@@ -11392,8 +11469,8 @@ where
 			tptp_v7_0_0_0_Dollar_word |tptp_v7_0_0_0_Upper_word |tptp_v7_0_0_0_Lower_word |
 			tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tff_atomic_type*/
 					recog.base.set_state(1004);
@@ -11404,8 +11481,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1005);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -11433,7 +11510,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11452,13 +11529,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_atomic_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_atomic_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_atomic_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_atomic_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11509,10 +11588,9 @@ fn variable(&self) -> Option<Rc<VariableContextAll<'input>>> where Self:Sized{
 
 impl<'input> Tff_atomic_typeContextAttrs<'input> for Tff_atomic_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_atomic_type(&mut self,)
 	-> Result<Rc<Tff_atomic_typeContextAll<'input>>,ANTLRError> {
@@ -11527,8 +11605,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(60,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule type_constant*/
 					recog.base.set_state(1011);
@@ -11538,8 +11616,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule defined_type*/
 					recog.base.set_state(1012);
@@ -11549,8 +11627,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule type_functor*/
 					recog.base.set_state(1013);
@@ -11570,8 +11648,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(1018);
@@ -11593,7 +11671,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11612,13 +11690,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_type_argumentsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_type_argumentsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_type_arguments(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_type_arguments(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11660,10 +11740,9 @@ fn tff_atomic_type(&self, i: usize) -> Option<Rc<Tff_atomic_typeContextAll<'inpu
 
 impl<'input> Tff_type_argumentsContextAttrs<'input> for Tff_type_argumentsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_type_arguments(&mut self,)
 	-> Result<Rc<Tff_type_argumentsContextAll<'input>>,ANTLRError> {
@@ -11675,8 +11754,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_atomic_type*/
 			recog.base.set_state(1021);
@@ -11713,7 +11792,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11732,13 +11811,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_mapping_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_mapping_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_mapping_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_mapping_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11785,10 +11866,9 @@ fn tff_atomic_type(&self) -> Option<Rc<Tff_atomic_typeContextAll<'input>>> where
 
 impl<'input> Tff_mapping_typeContextAttrs<'input> for Tff_mapping_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_mapping_type(&mut self,)
 	-> Result<Rc<Tff_mapping_typeContextAll<'input>>,ANTLRError> {
@@ -11799,8 +11879,8 @@ where
         let mut _localctx: Rc<Tff_mapping_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule tff_unitary_type*/
 			recog.base.set_state(1029);
@@ -11825,7 +11905,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -11844,13 +11924,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_xprod_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_xprod_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_xprod_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_xprod_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -11900,10 +11982,9 @@ fn tff_xprod_type(&self) -> Option<Rc<Tff_xprod_typeContextAll<'input>>> where S
 
 impl<'input> Tff_xprod_typeContextAttrs<'input> for Tff_xprod_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  tff_xprod_type(&mut self,)
 	-> Result<Rc<Tff_xprod_typeContextAll<'input>>,ANTLRError> {
@@ -11922,8 +12003,8 @@ where
 		let _startState = 170;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule tff_unitary_type*/
@@ -11945,13 +12026,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(62,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Tff_xprod_typeContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_tff_xprod_type);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_tff_xprod_type)?;
 					_localctx = tmp;
 					recog.base.set_state(1038);
 					if !({let _localctx = Some(_localctx.clone());
@@ -11983,7 +12064,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -12002,13 +12083,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tcf_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tcf_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tcf_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tcf_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12050,10 +12133,9 @@ fn tff_typed_atom(&self) -> Option<Rc<Tff_typed_atomContextAll<'input>>> where S
 
 impl<'input> Tcf_formulaContextAttrs<'input> for Tcf_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tcf_formula(&mut self,)
 	-> Result<Rc<Tcf_formulaContextAll<'input>>,ANTLRError> {
@@ -12068,8 +12150,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(63,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tcf_logic_formula*/
 					recog.base.set_state(1046);
@@ -12079,8 +12161,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule tff_typed_atom*/
 					recog.base.set_state(1047);
@@ -12102,7 +12184,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12121,13 +12203,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tcf_logic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tcf_logic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tcf_logic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tcf_logic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12169,10 +12253,9 @@ fn cnf_formula(&self) -> Option<Rc<Cnf_formulaContextAll<'input>>> where Self:Si
 
 impl<'input> Tcf_logic_formulaContextAttrs<'input> for Tcf_logic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tcf_logic_formula(&mut self,)
 	-> Result<Rc<Tcf_logic_formulaContextAll<'input>>,ANTLRError> {
@@ -12188,8 +12271,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Forall 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule tcf_quantified_formula*/
 					recog.base.set_state(1050);
@@ -12204,8 +12287,8 @@ where
 			tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Upper_word |tptp_v7_0_0_0_Lower_word |
 			tptp_v7_0_0_0_Single_quoted |tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule cnf_formula*/
 					recog.base.set_state(1051);
@@ -12227,7 +12310,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12246,13 +12329,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tcf_quantified_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tcf_quantified_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tcf_quantified_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tcf_quantified_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12299,10 +12384,9 @@ fn cnf_formula(&self) -> Option<Rc<Cnf_formulaContextAll<'input>>> where Self:Si
 
 impl<'input> Tcf_quantified_formulaContextAttrs<'input> for Tcf_quantified_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tcf_quantified_formula(&mut self,)
 	-> Result<Rc<Tcf_quantified_formulaContextAll<'input>>,ANTLRError> {
@@ -12313,8 +12397,8 @@ where
         let mut _localctx: Rc<Tcf_quantified_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1054);
 			recog.base.match_token(tptp_v7_0_0_0_Forall,&mut recog.err_handler)?;
@@ -12348,7 +12432,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12367,13 +12451,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12415,10 +12501,9 @@ fn fof_sequent(&self) -> Option<Rc<Fof_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Fof_formulaContextAttrs<'input> for Fof_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_formula(&mut self,)
 	-> Result<Rc<Fof_formulaContextAll<'input>>,ANTLRError> {
@@ -12433,8 +12518,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(65,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_logic_formula*/
 					recog.base.set_state(1061);
@@ -12444,8 +12529,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_sequent*/
 					recog.base.set_state(1062);
@@ -12467,7 +12552,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12486,13 +12571,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_logic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_logic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_logic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_logic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12534,10 +12621,9 @@ fn fof_unitary_formula(&self) -> Option<Rc<Fof_unitary_formulaContextAll<'input>
 
 impl<'input> Fof_logic_formulaContextAttrs<'input> for Fof_logic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_logic_formula(&mut self,)
 	-> Result<Rc<Fof_logic_formulaContextAll<'input>>,ANTLRError> {
@@ -12552,8 +12638,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(66,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_binary_formula*/
 					recog.base.set_state(1065);
@@ -12563,8 +12649,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_unitary_formula*/
 					recog.base.set_state(1066);
@@ -12586,7 +12672,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12605,13 +12691,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_binary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_binary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_binary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_binary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12653,10 +12741,9 @@ fn fof_binary_assoc(&self) -> Option<Rc<Fof_binary_assocContextAll<'input>>> whe
 
 impl<'input> Fof_binary_formulaContextAttrs<'input> for Fof_binary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_binary_formula(&mut self,)
 	-> Result<Rc<Fof_binary_formulaContextAll<'input>>,ANTLRError> {
@@ -12671,8 +12758,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(67,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_binary_nonassoc*/
 					recog.base.set_state(1069);
@@ -12682,8 +12769,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_binary_assoc*/
 					recog.base.set_state(1070);
@@ -12705,7 +12792,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12724,13 +12811,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_binary_nonassocContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_binary_nonassocContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_binary_nonassoc(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_binary_nonassoc(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12775,10 +12864,9 @@ fn binary_connective(&self) -> Option<Rc<Binary_connectiveContextAll<'input>>> w
 
 impl<'input> Fof_binary_nonassocContextAttrs<'input> for Fof_binary_nonassocContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_binary_nonassoc(&mut self,)
 	-> Result<Rc<Fof_binary_nonassocContextAll<'input>>,ANTLRError> {
@@ -12789,8 +12877,8 @@ where
         let mut _localctx: Rc<Fof_binary_nonassocContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_unitary_formula*/
 			recog.base.set_state(1073);
@@ -12816,7 +12904,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12835,13 +12923,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_binary_assocContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_binary_assocContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_binary_assoc(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_binary_assoc(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -12883,10 +12973,9 @@ fn fof_and_formula(&self) -> Option<Rc<Fof_and_formulaContextAll<'input>>> where
 
 impl<'input> Fof_binary_assocContextAttrs<'input> for Fof_binary_assocContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_binary_assoc(&mut self,)
 	-> Result<Rc<Fof_binary_assocContextAll<'input>>,ANTLRError> {
@@ -12901,8 +12990,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(68,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_or_formula*/
 					recog.base.set_state(1077);
@@ -12912,8 +13001,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_and_formula*/
 					recog.base.set_state(1078);
@@ -12935,7 +13024,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -12954,13 +13043,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_or_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_or_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_or_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_or_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13010,10 +13101,9 @@ fn fof_or_formula(&self) -> Option<Rc<Fof_or_formulaContextAll<'input>>> where S
 
 impl<'input> Fof_or_formulaContextAttrs<'input> for Fof_or_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  fof_or_formula(&mut self,)
 	-> Result<Rc<Fof_or_formulaContextAll<'input>>,ANTLRError> {
@@ -13032,8 +13122,8 @@ where
 		let _startState = 188;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule fof_unitary_formula*/
@@ -13055,13 +13145,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(69,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Fof_or_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_fof_or_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_fof_or_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(1086);
 					if !({let _localctx = Some(_localctx.clone());
@@ -13093,7 +13183,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -13112,13 +13202,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_and_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_and_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_and_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_and_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13168,10 +13260,9 @@ fn fof_and_formula(&self) -> Option<Rc<Fof_and_formulaContextAll<'input>>> where
 
 impl<'input> Fof_and_formulaContextAttrs<'input> for Fof_and_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  fof_and_formula(&mut self,)
 	-> Result<Rc<Fof_and_formulaContextAll<'input>>,ANTLRError> {
@@ -13190,8 +13281,8 @@ where
 		let _startState = 190;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule fof_unitary_formula*/
@@ -13213,13 +13304,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(70,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Fof_and_formulaContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_fof_and_formula);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_fof_and_formula)?;
 					_localctx = tmp;
 					recog.base.set_state(1099);
 					if !({let _localctx = Some(_localctx.clone());
@@ -13251,7 +13342,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -13270,13 +13361,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_unitary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_unitary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_unitary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_unitary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13324,10 +13417,9 @@ fn fof_logic_formula(&self) -> Option<Rc<Fof_logic_formulaContextAll<'input>>> w
 
 impl<'input> Fof_unitary_formulaContextAttrs<'input> for Fof_unitary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_unitary_formula(&mut self,)
 	-> Result<Rc<Fof_unitary_formulaContextAll<'input>>,ANTLRError> {
@@ -13342,8 +13434,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(71,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_quantified_formula*/
 					recog.base.set_state(1107);
@@ -13353,8 +13445,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_unary_formula*/
 					recog.base.set_state(1108);
@@ -13364,8 +13456,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule fof_atomic_formula*/
 					recog.base.set_state(1109);
@@ -13375,8 +13467,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					recog.base.set_state(1110);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -13404,7 +13496,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -13423,13 +13515,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_quantified_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_quantified_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_quantified_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_quantified_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13474,10 +13568,9 @@ fn fof_unitary_formula(&self) -> Option<Rc<Fof_unitary_formulaContextAll<'input>
 
 impl<'input> Fof_quantified_formulaContextAttrs<'input> for Fof_quantified_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_quantified_formula(&mut self,)
 	-> Result<Rc<Fof_quantified_formulaContextAll<'input>>,ANTLRError> {
@@ -13488,8 +13581,8 @@ where
         let mut _localctx: Rc<Fof_quantified_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_quantifier*/
 			recog.base.set_state(1116);
@@ -13524,7 +13617,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -13543,13 +13636,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_variable_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_variable_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_variable_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_variable_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13591,10 +13686,9 @@ fn variable(&self, i: usize) -> Option<Rc<VariableContextAll<'input>>> where Sel
 
 impl<'input> Fof_variable_listContextAttrs<'input> for Fof_variable_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_variable_list(&mut self,)
 	-> Result<Rc<Fof_variable_listContextAll<'input>>,ANTLRError> {
@@ -13606,8 +13700,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule variable*/
 			recog.base.set_state(1123);
@@ -13644,7 +13738,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -13663,13 +13757,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_unary_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_unary_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_unary_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_unary_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13714,10 +13810,9 @@ fn fof_infix_unary(&self) -> Option<Rc<Fof_infix_unaryContextAll<'input>>> where
 
 impl<'input> Fof_unary_formulaContextAttrs<'input> for Fof_unary_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_unary_formula(&mut self,)
 	-> Result<Rc<Fof_unary_formulaContextAll<'input>>,ANTLRError> {
@@ -13733,8 +13828,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Not 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule unary_connective*/
 					recog.base.set_state(1131);
@@ -13752,8 +13847,8 @@ where
 			tptp_v7_0_0_0_Dollar_word |tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Upper_word |
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted |tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_infix_unary*/
 					recog.base.set_state(1134);
@@ -13775,7 +13870,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -13794,13 +13889,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_infix_unaryContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_infix_unaryContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_infix_unary(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_infix_unary(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13847,10 +13944,9 @@ fn Infix_inequality(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserC
 
 impl<'input> Fof_infix_unaryContextAttrs<'input> for Fof_infix_unaryContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_infix_unary(&mut self,)
 	-> Result<Rc<Fof_infix_unaryContextAll<'input>>,ANTLRError> {
@@ -13861,8 +13957,8 @@ where
         let mut _localctx: Rc<Fof_infix_unaryContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_term*/
 			recog.base.set_state(1137);
@@ -13887,7 +13983,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -13906,13 +14002,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_atomic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_atomic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_atomic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_atomic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -13957,10 +14055,9 @@ fn fof_system_atomic_formula(&self) -> Option<Rc<Fof_system_atomic_formulaContex
 
 impl<'input> Fof_atomic_formulaContextAttrs<'input> for Fof_atomic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_atomic_formula(&mut self,)
 	-> Result<Rc<Fof_atomic_formulaContextAll<'input>>,ANTLRError> {
@@ -13975,8 +14072,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(74,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_plain_atomic_formula*/
 					recog.base.set_state(1141);
@@ -13986,8 +14083,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_defined_atomic_formula*/
 					recog.base.set_state(1142);
@@ -13997,8 +14094,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule fof_system_atomic_formula*/
 					recog.base.set_state(1143);
@@ -14020,7 +14117,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14039,13 +14136,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_plain_atomic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_plain_atomic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_plain_atomic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_plain_atomic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14084,10 +14183,9 @@ fn fof_plain_term(&self) -> Option<Rc<Fof_plain_termContextAll<'input>>> where S
 
 impl<'input> Fof_plain_atomic_formulaContextAttrs<'input> for Fof_plain_atomic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_plain_atomic_formula(&mut self,)
 	-> Result<Rc<Fof_plain_atomic_formulaContextAll<'input>>,ANTLRError> {
@@ -14098,8 +14196,8 @@ where
         let mut _localctx: Rc<Fof_plain_atomic_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_plain_term*/
 			recog.base.set_state(1146);
@@ -14117,7 +14215,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14136,13 +14234,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_defined_atomic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_defined_atomic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_defined_atomic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_defined_atomic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14184,10 +14284,9 @@ fn fof_defined_infix_formula(&self) -> Option<Rc<Fof_defined_infix_formulaContex
 
 impl<'input> Fof_defined_atomic_formulaContextAttrs<'input> for Fof_defined_atomic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_defined_atomic_formula(&mut self,)
 	-> Result<Rc<Fof_defined_atomic_formulaContextAll<'input>>,ANTLRError> {
@@ -14202,8 +14301,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(75,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_defined_plain_formula*/
 					recog.base.set_state(1148);
@@ -14213,8 +14312,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_defined_infix_formula*/
 					recog.base.set_state(1149);
@@ -14236,7 +14335,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14255,13 +14354,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_defined_plain_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_defined_plain_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_defined_plain_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_defined_plain_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14300,10 +14401,9 @@ fn fof_defined_term(&self) -> Option<Rc<Fof_defined_termContextAll<'input>>> whe
 
 impl<'input> Fof_defined_plain_formulaContextAttrs<'input> for Fof_defined_plain_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_defined_plain_formula(&mut self,)
 	-> Result<Rc<Fof_defined_plain_formulaContextAll<'input>>,ANTLRError> {
@@ -14314,8 +14414,8 @@ where
         let mut _localctx: Rc<Fof_defined_plain_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_defined_term*/
 			recog.base.set_state(1152);
@@ -14333,7 +14433,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14352,13 +14452,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_defined_infix_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_defined_infix_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_defined_infix_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_defined_infix_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14403,10 +14505,9 @@ fn defined_infix_pred(&self) -> Option<Rc<Defined_infix_predContextAll<'input>>>
 
 impl<'input> Fof_defined_infix_formulaContextAttrs<'input> for Fof_defined_infix_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_defined_infix_formula(&mut self,)
 	-> Result<Rc<Fof_defined_infix_formulaContextAll<'input>>,ANTLRError> {
@@ -14417,8 +14518,8 @@ where
         let mut _localctx: Rc<Fof_defined_infix_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_term*/
 			recog.base.set_state(1154);
@@ -14444,7 +14545,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14463,13 +14564,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_system_atomic_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_system_atomic_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_system_atomic_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_system_atomic_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14508,10 +14611,9 @@ fn fof_system_term(&self) -> Option<Rc<Fof_system_termContextAll<'input>>> where
 
 impl<'input> Fof_system_atomic_formulaContextAttrs<'input> for Fof_system_atomic_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_system_atomic_formula(&mut self,)
 	-> Result<Rc<Fof_system_atomic_formulaContextAll<'input>>,ANTLRError> {
@@ -14522,8 +14624,8 @@ where
         let mut _localctx: Rc<Fof_system_atomic_formulaContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_system_term*/
 			recog.base.set_state(1158);
@@ -14541,7 +14643,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14560,13 +14662,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_plain_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_plain_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_plain_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_plain_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14611,10 +14715,9 @@ fn fof_arguments(&self) -> Option<Rc<Fof_argumentsContextAll<'input>>> where Sel
 
 impl<'input> Fof_plain_termContextAttrs<'input> for Fof_plain_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_plain_term(&mut self,)
 	-> Result<Rc<Fof_plain_termContextAll<'input>>,ANTLRError> {
@@ -14629,8 +14732,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(76,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule constant*/
 					recog.base.set_state(1160);
@@ -14640,8 +14743,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule functor*/
 					recog.base.set_state(1161);
@@ -14673,7 +14776,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14692,13 +14795,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_defined_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_defined_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_defined_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_defined_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14740,10 +14845,9 @@ fn fof_defined_atomic_term(&self) -> Option<Rc<Fof_defined_atomic_termContextAll
 
 impl<'input> Fof_defined_termContextAttrs<'input> for Fof_defined_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_defined_term(&mut self,)
 	-> Result<Rc<Fof_defined_termContextAll<'input>>,ANTLRError> {
@@ -14759,8 +14863,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Real |tptp_v7_0_0_0_Rational |tptp_v7_0_0_0_Integer |tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule defined_term*/
 					recog.base.set_state(1168);
@@ -14771,8 +14875,8 @@ where
 
 			tptp_v7_0_0_0_Dollar_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_defined_atomic_term*/
 					recog.base.set_state(1169);
@@ -14794,7 +14898,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14813,13 +14917,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_defined_atomic_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_defined_atomic_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_defined_atomic_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_defined_atomic_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14858,10 +14964,9 @@ fn fof_defined_plain_term(&self) -> Option<Rc<Fof_defined_plain_termContextAll<'
 
 impl<'input> Fof_defined_atomic_termContextAttrs<'input> for Fof_defined_atomic_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_defined_atomic_term(&mut self,)
 	-> Result<Rc<Fof_defined_atomic_termContextAll<'input>>,ANTLRError> {
@@ -14872,8 +14977,8 @@ where
         let mut _localctx: Rc<Fof_defined_atomic_termContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_defined_plain_term*/
 			recog.base.set_state(1172);
@@ -14891,7 +14996,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -14910,13 +15015,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_defined_plain_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_defined_plain_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_defined_plain_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_defined_plain_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -14961,10 +15068,9 @@ fn fof_arguments(&self) -> Option<Rc<Fof_argumentsContextAll<'input>>> where Sel
 
 impl<'input> Fof_defined_plain_termContextAttrs<'input> for Fof_defined_plain_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_defined_plain_term(&mut self,)
 	-> Result<Rc<Fof_defined_plain_termContextAll<'input>>,ANTLRError> {
@@ -14979,8 +15085,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(78,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule defined_constant*/
 					recog.base.set_state(1174);
@@ -14990,8 +15096,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule defined_functor*/
 					recog.base.set_state(1175);
@@ -15023,7 +15129,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15042,13 +15148,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_system_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_system_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_system_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_system_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15093,10 +15201,9 @@ fn fof_arguments(&self) -> Option<Rc<Fof_argumentsContextAll<'input>>> where Sel
 
 impl<'input> Fof_system_termContextAttrs<'input> for Fof_system_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_system_term(&mut self,)
 	-> Result<Rc<Fof_system_termContextAll<'input>>,ANTLRError> {
@@ -15111,8 +15218,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(79,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule system_constant*/
 					recog.base.set_state(1182);
@@ -15122,8 +15229,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule system_functor*/
 					recog.base.set_state(1183);
@@ -15155,7 +15262,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15174,13 +15281,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_argumentsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_argumentsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_arguments(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_arguments(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15222,10 +15331,9 @@ fn fof_term(&self, i: usize) -> Option<Rc<Fof_termContextAll<'input>>> where Sel
 
 impl<'input> Fof_argumentsContextAttrs<'input> for Fof_argumentsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_arguments(&mut self,)
 	-> Result<Rc<Fof_argumentsContextAll<'input>>,ANTLRError> {
@@ -15237,8 +15345,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_term*/
 			recog.base.set_state(1190);
@@ -15275,7 +15383,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15294,13 +15402,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15351,10 +15461,9 @@ fn tff_tuple_term(&self) -> Option<Rc<Tff_tuple_termContextAll<'input>>> where S
 
 impl<'input> Fof_termContextAttrs<'input> for Fof_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_term(&mut self,)
 	-> Result<Rc<Fof_termContextAll<'input>>,ANTLRError> {
@@ -15372,8 +15481,8 @@ where
 			tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted |
 			tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_function_term*/
 					recog.base.set_state(1198);
@@ -15384,8 +15493,8 @@ where
 
 			tptp_v7_0_0_0_Upper_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(1199);
@@ -15396,8 +15505,8 @@ where
 
 			tptp_v7_0_0_0_T__23 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule tff_conditional_term*/
 					recog.base.set_state(1200);
@@ -15408,8 +15517,8 @@ where
 
 			tptp_v7_0_0_0_T__24 |tptp_v7_0_0_0_T__25 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule tff_let_term*/
 					recog.base.set_state(1201);
@@ -15420,8 +15529,8 @@ where
 
 			tptp_v7_0_0_0_T__17 |tptp_v7_0_0_0_T__18 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					/*InvokeRule tff_tuple_term*/
 					recog.base.set_state(1202);
@@ -15443,7 +15552,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15462,13 +15571,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_function_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_function_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_function_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_function_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15513,10 +15624,9 @@ fn fof_system_term(&self) -> Option<Rc<Fof_system_termContextAll<'input>>> where
 
 impl<'input> Fof_function_termContextAttrs<'input> for Fof_function_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_function_term(&mut self,)
 	-> Result<Rc<Fof_function_termContextAll<'input>>,ANTLRError> {
@@ -15532,8 +15642,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_plain_term*/
 					recog.base.set_state(1205);
@@ -15545,8 +15655,8 @@ where
 			tptp_v7_0_0_0_Real |tptp_v7_0_0_0_Rational |tptp_v7_0_0_0_Integer |tptp_v7_0_0_0_Dollar_word |
 			tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule fof_defined_term*/
 					recog.base.set_state(1206);
@@ -15557,8 +15667,8 @@ where
 
 			tptp_v7_0_0_0_Dollar_dollar_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule fof_system_term*/
 					recog.base.set_state(1207);
@@ -15580,7 +15690,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15599,13 +15709,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_conditional_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_conditional_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_conditional_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_conditional_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15650,10 +15762,9 @@ fn fof_term(&self, i: usize) -> Option<Rc<Fof_termContextAll<'input>>> where Sel
 
 impl<'input> Tff_conditional_termContextAttrs<'input> for Tff_conditional_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_conditional_term(&mut self,)
 	-> Result<Rc<Tff_conditional_termContextAll<'input>>,ANTLRError> {
@@ -15664,8 +15775,8 @@ where
         let mut _localctx: Rc<Tff_conditional_termContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1210);
 			recog.base.match_token(tptp_v7_0_0_0_T__23,&mut recog.err_handler)?;
@@ -15703,7 +15814,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15722,13 +15833,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_let_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_let_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_let_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_let_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15773,10 +15886,9 @@ fn tff_let_term_defns(&self) -> Option<Rc<Tff_let_term_defnsContextAll<'input>>>
 
 impl<'input> Tff_let_termContextAttrs<'input> for Tff_let_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_let_term(&mut self,)
 	-> Result<Rc<Tff_let_termContextAll<'input>>,ANTLRError> {
@@ -15792,8 +15904,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__24 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1218);
 					recog.base.match_token(tptp_v7_0_0_0_T__24,&mut recog.err_handler)?;
@@ -15817,8 +15929,8 @@ where
 
 			tptp_v7_0_0_0_T__25 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1224);
 					recog.base.match_token(tptp_v7_0_0_0_T__25,&mut recog.err_handler)?;
@@ -15853,7 +15965,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15872,13 +15984,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_tuple_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_tuple_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_tuple_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_tuple_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -15917,10 +16031,9 @@ fn fof_arguments(&self) -> Option<Rc<Fof_argumentsContextAll<'input>>> where Sel
 
 impl<'input> Tff_tuple_termContextAttrs<'input> for Tff_tuple_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_tuple_term(&mut self,)
 	-> Result<Rc<Tff_tuple_termContextAll<'input>>,ANTLRError> {
@@ -15936,8 +16049,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__17 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1232);
 					recog.base.match_token(tptp_v7_0_0_0_T__17,&mut recog.err_handler)?;
@@ -15947,8 +16060,8 @@ where
 
 			tptp_v7_0_0_0_T__18 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1233);
 					recog.base.match_token(tptp_v7_0_0_0_T__18,&mut recog.err_handler)?;
@@ -15976,7 +16089,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -15995,13 +16108,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_sequentContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_sequentContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_sequent(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_sequent(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16051,10 +16166,9 @@ fn fof_sequent(&self) -> Option<Rc<Fof_sequentContextAll<'input>>> where Self:Si
 
 impl<'input> Fof_sequentContextAttrs<'input> for Fof_sequentContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_sequent(&mut self,)
 	-> Result<Rc<Fof_sequentContextAll<'input>>,ANTLRError> {
@@ -16070,8 +16184,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__11 |tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_formula_tuple*/
 					recog.base.set_state(1239);
@@ -16089,8 +16203,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1243);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -16118,7 +16232,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -16137,13 +16251,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_formula_tupleContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_formula_tupleContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_formula_tuple(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_formula_tuple(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16182,10 +16298,9 @@ fn fof_formula_tuple_list(&self) -> Option<Rc<Fof_formula_tuple_listContextAll<'
 
 impl<'input> Fof_formula_tupleContextAttrs<'input> for Fof_formula_tupleContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_formula_tuple(&mut self,)
 	-> Result<Rc<Fof_formula_tupleContextAll<'input>>,ANTLRError> {
@@ -16201,8 +16316,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1249);
 					recog.base.match_token(tptp_v7_0_0_0_T__16,&mut recog.err_handler)?;
@@ -16212,8 +16327,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1250);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -16241,7 +16356,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -16260,13 +16375,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_formula_tuple_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_formula_tuple_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_formula_tuple_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_formula_tuple_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16308,10 +16425,9 @@ fn fof_logic_formula(&self, i: usize) -> Option<Rc<Fof_logic_formulaContextAll<'
 
 impl<'input> Fof_formula_tuple_listContextAttrs<'input> for Fof_formula_tuple_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_formula_tuple_list(&mut self,)
 	-> Result<Rc<Fof_formula_tuple_listContextAll<'input>>,ANTLRError> {
@@ -16323,8 +16439,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule fof_logic_formula*/
 			recog.base.set_state(1256);
@@ -16361,7 +16477,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -16380,13 +16496,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Cnf_formulaContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Cnf_formulaContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_cnf_formula(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_cnf_formula(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16425,10 +16543,9 @@ fn cnf_disjunction(&self) -> Option<Rc<Cnf_disjunctionContextAll<'input>>> where
 
 impl<'input> Cnf_formulaContextAttrs<'input> for Cnf_formulaContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn cnf_formula(&mut self,)
 	-> Result<Rc<Cnf_formulaContextAll<'input>>,ANTLRError> {
@@ -16448,8 +16565,8 @@ where
 			tptp_v7_0_0_0_Upper_word |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted |
 			tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule cnf_disjunction*/
 					recog.base.set_state(1264);
@@ -16460,8 +16577,8 @@ where
 
 			tptp_v7_0_0_0_T__9 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1265);
 					recog.base.match_token(tptp_v7_0_0_0_T__9,&mut recog.err_handler)?;
@@ -16489,7 +16606,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -16508,13 +16625,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Cnf_disjunctionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Cnf_disjunctionContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_cnf_disjunction(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_cnf_disjunction(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16561,10 +16680,9 @@ fn Or(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType>>> 
 
 impl<'input> Cnf_disjunctionContextAttrs<'input> for Cnf_disjunctionContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn  cnf_disjunction(&mut self,)
 	-> Result<Rc<Cnf_disjunctionContextAll<'input>>,ANTLRError> {
@@ -16583,8 +16701,8 @@ where
 		let _startState = 244;
 		let result: Result<(), ANTLRError> = (|| {
 			let mut _alt: i32;
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			{
 			/*InvokeRule cnf_literal*/
@@ -16599,13 +16717,13 @@ where
 			_alt = recog.interpreter.adaptive_predict(89,&mut recog.base)?;
 			while { _alt!=2 && _alt!=INVALID_ALT } {
 				if _alt==1 {
-					recog.trigger_exit_rule_event();
+					recog.trigger_exit_rule_event()?;
 					_prevctx = _localctx.clone();
 					{
 					{
 					/*recRuleAltStartAction*/
 					let mut tmp = Cnf_disjunctionContextExt::new(_parentctx.clone(), _parentState);
-					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_cnf_disjunction);
+					recog.push_new_recursion_context(tmp.clone(), _startState, RULE_cnf_disjunction)?;
 					_localctx = tmp;
 					recog.base.set_state(1274);
 					if !({let _localctx = Some(_localctx.clone());
@@ -16637,7 +16755,7 @@ where
 			recog.err_handler.report_error(&mut recog.base, re);
 	        recog.err_handler.recover(&mut recog.base, re)?;}
 		}
-		recog.base.unroll_recursion_context(_parentctx);
+		recog.base.unroll_recursion_context(_parentctx)?;
 
 		Ok(_localctx)
 	}
@@ -16656,13 +16774,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Cnf_literalContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Cnf_literalContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_cnf_literal(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_cnf_literal(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16709,10 +16829,9 @@ fn fof_infix_unary(&self) -> Option<Rc<Fof_infix_unaryContextAll<'input>>> where
 
 impl<'input> Cnf_literalContextAttrs<'input> for Cnf_literalContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn cnf_literal(&mut self,)
 	-> Result<Rc<Cnf_literalContextAll<'input>>,ANTLRError> {
@@ -16727,8 +16846,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(90,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_atomic_formula*/
 					recog.base.set_state(1282);
@@ -16738,8 +16857,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1283);
 					recog.base.match_token(tptp_v7_0_0_0_Not,&mut recog.err_handler)?;
@@ -16752,8 +16871,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule fof_infix_unary*/
 					recog.base.set_state(1285);
@@ -16775,7 +16894,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -16794,13 +16913,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_quantifierContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_quantifierContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_quantifier(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_quantifier(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16845,10 +16966,9 @@ fn th1_quantifier(&self) -> Option<Rc<Th1_quantifierContextAll<'input>>> where S
 
 impl<'input> Thf_quantifierContextAttrs<'input> for Thf_quantifierContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_quantifier(&mut self,)
 	-> Result<Rc<Thf_quantifierContextAll<'input>>,ANTLRError> {
@@ -16864,8 +16984,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Forall |tptp_v7_0_0_0_Exists 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule fof_quantifier*/
 					recog.base.set_state(1288);
@@ -16876,8 +16996,8 @@ where
 
 			tptp_v7_0_0_0_Lambda |tptp_v7_0_0_0_Choice |tptp_v7_0_0_0_Description 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule th0_quantifier*/
 					recog.base.set_state(1289);
@@ -16888,8 +17008,8 @@ where
 
 			tptp_v7_0_0_0_TyForall |tptp_v7_0_0_0_TyExists 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule th1_quantifier*/
 					recog.base.set_state(1290);
@@ -16911,7 +17031,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -16930,13 +17050,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Th0_quantifierContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Th0_quantifierContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_th0_quantifier(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_th0_quantifier(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -16987,10 +17109,9 @@ fn Description(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContex
 
 impl<'input> Th0_quantifierContextAttrs<'input> for Th0_quantifierContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn th0_quantifier(&mut self,)
 	-> Result<Rc<Th0_quantifierContextAll<'input>>,ANTLRError> {
@@ -17002,8 +17123,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1293);
 			_la = recog.base.input.la(1);
@@ -17028,7 +17149,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17047,13 +17168,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Th1_quantifierContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Th1_quantifierContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_th1_quantifier(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_th1_quantifier(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17099,10 +17222,9 @@ fn TyExists(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextTy
 
 impl<'input> Th1_quantifierContextAttrs<'input> for Th1_quantifierContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn th1_quantifier(&mut self,)
 	-> Result<Rc<Th1_quantifierContextAll<'input>>,ANTLRError> {
@@ -17114,8 +17236,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1295);
 			_la = recog.base.input.la(1);
@@ -17140,7 +17262,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17159,13 +17281,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_pair_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_pair_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_pair_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_pair_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17219,10 +17343,9 @@ fn Assignment(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Thf_pair_connectiveContextAttrs<'input> for Thf_pair_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_pair_connective(&mut self,)
 	-> Result<Rc<Thf_pair_connectiveContextAll<'input>>,ANTLRError> {
@@ -17238,8 +17361,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Infix_equality 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1297);
 					recog.base.match_token(tptp_v7_0_0_0_Infix_equality,&mut recog.err_handler)?;
@@ -17249,8 +17372,8 @@ where
 
 			tptp_v7_0_0_0_Infix_inequality 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1298);
 					recog.base.match_token(tptp_v7_0_0_0_Infix_inequality,&mut recog.err_handler)?;
@@ -17261,8 +17384,8 @@ where
 			tptp_v7_0_0_0_Iff |tptp_v7_0_0_0_Impl |tptp_v7_0_0_0_If |tptp_v7_0_0_0_Niff |
 			tptp_v7_0_0_0_Nor |tptp_v7_0_0_0_Nand 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule binary_connective*/
 					recog.base.set_state(1299);
@@ -17273,8 +17396,8 @@ where
 
 			tptp_v7_0_0_0_Assignment 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					recog.base.set_state(1300);
 					recog.base.match_token(tptp_v7_0_0_0_Assignment,&mut recog.err_handler)?;
@@ -17295,7 +17418,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17314,13 +17437,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Thf_unary_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Thf_unary_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_thf_unary_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_thf_unary_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17362,10 +17487,9 @@ fn th1_unary_connective(&self) -> Option<Rc<Th1_unary_connectiveContextAll<'inpu
 
 impl<'input> Thf_unary_connectiveContextAttrs<'input> for Thf_unary_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn thf_unary_connective(&mut self,)
 	-> Result<Rc<Thf_unary_connectiveContextAll<'input>>,ANTLRError> {
@@ -17381,8 +17505,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Not 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule unary_connective*/
 					recog.base.set_state(1303);
@@ -17394,8 +17518,8 @@ where
 			tptp_v7_0_0_0_ForallComb |tptp_v7_0_0_0_ExistsComb |tptp_v7_0_0_0_ChoiceComb |
 			tptp_v7_0_0_0_DescriptionComb |tptp_v7_0_0_0_EqComb 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule th1_unary_connective*/
 					recog.base.set_state(1304);
@@ -17417,7 +17541,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17436,13 +17560,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Th1_unary_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Th1_unary_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_th1_unary_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_th1_unary_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17503,10 +17629,9 @@ fn EqComb(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType
 
 impl<'input> Th1_unary_connectiveContextAttrs<'input> for Th1_unary_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn th1_unary_connective(&mut self,)
 	-> Result<Rc<Th1_unary_connectiveContextAll<'input>>,ANTLRError> {
@@ -17518,8 +17643,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1307);
 			_la = recog.base.input.la(1);
@@ -17544,7 +17669,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17563,13 +17688,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Tff_pair_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Tff_pair_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_tff_pair_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_tff_pair_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17613,10 +17740,9 @@ fn Assignment(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Tff_pair_connectiveContextAttrs<'input> for Tff_pair_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn tff_pair_connective(&mut self,)
 	-> Result<Rc<Tff_pair_connectiveContextAll<'input>>,ANTLRError> {
@@ -17633,8 +17759,8 @@ where
 			tptp_v7_0_0_0_Iff |tptp_v7_0_0_0_Impl |tptp_v7_0_0_0_If |tptp_v7_0_0_0_Niff |
 			tptp_v7_0_0_0_Nor |tptp_v7_0_0_0_Nand 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule binary_connective*/
 					recog.base.set_state(1309);
@@ -17645,8 +17771,8 @@ where
 
 			tptp_v7_0_0_0_Assignment 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1310);
 					recog.base.match_token(tptp_v7_0_0_0_Assignment,&mut recog.err_handler)?;
@@ -17667,7 +17793,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17686,13 +17812,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Fof_quantifierContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Fof_quantifierContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_fof_quantifier(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_fof_quantifier(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17738,10 +17866,9 @@ fn Exists(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType
 
 impl<'input> Fof_quantifierContextAttrs<'input> for Fof_quantifierContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn fof_quantifier(&mut self,)
 	-> Result<Rc<Fof_quantifierContextAll<'input>>,ANTLRError> {
@@ -17753,8 +17880,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1313);
 			_la = recog.base.input.la(1);
@@ -17779,7 +17906,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17798,13 +17925,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Binary_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Binary_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_binary_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_binary_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17870,10 +17999,9 @@ fn Nand(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType>>
 
 impl<'input> Binary_connectiveContextAttrs<'input> for Binary_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn binary_connective(&mut self,)
 	-> Result<Rc<Binary_connectiveContextAll<'input>>,ANTLRError> {
@@ -17885,8 +18013,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1315);
 			_la = recog.base.input.la(1);
@@ -17911,7 +18039,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -17930,13 +18058,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Assoc_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Assoc_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_assoc_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_assoc_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -17982,10 +18112,9 @@ fn And(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType>>>
 
 impl<'input> Assoc_connectiveContextAttrs<'input> for Assoc_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn assoc_connective(&mut self,)
 	-> Result<Rc<Assoc_connectiveContextAll<'input>>,ANTLRError> {
@@ -17997,8 +18126,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1317);
 			_la = recog.base.input.la(1);
@@ -18023,7 +18152,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18042,13 +18171,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Unary_connectiveContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Unary_connectiveContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_unary_connective(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_unary_connective(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18089,10 +18220,9 @@ fn Not(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType>>>
 
 impl<'input> Unary_connectiveContextAttrs<'input> for Unary_connectiveContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn unary_connective(&mut self,)
 	-> Result<Rc<Unary_connectiveContextAll<'input>>,ANTLRError> {
@@ -18103,8 +18233,8 @@ where
         let mut _localctx: Rc<Unary_connectiveContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1319);
 			recog.base.match_token(tptp_v7_0_0_0_Not,&mut recog.err_handler)?;
@@ -18121,7 +18251,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18140,13 +18270,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Type_constantContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Type_constantContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_type_constant(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_type_constant(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18185,10 +18317,9 @@ fn type_functor(&self) -> Option<Rc<Type_functorContextAll<'input>>> where Self:
 
 impl<'input> Type_constantContextAttrs<'input> for Type_constantContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn type_constant(&mut self,)
 	-> Result<Rc<Type_constantContextAll<'input>>,ANTLRError> {
@@ -18199,8 +18330,8 @@ where
         let mut _localctx: Rc<Type_constantContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule type_functor*/
 			recog.base.set_state(1321);
@@ -18218,7 +18349,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18237,13 +18368,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Type_functorContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Type_functorContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_type_functor(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_type_functor(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18282,10 +18415,9 @@ fn atomic_word(&self) -> Option<Rc<Atomic_wordContextAll<'input>>> where Self:Si
 
 impl<'input> Type_functorContextAttrs<'input> for Type_functorContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn type_functor(&mut self,)
 	-> Result<Rc<Type_functorContextAll<'input>>,ANTLRError> {
@@ -18296,8 +18428,8 @@ where
         let mut _localctx: Rc<Type_functorContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_word*/
 			recog.base.set_state(1323);
@@ -18315,7 +18447,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18334,13 +18466,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18381,10 +18515,9 @@ fn Dollar_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContex
 
 impl<'input> Defined_typeContextAttrs<'input> for Defined_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_type(&mut self,)
 	-> Result<Rc<Defined_typeContextAll<'input>>,ANTLRError> {
@@ -18395,8 +18528,8 @@ where
         let mut _localctx: Rc<Defined_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1325);
 			recog.base.match_token(tptp_v7_0_0_0_Dollar_word,&mut recog.err_handler)?;
@@ -18413,7 +18546,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18432,13 +18565,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for System_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for System_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_system_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_system_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18477,10 +18612,9 @@ fn atomic_system_word(&self) -> Option<Rc<Atomic_system_wordContextAll<'input>>>
 
 impl<'input> System_typeContextAttrs<'input> for System_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn system_type(&mut self,)
 	-> Result<Rc<System_typeContextAll<'input>>,ANTLRError> {
@@ -18491,8 +18625,8 @@ where
         let mut _localctx: Rc<System_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_system_word*/
 			recog.base.set_state(1327);
@@ -18510,7 +18644,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18529,13 +18663,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for AtomContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for AtomContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_atom(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_atom(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18577,10 +18713,9 @@ fn defined_constant(&self) -> Option<Rc<Defined_constantContextAll<'input>>> whe
 
 impl<'input> AtomContextAttrs<'input> for AtomContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn atom(&mut self,)
 	-> Result<Rc<AtomContextAll<'input>>,ANTLRError> {
@@ -18596,8 +18731,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Dollar_dollar_word |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule untyped_atom*/
 					recog.base.set_state(1329);
@@ -18608,8 +18743,8 @@ where
 
 			tptp_v7_0_0_0_Dollar_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule defined_constant*/
 					recog.base.set_state(1330);
@@ -18631,7 +18766,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18650,13 +18785,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Untyped_atomContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Untyped_atomContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_untyped_atom(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_untyped_atom(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18698,10 +18835,9 @@ fn system_constant(&self) -> Option<Rc<System_constantContextAll<'input>>> where
 
 impl<'input> Untyped_atomContextAttrs<'input> for Untyped_atomContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn untyped_atom(&mut self,)
 	-> Result<Rc<Untyped_atomContextAll<'input>>,ANTLRError> {
@@ -18717,8 +18853,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule constant*/
 					recog.base.set_state(1333);
@@ -18729,8 +18865,8 @@ where
 
 			tptp_v7_0_0_0_Dollar_dollar_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule system_constant*/
 					recog.base.set_state(1334);
@@ -18752,7 +18888,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18771,13 +18907,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_propositionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_propositionContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_proposition(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_proposition(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18818,10 +18956,9 @@ fn Dollar_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContex
 
 impl<'input> Defined_propositionContextAttrs<'input> for Defined_propositionContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_proposition(&mut self,)
 	-> Result<Rc<Defined_propositionContextAll<'input>>,ANTLRError> {
@@ -18832,8 +18969,8 @@ where
         let mut _localctx: Rc<Defined_propositionContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1337);
 			recog.base.match_token(tptp_v7_0_0_0_Dollar_word,&mut recog.err_handler)?;
@@ -18850,7 +18987,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18869,13 +19006,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_predicateContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_predicateContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_predicate(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_predicate(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -18916,10 +19055,9 @@ fn Dollar_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContex
 
 impl<'input> Defined_predicateContextAttrs<'input> for Defined_predicateContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_predicate(&mut self,)
 	-> Result<Rc<Defined_predicateContextAll<'input>>,ANTLRError> {
@@ -18930,8 +19068,8 @@ where
         let mut _localctx: Rc<Defined_predicateContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1339);
 			recog.base.match_token(tptp_v7_0_0_0_Dollar_word,&mut recog.err_handler)?;
@@ -18948,7 +19086,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -18967,13 +19105,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_infix_predContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_infix_predContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_infix_pred(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_infix_pred(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19019,10 +19159,9 @@ fn Assignment(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Defined_infix_predContextAttrs<'input> for Defined_infix_predContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_infix_pred(&mut self,)
 	-> Result<Rc<Defined_infix_predContextAll<'input>>,ANTLRError> {
@@ -19034,8 +19173,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1341);
 			_la = recog.base.input.la(1);
@@ -19060,7 +19199,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19079,13 +19218,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for ConstantContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for ConstantContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_constant(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_constant(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19124,10 +19265,9 @@ fn functor(&self) -> Option<Rc<FunctorContextAll<'input>>> where Self:Sized{
 
 impl<'input> ConstantContextAttrs<'input> for ConstantContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn constant(&mut self,)
 	-> Result<Rc<ConstantContextAll<'input>>,ANTLRError> {
@@ -19138,8 +19278,8 @@ where
         let mut _localctx: Rc<ConstantContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule functor*/
 			recog.base.set_state(1343);
@@ -19157,7 +19297,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19176,13 +19316,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for FunctorContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for FunctorContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_functor(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_functor(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19221,10 +19363,9 @@ fn atomic_word(&self) -> Option<Rc<Atomic_wordContextAll<'input>>> where Self:Si
 
 impl<'input> FunctorContextAttrs<'input> for FunctorContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn functor(&mut self,)
 	-> Result<Rc<FunctorContextAll<'input>>,ANTLRError> {
@@ -19235,8 +19376,8 @@ where
         let mut _localctx: Rc<FunctorContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_word*/
 			recog.base.set_state(1345);
@@ -19254,7 +19395,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19273,13 +19414,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for System_constantContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for System_constantContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_system_constant(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_system_constant(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19318,10 +19461,9 @@ fn system_functor(&self) -> Option<Rc<System_functorContextAll<'input>>> where S
 
 impl<'input> System_constantContextAttrs<'input> for System_constantContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn system_constant(&mut self,)
 	-> Result<Rc<System_constantContextAll<'input>>,ANTLRError> {
@@ -19332,8 +19474,8 @@ where
         let mut _localctx: Rc<System_constantContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule system_functor*/
 			recog.base.set_state(1347);
@@ -19351,7 +19493,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19370,13 +19512,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for System_functorContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for System_functorContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_system_functor(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_system_functor(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19415,10 +19559,9 @@ fn atomic_system_word(&self) -> Option<Rc<Atomic_system_wordContextAll<'input>>>
 
 impl<'input> System_functorContextAttrs<'input> for System_functorContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn system_functor(&mut self,)
 	-> Result<Rc<System_functorContextAll<'input>>,ANTLRError> {
@@ -19429,8 +19572,8 @@ where
         let mut _localctx: Rc<System_functorContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_system_word*/
 			recog.base.set_state(1349);
@@ -19448,7 +19591,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19467,13 +19610,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_constantContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_constantContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_constant(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_constant(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19512,10 +19657,9 @@ fn defined_functor(&self) -> Option<Rc<Defined_functorContextAll<'input>>> where
 
 impl<'input> Defined_constantContextAttrs<'input> for Defined_constantContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_constant(&mut self,)
 	-> Result<Rc<Defined_constantContextAll<'input>>,ANTLRError> {
@@ -19526,8 +19670,8 @@ where
         let mut _localctx: Rc<Defined_constantContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule defined_functor*/
 			recog.base.set_state(1351);
@@ -19545,7 +19689,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19564,13 +19708,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_functorContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_functorContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_functor(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_functor(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19609,10 +19755,9 @@ fn atomic_defined_word(&self) -> Option<Rc<Atomic_defined_wordContextAll<'input>
 
 impl<'input> Defined_functorContextAttrs<'input> for Defined_functorContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_functor(&mut self,)
 	-> Result<Rc<Defined_functorContextAll<'input>>,ANTLRError> {
@@ -19623,8 +19768,8 @@ where
         let mut _localctx: Rc<Defined_functorContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_defined_word*/
 			recog.base.set_state(1353);
@@ -19642,7 +19787,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19661,13 +19806,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Defined_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Defined_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_defined_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_defined_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19711,10 +19858,9 @@ fn Distinct_object(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserCo
 
 impl<'input> Defined_termContextAttrs<'input> for Defined_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn defined_term(&mut self,)
 	-> Result<Rc<Defined_termContextAll<'input>>,ANTLRError> {
@@ -19730,8 +19876,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Real |tptp_v7_0_0_0_Rational |tptp_v7_0_0_0_Integer 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule number*/
 					recog.base.set_state(1355);
@@ -19742,8 +19888,8 @@ where
 
 			tptp_v7_0_0_0_Distinct_object 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1356);
 					recog.base.match_token(tptp_v7_0_0_0_Distinct_object,&mut recog.err_handler)?;
@@ -19764,7 +19910,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19783,13 +19929,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for VariableContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for VariableContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_variable(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_variable(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19830,10 +19978,9 @@ fn Upper_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> VariableContextAttrs<'input> for VariableContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn variable(&mut self,)
 	-> Result<Rc<VariableContextAll<'input>>,ANTLRError> {
@@ -19844,8 +19991,8 @@ where
         let mut _localctx: Rc<VariableContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1359);
 			recog.base.match_token(tptp_v7_0_0_0_Upper_word,&mut recog.err_handler)?;
@@ -19862,7 +20009,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -19881,13 +20028,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for SourceContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for SourceContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_source(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_source(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -19940,10 +20089,9 @@ fn sources(&self) -> Option<Rc<SourcesContextAll<'input>>> where Self:Sized{
 
 impl<'input> SourceContextAttrs<'input> for SourceContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn source(&mut self,)
 	-> Result<Rc<SourceContextAll<'input>>,ANTLRError> {
@@ -19958,8 +20106,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(98,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule dag_source*/
 					recog.base.set_state(1361);
@@ -19969,8 +20117,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule internal_source*/
 					recog.base.set_state(1362);
@@ -19980,8 +20128,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule external_source*/
 					recog.base.set_state(1363);
@@ -19991,8 +20139,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					recog.base.set_state(1364);
 					recog.base.match_token(tptp_v7_0_0_0_Lower_word,&mut recog.err_handler)?;
@@ -20001,8 +20149,8 @@ where
 				}
 			,
 				5 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					recog.base.set_state(1365);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -20030,7 +20178,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20049,13 +20197,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for SourcesContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for SourcesContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_sources(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_sources(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20097,10 +20247,9 @@ fn source(&self, i: usize) -> Option<Rc<SourceContextAll<'input>>> where Self:Si
 
 impl<'input> SourcesContextAttrs<'input> for SourcesContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn sources(&mut self,)
 	-> Result<Rc<SourcesContextAll<'input>>,ANTLRError> {
@@ -20112,8 +20261,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule source*/
 			recog.base.set_state(1371);
@@ -20150,7 +20299,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20169,13 +20318,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Dag_sourceContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Dag_sourceContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_dag_source(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_dag_source(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20217,10 +20368,9 @@ fn inference_record(&self) -> Option<Rc<Inference_recordContextAll<'input>>> whe
 
 impl<'input> Dag_sourceContextAttrs<'input> for Dag_sourceContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn dag_source(&mut self,)
 	-> Result<Rc<Dag_sourceContextAll<'input>>,ANTLRError> {
@@ -20236,8 +20386,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Integer |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule name*/
 					recog.base.set_state(1379);
@@ -20248,8 +20398,8 @@ where
 
 			tptp_v7_0_0_0_T__26 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule inference_record*/
 					recog.base.set_state(1380);
@@ -20271,7 +20421,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20290,13 +20440,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Inference_recordContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Inference_recordContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_inference_record(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_inference_record(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20341,10 +20493,9 @@ fn inference_parents(&self) -> Option<Rc<Inference_parentsContextAll<'input>>> w
 
 impl<'input> Inference_recordContextAttrs<'input> for Inference_recordContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn inference_record(&mut self,)
 	-> Result<Rc<Inference_recordContextAll<'input>>,ANTLRError> {
@@ -20355,8 +20506,8 @@ where
         let mut _localctx: Rc<Inference_recordContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1383);
 			recog.base.match_token(tptp_v7_0_0_0_T__26,&mut recog.err_handler)?;
@@ -20394,7 +20545,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20413,13 +20564,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Inference_ruleContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Inference_ruleContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_inference_rule(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_inference_rule(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20458,10 +20611,9 @@ fn atomic_word(&self) -> Option<Rc<Atomic_wordContextAll<'input>>> where Self:Si
 
 impl<'input> Inference_ruleContextAttrs<'input> for Inference_ruleContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn inference_rule(&mut self,)
 	-> Result<Rc<Inference_ruleContextAll<'input>>,ANTLRError> {
@@ -20472,8 +20624,8 @@ where
         let mut _localctx: Rc<Inference_ruleContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_word*/
 			recog.base.set_state(1391);
@@ -20491,7 +20643,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20510,13 +20662,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Inference_parentsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Inference_parentsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_inference_parents(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_inference_parents(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20555,10 +20709,9 @@ fn parent_list(&self) -> Option<Rc<Parent_listContextAll<'input>>> where Self:Si
 
 impl<'input> Inference_parentsContextAttrs<'input> for Inference_parentsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn inference_parents(&mut self,)
 	-> Result<Rc<Inference_parentsContextAll<'input>>,ANTLRError> {
@@ -20574,8 +20727,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1393);
 					recog.base.match_token(tptp_v7_0_0_0_T__16,&mut recog.err_handler)?;
@@ -20585,8 +20738,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1394);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -20614,7 +20767,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20633,13 +20786,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Parent_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Parent_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_parent_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_parent_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20681,10 +20836,9 @@ fn parent_info(&self, i: usize) -> Option<Rc<Parent_infoContextAll<'input>>> whe
 
 impl<'input> Parent_listContextAttrs<'input> for Parent_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn parent_list(&mut self,)
 	-> Result<Rc<Parent_listContextAll<'input>>,ANTLRError> {
@@ -20696,8 +20850,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule parent_info*/
 			recog.base.set_state(1400);
@@ -20734,7 +20888,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20753,13 +20907,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Parent_infoContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Parent_infoContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_parent_info(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_parent_info(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20801,10 +20957,9 @@ fn parent_details(&self) -> Option<Rc<Parent_detailsContextAll<'input>>> where S
 
 impl<'input> Parent_infoContextAttrs<'input> for Parent_infoContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn parent_info(&mut self,)
 	-> Result<Rc<Parent_infoContextAll<'input>>,ANTLRError> {
@@ -20816,8 +20971,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule source*/
 			recog.base.set_state(1408);
@@ -20847,7 +21002,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20866,13 +21021,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Parent_detailsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Parent_detailsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_parent_details(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_parent_details(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -20911,10 +21068,9 @@ fn general_list(&self) -> Option<Rc<General_listContextAll<'input>>> where Self:
 
 impl<'input> Parent_detailsContextAttrs<'input> for Parent_detailsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn parent_details(&mut self,)
 	-> Result<Rc<Parent_detailsContextAll<'input>>,ANTLRError> {
@@ -20925,8 +21081,8 @@ where
         let mut _localctx: Rc<Parent_detailsContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1412);
 			recog.base.match_token(tptp_v7_0_0_0_T__13,&mut recog.err_handler)?;
@@ -20947,7 +21103,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -20966,13 +21122,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Internal_sourceContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Internal_sourceContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_internal_source(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_internal_source(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21014,10 +21172,9 @@ fn optional_info(&self) -> Option<Rc<Optional_infoContextAll<'input>>> where Sel
 
 impl<'input> Internal_sourceContextAttrs<'input> for Internal_sourceContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn internal_source(&mut self,)
 	-> Result<Rc<Internal_sourceContextAll<'input>>,ANTLRError> {
@@ -21029,8 +21186,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1415);
 			recog.base.match_token(tptp_v7_0_0_0_T__27,&mut recog.err_handler)?;
@@ -21066,7 +21223,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21085,13 +21242,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Intro_typeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Intro_typeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_intro_type(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_intro_type(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21132,10 +21291,9 @@ fn Lower_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Intro_typeContextAttrs<'input> for Intro_typeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn intro_type(&mut self,)
 	-> Result<Rc<Intro_typeContextAll<'input>>,ANTLRError> {
@@ -21146,8 +21304,8 @@ where
         let mut _localctx: Rc<Intro_typeContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1422);
 			recog.base.match_token(tptp_v7_0_0_0_Lower_word,&mut recog.err_handler)?;
@@ -21164,7 +21322,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21183,13 +21341,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for External_sourceContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for External_sourceContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_external_source(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_external_source(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21234,10 +21394,9 @@ fn creator_source(&self) -> Option<Rc<Creator_sourceContextAll<'input>>> where S
 
 impl<'input> External_sourceContextAttrs<'input> for External_sourceContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn external_source(&mut self,)
 	-> Result<Rc<External_sourceContextAll<'input>>,ANTLRError> {
@@ -21253,8 +21412,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__28 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule file_source*/
 					recog.base.set_state(1424);
@@ -21265,8 +21424,8 @@ where
 
 			tptp_v7_0_0_0_T__29 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule theory*/
 					recog.base.set_state(1425);
@@ -21277,8 +21436,8 @@ where
 
 			tptp_v7_0_0_0_T__30 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule creator_source*/
 					recog.base.set_state(1426);
@@ -21300,7 +21459,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21319,13 +21478,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for File_sourceContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for File_sourceContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_file_source(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_file_source(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21367,10 +21528,9 @@ fn file_info(&self) -> Option<Rc<File_infoContextAll<'input>>> where Self:Sized{
 
 impl<'input> File_sourceContextAttrs<'input> for File_sourceContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn file_source(&mut self,)
 	-> Result<Rc<File_sourceContextAll<'input>>,ANTLRError> {
@@ -21382,8 +21542,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1429);
 			recog.base.match_token(tptp_v7_0_0_0_T__28,&mut recog.err_handler)?;
@@ -21419,7 +21579,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21438,13 +21598,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for File_infoContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for File_infoContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_file_info(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_file_info(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21483,10 +21645,9 @@ fn name(&self) -> Option<Rc<NameContextAll<'input>>> where Self:Sized{
 
 impl<'input> File_infoContextAttrs<'input> for File_infoContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn file_info(&mut self,)
 	-> Result<Rc<File_infoContextAll<'input>>,ANTLRError> {
@@ -21497,8 +21658,8 @@ where
         let mut _localctx: Rc<File_infoContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1436);
 			recog.base.match_token(tptp_v7_0_0_0_T__1,&mut recog.err_handler)?;
@@ -21519,7 +21680,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21538,13 +21699,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for TheoryContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for TheoryContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_theory(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_theory(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21586,10 +21749,9 @@ fn optional_info(&self) -> Option<Rc<Optional_infoContextAll<'input>>> where Sel
 
 impl<'input> TheoryContextAttrs<'input> for TheoryContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn theory(&mut self,)
 	-> Result<Rc<TheoryContextAll<'input>>,ANTLRError> {
@@ -21601,8 +21763,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1439);
 			recog.base.match_token(tptp_v7_0_0_0_T__29,&mut recog.err_handler)?;
@@ -21638,7 +21800,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21657,13 +21819,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Theory_nameContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Theory_nameContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_theory_name(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_theory_name(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21704,10 +21868,9 @@ fn Lower_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Theory_nameContextAttrs<'input> for Theory_nameContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn theory_name(&mut self,)
 	-> Result<Rc<Theory_nameContextAll<'input>>,ANTLRError> {
@@ -21718,8 +21881,8 @@ where
         let mut _localctx: Rc<Theory_nameContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1446);
 			recog.base.match_token(tptp_v7_0_0_0_Lower_word,&mut recog.err_handler)?;
@@ -21736,7 +21899,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21755,13 +21918,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Creator_sourceContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Creator_sourceContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_creator_source(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_creator_source(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21803,10 +21968,9 @@ fn optional_info(&self) -> Option<Rc<Optional_infoContextAll<'input>>> where Sel
 
 impl<'input> Creator_sourceContextAttrs<'input> for Creator_sourceContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn creator_source(&mut self,)
 	-> Result<Rc<Creator_sourceContextAll<'input>>,ANTLRError> {
@@ -21818,8 +21982,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1448);
 			recog.base.match_token(tptp_v7_0_0_0_T__30,&mut recog.err_handler)?;
@@ -21855,7 +22019,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21874,13 +22038,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Creator_nameContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Creator_nameContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_creator_name(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_creator_name(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -21919,10 +22085,9 @@ fn atomic_word(&self) -> Option<Rc<Atomic_wordContextAll<'input>>> where Self:Si
 
 impl<'input> Creator_nameContextAttrs<'input> for Creator_nameContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn creator_name(&mut self,)
 	-> Result<Rc<Creator_nameContextAll<'input>>,ANTLRError> {
@@ -21933,8 +22098,8 @@ where
         let mut _localctx: Rc<Creator_nameContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_word*/
 			recog.base.set_state(1455);
@@ -21952,7 +22117,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -21971,13 +22136,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Optional_infoContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Optional_infoContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_optional_info(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_optional_info(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22016,10 +22183,9 @@ fn useful_info(&self) -> Option<Rc<Useful_infoContextAll<'input>>> where Self:Si
 
 impl<'input> Optional_infoContextAttrs<'input> for Optional_infoContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn optional_info(&mut self,)
 	-> Result<Rc<Optional_infoContextAll<'input>>,ANTLRError> {
@@ -22030,8 +22196,8 @@ where
         let mut _localctx: Rc<Optional_infoContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1457);
 			recog.base.match_token(tptp_v7_0_0_0_T__1,&mut recog.err_handler)?;
@@ -22052,7 +22218,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22071,13 +22237,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Useful_infoContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Useful_infoContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_useful_info(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_useful_info(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22119,10 +22287,9 @@ fn general_list(&self) -> Option<Rc<General_listContextAll<'input>>> where Self:
 
 impl<'input> Useful_infoContextAttrs<'input> for Useful_infoContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn useful_info(&mut self,)
 	-> Result<Rc<Useful_infoContextAll<'input>>,ANTLRError> {
@@ -22137,8 +22304,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(109,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1460);
 					recog.base.match_token(tptp_v7_0_0_0_T__16,&mut recog.err_handler)?;
@@ -22147,8 +22314,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1461);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -22164,8 +22331,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule general_list*/
 					recog.base.set_state(1465);
@@ -22187,7 +22354,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22206,13 +22373,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Info_itemsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Info_itemsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_info_items(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_info_items(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22254,10 +22423,9 @@ fn info_item(&self, i: usize) -> Option<Rc<Info_itemContextAll<'input>>> where S
 
 impl<'input> Info_itemsContextAttrs<'input> for Info_itemsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn info_items(&mut self,)
 	-> Result<Rc<Info_itemsContextAll<'input>>,ANTLRError> {
@@ -22269,8 +22437,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule info_item*/
 			recog.base.set_state(1468);
@@ -22307,7 +22475,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22326,13 +22494,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Info_itemContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Info_itemContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_info_item(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_info_item(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22377,10 +22547,9 @@ fn general_function(&self) -> Option<Rc<General_functionContextAll<'input>>> whe
 
 impl<'input> Info_itemContextAttrs<'input> for Info_itemContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn info_item(&mut self,)
 	-> Result<Rc<Info_itemContextAll<'input>>,ANTLRError> {
@@ -22395,8 +22564,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(111,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule formula_item*/
 					recog.base.set_state(1476);
@@ -22406,8 +22575,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule inference_item*/
 					recog.base.set_state(1477);
@@ -22417,8 +22586,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule general_function*/
 					recog.base.set_state(1478);
@@ -22440,7 +22609,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22459,13 +22628,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Formula_itemContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Formula_itemContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_formula_item(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_formula_item(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22507,10 +22678,9 @@ fn iquote_item(&self) -> Option<Rc<Iquote_itemContextAll<'input>>> where Self:Si
 
 impl<'input> Formula_itemContextAttrs<'input> for Formula_itemContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn formula_item(&mut self,)
 	-> Result<Rc<Formula_itemContextAll<'input>>,ANTLRError> {
@@ -22526,8 +22696,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__31 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule description_item*/
 					recog.base.set_state(1481);
@@ -22538,8 +22708,8 @@ where
 
 			tptp_v7_0_0_0_T__32 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule iquote_item*/
 					recog.base.set_state(1482);
@@ -22561,7 +22731,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22580,13 +22750,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Description_itemContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Description_itemContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_description_item(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_description_item(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22625,10 +22797,9 @@ fn atomic_word(&self) -> Option<Rc<Atomic_wordContextAll<'input>>> where Self:Si
 
 impl<'input> Description_itemContextAttrs<'input> for Description_itemContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn description_item(&mut self,)
 	-> Result<Rc<Description_itemContextAll<'input>>,ANTLRError> {
@@ -22639,8 +22810,8 @@ where
         let mut _localctx: Rc<Description_itemContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1485);
 			recog.base.match_token(tptp_v7_0_0_0_T__31,&mut recog.err_handler)?;
@@ -22664,7 +22835,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22683,13 +22854,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Iquote_itemContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Iquote_itemContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_iquote_item(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_iquote_item(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22728,10 +22901,9 @@ fn atomic_word(&self) -> Option<Rc<Atomic_wordContextAll<'input>>> where Self:Si
 
 impl<'input> Iquote_itemContextAttrs<'input> for Iquote_itemContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn iquote_item(&mut self,)
 	-> Result<Rc<Iquote_itemContextAll<'input>>,ANTLRError> {
@@ -22742,8 +22914,8 @@ where
         let mut _localctx: Rc<Iquote_itemContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1489);
 			recog.base.match_token(tptp_v7_0_0_0_T__32,&mut recog.err_handler)?;
@@ -22767,7 +22939,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22786,13 +22958,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Inference_itemContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Inference_itemContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_inference_item(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_inference_item(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22840,10 +23014,9 @@ fn refutation(&self) -> Option<Rc<RefutationContextAll<'input>>> where Self:Size
 
 impl<'input> Inference_itemContextAttrs<'input> for Inference_itemContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn inference_item(&mut self,)
 	-> Result<Rc<Inference_itemContextAll<'input>>,ANTLRError> {
@@ -22859,8 +23032,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__33 |tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule inference_status*/
 					recog.base.set_state(1493);
@@ -22871,8 +23044,8 @@ where
 
 			tptp_v7_0_0_0_T__34 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule assumptions_record*/
 					recog.base.set_state(1494);
@@ -22883,8 +23056,8 @@ where
 
 			tptp_v7_0_0_0_T__36 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule new_symbol_record*/
 					recog.base.set_state(1495);
@@ -22895,8 +23068,8 @@ where
 
 			tptp_v7_0_0_0_T__35 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule refutation*/
 					recog.base.set_state(1496);
@@ -22918,7 +23091,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -22937,13 +23110,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Inference_statusContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Inference_statusContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_inference_status(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_inference_status(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -22985,10 +23160,9 @@ fn inference_info(&self) -> Option<Rc<Inference_infoContextAll<'input>>> where S
 
 impl<'input> Inference_statusContextAttrs<'input> for Inference_statusContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn inference_status(&mut self,)
 	-> Result<Rc<Inference_statusContextAll<'input>>,ANTLRError> {
@@ -23004,8 +23178,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__33 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1499);
 					recog.base.match_token(tptp_v7_0_0_0_T__33,&mut recog.err_handler)?;
@@ -23022,8 +23196,8 @@ where
 
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule inference_info*/
 					recog.base.set_state(1503);
@@ -23045,7 +23219,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23064,13 +23238,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Status_valueContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Status_valueContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_status_value(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_status_value(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23111,10 +23287,9 @@ fn Lower_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContext
 
 impl<'input> Status_valueContextAttrs<'input> for Status_valueContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn status_value(&mut self,)
 	-> Result<Rc<Status_valueContextAll<'input>>,ANTLRError> {
@@ -23125,8 +23300,8 @@ where
         let mut _localctx: Rc<Status_valueContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1506);
 			recog.base.match_token(tptp_v7_0_0_0_Lower_word,&mut recog.err_handler)?;
@@ -23143,7 +23318,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23162,13 +23337,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Inference_infoContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Inference_infoContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_inference_info(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_inference_info(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23213,10 +23390,9 @@ fn general_list(&self) -> Option<Rc<General_listContextAll<'input>>> where Self:
 
 impl<'input> Inference_infoContextAttrs<'input> for Inference_infoContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn inference_info(&mut self,)
 	-> Result<Rc<Inference_infoContextAll<'input>>,ANTLRError> {
@@ -23227,8 +23403,8 @@ where
         let mut _localctx: Rc<Inference_infoContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule inference_rule*/
 			recog.base.set_state(1508);
@@ -23263,7 +23439,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23282,13 +23458,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Assumptions_recordContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Assumptions_recordContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_assumptions_record(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_assumptions_record(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23327,10 +23505,9 @@ fn name_list(&self) -> Option<Rc<Name_listContextAll<'input>>> where Self:Sized{
 
 impl<'input> Assumptions_recordContextAttrs<'input> for Assumptions_recordContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn assumptions_record(&mut self,)
 	-> Result<Rc<Assumptions_recordContextAll<'input>>,ANTLRError> {
@@ -23341,8 +23518,8 @@ where
         let mut _localctx: Rc<Assumptions_recordContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1515);
 			recog.base.match_token(tptp_v7_0_0_0_T__34,&mut recog.err_handler)?;
@@ -23372,7 +23549,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23391,13 +23568,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for RefutationContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for RefutationContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_refutation(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_refutation(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23436,10 +23615,9 @@ fn file_source(&self) -> Option<Rc<File_sourceContextAll<'input>>> where Self:Si
 
 impl<'input> RefutationContextAttrs<'input> for RefutationContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn refutation(&mut self,)
 	-> Result<Rc<RefutationContextAll<'input>>,ANTLRError> {
@@ -23450,8 +23628,8 @@ where
         let mut _localctx: Rc<RefutationContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1521);
 			recog.base.match_token(tptp_v7_0_0_0_T__35,&mut recog.err_handler)?;
@@ -23475,7 +23653,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23494,13 +23672,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for New_symbol_recordContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for New_symbol_recordContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_new_symbol_record(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_new_symbol_record(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23542,10 +23722,9 @@ fn new_symbol_list(&self) -> Option<Rc<New_symbol_listContextAll<'input>>> where
 
 impl<'input> New_symbol_recordContextAttrs<'input> for New_symbol_recordContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn new_symbol_record(&mut self,)
 	-> Result<Rc<New_symbol_recordContextAll<'input>>,ANTLRError> {
@@ -23556,8 +23735,8 @@ where
         let mut _localctx: Rc<New_symbol_recordContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1525);
 			recog.base.match_token(tptp_v7_0_0_0_T__36,&mut recog.err_handler)?;
@@ -23594,7 +23773,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23613,13 +23792,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for New_symbol_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for New_symbol_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_new_symbol_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_new_symbol_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23661,10 +23842,9 @@ fn principal_symbol(&self, i: usize) -> Option<Rc<Principal_symbolContextAll<'in
 
 impl<'input> New_symbol_listContextAttrs<'input> for New_symbol_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn new_symbol_list(&mut self,)
 	-> Result<Rc<New_symbol_listContextAll<'input>>,ANTLRError> {
@@ -23676,8 +23856,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule principal_symbol*/
 			recog.base.set_state(1533);
@@ -23714,7 +23894,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23733,13 +23913,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Principal_symbolContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Principal_symbolContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_principal_symbol(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_principal_symbol(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23781,10 +23963,9 @@ fn variable(&self) -> Option<Rc<VariableContextAll<'input>>> where Self:Sized{
 
 impl<'input> Principal_symbolContextAttrs<'input> for Principal_symbolContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn principal_symbol(&mut self,)
 	-> Result<Rc<Principal_symbolContextAll<'input>>,ANTLRError> {
@@ -23800,8 +23981,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule functor*/
 					recog.base.set_state(1541);
@@ -23812,8 +23993,8 @@ where
 
 			tptp_v7_0_0_0_Upper_word 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(1542);
@@ -23835,7 +24016,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23854,13 +24035,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for IncludeContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for IncludeContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_include(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_include(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -23902,10 +24085,9 @@ fn formula_selection(&self) -> Option<Rc<Formula_selectionContextAll<'input>>> w
 
 impl<'input> IncludeContextAttrs<'input> for IncludeContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn include(&mut self,)
 	-> Result<Rc<IncludeContextAll<'input>>,ANTLRError> {
@@ -23917,8 +24099,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1545);
 			recog.base.match_token(tptp_v7_0_0_0_T__37,&mut recog.err_handler)?;
@@ -23954,7 +24136,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -23973,13 +24155,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Formula_selectionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Formula_selectionContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_formula_selection(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_formula_selection(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24018,10 +24202,9 @@ fn name_list(&self) -> Option<Rc<Name_listContextAll<'input>>> where Self:Sized{
 
 impl<'input> Formula_selectionContextAttrs<'input> for Formula_selectionContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn formula_selection(&mut self,)
 	-> Result<Rc<Formula_selectionContextAll<'input>>,ANTLRError> {
@@ -24032,8 +24215,8 @@ where
         let mut _localctx: Rc<Formula_selectionContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1552);
 			recog.base.match_token(tptp_v7_0_0_0_T__1,&mut recog.err_handler)?;
@@ -24060,7 +24243,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24079,13 +24262,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Name_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Name_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_name_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_name_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24127,10 +24312,9 @@ fn name(&self, i: usize) -> Option<Rc<NameContextAll<'input>>> where Self:Sized{
 
 impl<'input> Name_listContextAttrs<'input> for Name_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn name_list(&mut self,)
 	-> Result<Rc<Name_listContextAll<'input>>,ANTLRError> {
@@ -24142,8 +24326,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule name*/
 			recog.base.set_state(1557);
@@ -24180,7 +24364,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24199,13 +24383,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for General_termContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for General_termContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_general_term(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_general_term(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24250,10 +24436,9 @@ fn general_list(&self) -> Option<Rc<General_listContextAll<'input>>> where Self:
 
 impl<'input> General_termContextAttrs<'input> for General_termContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn general_term(&mut self,)
 	-> Result<Rc<General_termContextAll<'input>>,ANTLRError> {
@@ -24268,8 +24453,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(119,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule general_data*/
 					recog.base.set_state(1565);
@@ -24279,8 +24464,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule general_data*/
 					recog.base.set_state(1566);
@@ -24297,8 +24482,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule general_list*/
 					recog.base.set_state(1570);
@@ -24320,7 +24505,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24339,13 +24524,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for General_dataContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for General_dataContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_general_data(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_general_data(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24401,10 +24588,9 @@ fn formula_data(&self) -> Option<Rc<Formula_dataContextAll<'input>>> where Self:
 
 impl<'input> General_dataContextAttrs<'input> for General_dataContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn general_data(&mut self,)
 	-> Result<Rc<General_dataContextAll<'input>>,ANTLRError> {
@@ -24419,8 +24605,8 @@ where
 			recog.err_handler.sync(&mut recog.base)?;
 			match  recog.interpreter.adaptive_predict(120,&mut recog.base)? {
 				1 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule atomic_word*/
 					recog.base.set_state(1573);
@@ -24430,8 +24616,8 @@ where
 				}
 			,
 				2 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					/*InvokeRule general_function*/
 					recog.base.set_state(1574);
@@ -24441,8 +24627,8 @@ where
 				}
 			,
 				3 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					/*InvokeRule variable*/
 					recog.base.set_state(1575);
@@ -24452,8 +24638,8 @@ where
 				}
 			,
 				4 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					/*InvokeRule number*/
 					recog.base.set_state(1576);
@@ -24463,8 +24649,8 @@ where
 				}
 			,
 				5 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					recog.base.set_state(1577);
 					recog.base.match_token(tptp_v7_0_0_0_Distinct_object,&mut recog.err_handler)?;
@@ -24473,8 +24659,8 @@ where
 				}
 			,
 				6 =>{
-					//recog.base.enter_outer_alt(_localctx.clone(), 6);
-					recog.base.enter_outer_alt(None, 6);
+					//recog.base.enter_outer_alt(_localctx.clone(), 6)?;
+					recog.base.enter_outer_alt(None, 6)?;
 					{
 					/*InvokeRule formula_data*/
 					recog.base.set_state(1578);
@@ -24496,7 +24682,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24515,13 +24701,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for General_functionContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for General_functionContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_general_function(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_general_function(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24563,10 +24751,9 @@ fn general_terms(&self) -> Option<Rc<General_termsContextAll<'input>>> where Sel
 
 impl<'input> General_functionContextAttrs<'input> for General_functionContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn general_function(&mut self,)
 	-> Result<Rc<General_functionContextAll<'input>>,ANTLRError> {
@@ -24577,8 +24764,8 @@ where
         let mut _localctx: Rc<General_functionContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule atomic_word*/
 			recog.base.set_state(1581);
@@ -24606,7 +24793,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24625,13 +24812,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Formula_dataContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Formula_dataContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_formula_data(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_formula_data(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24682,10 +24871,9 @@ fn fof_term(&self) -> Option<Rc<Fof_termContextAll<'input>>> where Self:Sized{
 
 impl<'input> Formula_dataContextAttrs<'input> for Formula_dataContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn formula_data(&mut self,)
 	-> Result<Rc<Formula_dataContextAll<'input>>,ANTLRError> {
@@ -24701,8 +24889,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__38 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1586);
 					recog.base.match_token(tptp_v7_0_0_0_T__38,&mut recog.err_handler)?;
@@ -24719,8 +24907,8 @@ where
 
 			tptp_v7_0_0_0_T__39 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1590);
 					recog.base.match_token(tptp_v7_0_0_0_T__39,&mut recog.err_handler)?;
@@ -24737,8 +24925,8 @@ where
 
 			tptp_v7_0_0_0_T__40 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 3);
-					recog.base.enter_outer_alt(None, 3);
+					//recog.base.enter_outer_alt(_localctx.clone(), 3)?;
+					recog.base.enter_outer_alt(None, 3)?;
 					{
 					recog.base.set_state(1594);
 					recog.base.match_token(tptp_v7_0_0_0_T__40,&mut recog.err_handler)?;
@@ -24755,8 +24943,8 @@ where
 
 			tptp_v7_0_0_0_T__41 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 4);
-					recog.base.enter_outer_alt(None, 4);
+					//recog.base.enter_outer_alt(_localctx.clone(), 4)?;
+					recog.base.enter_outer_alt(None, 4)?;
 					{
 					recog.base.set_state(1598);
 					recog.base.match_token(tptp_v7_0_0_0_T__41,&mut recog.err_handler)?;
@@ -24773,8 +24961,8 @@ where
 
 			tptp_v7_0_0_0_T__42 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 5);
-					recog.base.enter_outer_alt(None, 5);
+					//recog.base.enter_outer_alt(_localctx.clone(), 5)?;
+					recog.base.enter_outer_alt(None, 5)?;
 					{
 					recog.base.set_state(1602);
 					recog.base.match_token(tptp_v7_0_0_0_T__42,&mut recog.err_handler)?;
@@ -24802,7 +24990,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24821,13 +25009,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for General_listContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for General_listContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_general_list(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_general_list(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24866,10 +25056,9 @@ fn general_terms(&self) -> Option<Rc<General_termsContextAll<'input>>> where Sel
 
 impl<'input> General_listContextAttrs<'input> for General_listContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn general_list(&mut self,)
 	-> Result<Rc<General_listContextAll<'input>>,ANTLRError> {
@@ -24885,8 +25074,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_T__16 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					recog.base.set_state(1608);
 					recog.base.match_token(tptp_v7_0_0_0_T__16,&mut recog.err_handler)?;
@@ -24896,8 +25085,8 @@ where
 
 			tptp_v7_0_0_0_T__11 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1609);
 					recog.base.match_token(tptp_v7_0_0_0_T__11,&mut recog.err_handler)?;
@@ -24925,7 +25114,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -24944,13 +25133,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for General_termsContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for General_termsContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_general_terms(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_general_terms(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -24992,10 +25183,9 @@ fn general_term(&self, i: usize) -> Option<Rc<General_termContextAll<'input>>> w
 
 impl<'input> General_termsContextAttrs<'input> for General_termsContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn general_terms(&mut self,)
 	-> Result<Rc<General_termsContextAll<'input>>,ANTLRError> {
@@ -25007,8 +25197,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			/*InvokeRule general_term*/
 			recog.base.set_state(1615);
@@ -25045,7 +25235,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -25064,13 +25254,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for NameContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for NameContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_name(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_name(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -25114,10 +25306,9 @@ fn Integer(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextTyp
 
 impl<'input> NameContextAttrs<'input> for NameContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn name(&mut self,)
 	-> Result<Rc<NameContextAll<'input>>,ANTLRError> {
@@ -25133,8 +25324,8 @@ where
 			match recog.base.input.la(1) {
 			tptp_v7_0_0_0_Lower_word |tptp_v7_0_0_0_Single_quoted 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 1);
-					recog.base.enter_outer_alt(None, 1);
+					//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+					recog.base.enter_outer_alt(None, 1)?;
 					{
 					/*InvokeRule atomic_word*/
 					recog.base.set_state(1623);
@@ -25145,8 +25336,8 @@ where
 
 			tptp_v7_0_0_0_Integer 
 				=> {
-					//recog.base.enter_outer_alt(_localctx.clone(), 2);
-					recog.base.enter_outer_alt(None, 2);
+					//recog.base.enter_outer_alt(_localctx.clone(), 2)?;
+					recog.base.enter_outer_alt(None, 2)?;
 					{
 					recog.base.set_state(1624);
 					recog.base.match_token(tptp_v7_0_0_0_Integer,&mut recog.err_handler)?;
@@ -25167,7 +25358,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -25186,13 +25377,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Atomic_wordContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Atomic_wordContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_atomic_word(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_atomic_word(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -25238,10 +25431,9 @@ fn Single_quoted(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserCont
 
 impl<'input> Atomic_wordContextAttrs<'input> for Atomic_wordContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn atomic_word(&mut self,)
 	-> Result<Rc<Atomic_wordContextAll<'input>>,ANTLRError> {
@@ -25253,8 +25445,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1627);
 			_la = recog.base.input.la(1);
@@ -25279,7 +25471,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -25298,13 +25490,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Atomic_defined_wordContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Atomic_defined_wordContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_atomic_defined_word(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_atomic_defined_word(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -25345,10 +25539,9 @@ fn Dollar_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContex
 
 impl<'input> Atomic_defined_wordContextAttrs<'input> for Atomic_defined_wordContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn atomic_defined_word(&mut self,)
 	-> Result<Rc<Atomic_defined_wordContextAll<'input>>,ANTLRError> {
@@ -25359,8 +25552,8 @@ where
         let mut _localctx: Rc<Atomic_defined_wordContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1629);
 			recog.base.match_token(tptp_v7_0_0_0_Dollar_word,&mut recog.err_handler)?;
@@ -25377,7 +25570,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -25396,13 +25589,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for Atomic_system_wordContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for Atomic_system_wordContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_atomic_system_word(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_atomic_system_word(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -25443,10 +25638,9 @@ fn Dollar_dollar_word(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0Parse
 
 impl<'input> Atomic_system_wordContextAttrs<'input> for Atomic_system_wordContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn atomic_system_word(&mut self,)
 	-> Result<Rc<Atomic_system_wordContextAll<'input>>,ANTLRError> {
@@ -25457,8 +25651,8 @@ where
         let mut _localctx: Rc<Atomic_system_wordContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1631);
 			recog.base.match_token(tptp_v7_0_0_0_Dollar_dollar_word,&mut recog.err_handler)?;
@@ -25475,7 +25669,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -25494,13 +25688,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for NumberContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for NumberContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_number(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_number(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -25551,10 +25747,9 @@ fn Real(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserContextType>>
 
 impl<'input> NumberContextAttrs<'input> for NumberContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn number(&mut self,)
 	-> Result<Rc<NumberContextAll<'input>>,ANTLRError> {
@@ -25566,8 +25761,8 @@ where
 		let mut _la: i32 = -1;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1633);
 			_la = recog.base.input.la(1);
@@ -25592,7 +25787,7 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
@@ -25611,13 +25806,15 @@ ph:PhantomData<&'input str>
 impl<'input> tptp_v7_0_0_0ParserContext<'input> for File_nameContext<'input>{}
 
 impl<'input,'a> Listenable<dyn tptp_v7_0_0_0Listener<'input> + 'a> for File_nameContext<'input>{
-		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
-			listener.enter_every_rule(self);
+		fn enter(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
+			listener.enter_every_rule(self)?;
 			listener.enter_file_name(self);
+			Ok(())
 		}
-		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) {
+		fn exit(&self,listener: &mut (dyn tptp_v7_0_0_0Listener<'input> + 'a)) -> Result<(), ANTLRError> {
 			listener.exit_file_name(self);
-			listener.exit_every_rule(self);
+			listener.exit_every_rule(self)?;
+			Ok(())
 		}
 }
 
@@ -25658,10 +25855,9 @@ fn Single_quoted(&self) -> Option<Rc<TerminalNode<'input,tptp_v7_0_0_0ParserCont
 
 impl<'input> File_nameContextAttrs<'input> for File_nameContext<'input>{}
 
-impl<'input, I, H> tptp_v7_0_0_0Parser<'input, I, H>
+impl<'input, I> tptp_v7_0_0_0Parser<'input, I>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input> > + TidAble<'input>,
-    H: ErrorStrategy<'input,BaseParserType<'input,I>>
 {
 	pub fn file_name(&mut self,)
 	-> Result<Rc<File_nameContextAll<'input>>,ANTLRError> {
@@ -25672,8 +25868,8 @@ where
         let mut _localctx: Rc<File_nameContextAll> = _localctx;
 		let result: Result<(), ANTLRError> = (|| {
 
-			//recog.base.enter_outer_alt(_localctx.clone(), 1);
-			recog.base.enter_outer_alt(None, 1);
+			//recog.base.enter_outer_alt(_localctx.clone(), 1)?;
+			recog.base.enter_outer_alt(None, 1)?;
 			{
 			recog.base.set_state(1635);
 			recog.base.match_token(tptp_v7_0_0_0_Single_quoted,&mut recog.err_handler)?;
@@ -25690,14 +25886,14 @@ where
 				recog.err_handler.recover(&mut recog.base, re)?;
 			}
 		}
-		recog.base.exit_rule();
+		recog.base.exit_rule()?;
 
 		Ok(_localctx)
 	}
 }
 	lazy_static!{
     static ref _ATN: Arc<ATN> =
-        Arc::new(ATNDeserializer::new(None).deserialize(&mut _serializedATN.into_iter()));
+        Arc::new(ATNDeserializer::new(None).deserialize(&mut _serializedATN.iter()));
     static ref _decision_to_DFA: Arc<Vec<antlr4rust::RwLock<DFA>>> = {
         let mut dfa = Vec::new();
         let size = _ATN.decision_to_state.len() as i32;
@@ -25710,743 +25906,755 @@ where
         }
         Arc::new(dfa)
     };
-    }
-const _serializedATN: [i32; 13561] = [
-	4, 1, 99, 1638, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 
-	4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7, 
-	10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15, 
-	2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 7, 20, 2, 
-	21, 7, 21, 2, 22, 7, 22, 2, 23, 7, 23, 2, 24, 7, 24, 2, 25, 7, 25, 2, 26, 
-	7, 26, 2, 27, 7, 27, 2, 28, 7, 28, 2, 29, 7, 29, 2, 30, 7, 30, 2, 31, 7, 
-	31, 2, 32, 7, 32, 2, 33, 7, 33, 2, 34, 7, 34, 2, 35, 7, 35, 2, 36, 7, 36, 
-	2, 37, 7, 37, 2, 38, 7, 38, 2, 39, 7, 39, 2, 40, 7, 40, 2, 41, 7, 41, 2, 
-	42, 7, 42, 2, 43, 7, 43, 2, 44, 7, 44, 2, 45, 7, 45, 2, 46, 7, 46, 2, 47, 
-	7, 47, 2, 48, 7, 48, 2, 49, 7, 49, 2, 50, 7, 50, 2, 51, 7, 51, 2, 52, 7, 
-	52, 2, 53, 7, 53, 2, 54, 7, 54, 2, 55, 7, 55, 2, 56, 7, 56, 2, 57, 7, 57, 
-	2, 58, 7, 58, 2, 59, 7, 59, 2, 60, 7, 60, 2, 61, 7, 61, 2, 62, 7, 62, 2, 
-	63, 7, 63, 2, 64, 7, 64, 2, 65, 7, 65, 2, 66, 7, 66, 2, 67, 7, 67, 2, 68, 
-	7, 68, 2, 69, 7, 69, 2, 70, 7, 70, 2, 71, 7, 71, 2, 72, 7, 72, 2, 73, 7, 
-	73, 2, 74, 7, 74, 2, 75, 7, 75, 2, 76, 7, 76, 2, 77, 7, 77, 2, 78, 7, 78, 
-	2, 79, 7, 79, 2, 80, 7, 80, 2, 81, 7, 81, 2, 82, 7, 82, 2, 83, 7, 83, 2, 
-	84, 7, 84, 2, 85, 7, 85, 2, 86, 7, 86, 2, 87, 7, 87, 2, 88, 7, 88, 2, 89, 
-	7, 89, 2, 90, 7, 90, 2, 91, 7, 91, 2, 92, 7, 92, 2, 93, 7, 93, 2, 94, 7, 
-	94, 2, 95, 7, 95, 2, 96, 7, 96, 2, 97, 7, 97, 2, 98, 7, 98, 2, 99, 7, 99, 
-	2, 100, 7, 100, 2, 101, 7, 101, 2, 102, 7, 102, 2, 103, 7, 103, 2, 104, 
-	7, 104, 2, 105, 7, 105, 2, 106, 7, 106, 2, 107, 7, 107, 2, 108, 7, 108, 
-	2, 109, 7, 109, 2, 110, 7, 110, 2, 111, 7, 111, 2, 112, 7, 112, 2, 113, 
-	7, 113, 2, 114, 7, 114, 2, 115, 7, 115, 2, 116, 7, 116, 2, 117, 7, 117, 
-	2, 118, 7, 118, 2, 119, 7, 119, 2, 120, 7, 120, 2, 121, 7, 121, 2, 122, 
-	7, 122, 2, 123, 7, 123, 2, 124, 7, 124, 2, 125, 7, 125, 2, 126, 7, 126, 
-	2, 127, 7, 127, 2, 128, 7, 128, 2, 129, 7, 129, 2, 130, 7, 130, 2, 131, 
-	7, 131, 2, 132, 7, 132, 2, 133, 7, 133, 2, 134, 7, 134, 2, 135, 7, 135, 
-	2, 136, 7, 136, 2, 137, 7, 137, 2, 138, 7, 138, 2, 139, 7, 139, 2, 140, 
-	7, 140, 2, 141, 7, 141, 2, 142, 7, 142, 2, 143, 7, 143, 2, 144, 7, 144, 
-	2, 145, 7, 145, 2, 146, 7, 146, 2, 147, 7, 147, 2, 148, 7, 148, 2, 149, 
-	7, 149, 2, 150, 7, 150, 2, 151, 7, 151, 2, 152, 7, 152, 2, 153, 7, 153, 
-	2, 154, 7, 154, 2, 155, 7, 155, 2, 156, 7, 156, 2, 157, 7, 157, 2, 158, 
-	7, 158, 2, 159, 7, 159, 2, 160, 7, 160, 2, 161, 7, 161, 2, 162, 7, 162, 
-	2, 163, 7, 163, 2, 164, 7, 164, 2, 165, 7, 165, 2, 166, 7, 166, 2, 167, 
-	7, 167, 2, 168, 7, 168, 2, 169, 7, 169, 2, 170, 7, 170, 2, 171, 7, 171, 
-	2, 172, 7, 172, 2, 173, 7, 173, 2, 174, 7, 174, 2, 175, 7, 175, 2, 176, 
-	7, 176, 2, 177, 7, 177, 2, 178, 7, 178, 2, 179, 7, 179, 2, 180, 7, 180, 
-	2, 181, 7, 181, 2, 182, 7, 182, 2, 183, 7, 183, 2, 184, 7, 184, 2, 185, 
-	7, 185, 2, 186, 7, 186, 2, 187, 7, 187, 2, 188, 7, 188, 2, 189, 7, 189, 
-	2, 190, 7, 190, 2, 191, 7, 191, 2, 192, 7, 192, 2, 193, 7, 193, 2, 194, 
-	7, 194, 2, 195, 7, 195, 2, 196, 7, 196, 2, 197, 7, 197, 2, 198, 7, 198, 
-	2, 199, 7, 199, 2, 200, 7, 200, 1, 0, 5, 0, 404, 8, 0, 10, 0, 12, 0, 407, 
-	9, 0, 1, 0, 1, 0, 1, 1, 1, 1, 3, 1, 413, 8, 1, 1, 2, 1, 2, 1, 2, 1, 2, 
-	1, 2, 1, 2, 1, 2, 3, 2, 422, 8, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 
-	1, 3, 3, 3, 431, 8, 3, 1, 3, 1, 3, 1, 4, 1, 4, 1, 5, 1, 5, 1, 5, 1, 5, 
-	1, 5, 1, 5, 1, 5, 3, 5, 444, 8, 5, 1, 5, 1, 5, 1, 6, 1, 6, 1, 6, 1, 6, 
-	1, 6, 1, 6, 1, 6, 3, 6, 455, 8, 6, 1, 6, 1, 6, 1, 7, 1, 7, 1, 7, 1, 7, 
-	1, 7, 1, 7, 1, 7, 3, 7, 466, 8, 7, 1, 7, 1, 7, 1, 8, 1, 8, 1, 8, 1, 8, 
-	1, 8, 1, 8, 1, 8, 3, 8, 477, 8, 8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1, 9, 
-	1, 9, 1, 9, 1, 9, 3, 9, 488, 8, 9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 1, 
-	10, 1, 10, 1, 10, 1, 10, 3, 10, 499, 8, 10, 1, 10, 1, 10, 1, 11, 1, 11, 
-	1, 11, 3, 11, 506, 8, 11, 1, 12, 1, 12, 1, 13, 1, 13, 3, 13, 512, 8, 13, 
-	1, 14, 1, 14, 1, 14, 1, 14, 3, 14, 518, 8, 14, 1, 15, 1, 15, 1, 15, 3, 
-	15, 523, 8, 15, 1, 16, 1, 16, 1, 16, 1, 16, 1, 17, 1, 17, 1, 17, 3, 17, 
-	532, 8, 17, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 5, 
-	18, 542, 8, 18, 10, 18, 12, 18, 545, 9, 18, 1, 19, 1, 19, 1, 19, 1, 19, 
-	1, 19, 1, 19, 1, 19, 1, 19, 5, 19, 555, 8, 19, 10, 19, 12, 19, 558, 9, 
-	19, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 5, 20, 568, 
-	8, 20, 10, 20, 12, 20, 571, 9, 20, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 
-	21, 1, 21, 1, 21, 1, 21, 1, 21, 3, 21, 583, 8, 21, 1, 22, 1, 22, 1, 22, 
-	1, 23, 1, 23, 1, 23, 1, 23, 1, 23, 1, 23, 1, 24, 1, 24, 1, 24, 5, 24, 597, 
-	8, 24, 10, 24, 12, 24, 600, 9, 24, 1, 25, 1, 25, 3, 25, 604, 8, 25, 1, 
-	26, 1, 26, 1, 26, 1, 26, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 28, 1, 28, 
-	1, 28, 1, 28, 3, 28, 619, 8, 28, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 
-	29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 
-	3, 29, 637, 8, 29, 1, 30, 1, 30, 1, 30, 3, 30, 642, 8, 30, 1, 31, 1, 31, 
-	1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 32, 1, 32, 1, 32, 1, 32, 1, 
-	32, 1, 32, 1, 33, 1, 33, 1, 34, 1, 34, 1, 34, 1, 34, 1, 35, 1, 35, 1, 35, 
-	1, 35, 1, 35, 3, 35, 669, 8, 35, 1, 36, 1, 36, 1, 36, 1, 36, 1, 37, 1, 
-	37, 1, 37, 3, 37, 678, 8, 37, 1, 38, 1, 38, 1, 39, 1, 39, 1, 40, 1, 40, 
-	1, 40, 3, 40, 687, 8, 40, 1, 41, 1, 41, 1, 41, 1, 41, 1, 41, 1, 41, 1, 
-	41, 1, 41, 3, 41, 697, 8, 41, 1, 42, 1, 42, 1, 42, 1, 42, 1, 42, 1, 42, 
-	1, 42, 1, 42, 5, 42, 707, 8, 42, 10, 42, 12, 42, 710, 9, 42, 1, 43, 1, 
-	43, 1, 43, 1, 43, 1, 43, 1, 43, 1, 43, 1, 43, 5, 43, 720, 8, 43, 10, 43, 
-	12, 43, 723, 9, 43, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 1, 
-	44, 3, 44, 733, 8, 44, 1, 45, 1, 45, 1, 45, 1, 45, 1, 45, 1, 45, 1, 45, 
-	1, 45, 1, 45, 1, 45, 3, 45, 745, 8, 45, 1, 46, 1, 46, 1, 46, 5, 46, 750, 
-	8, 46, 10, 46, 12, 46, 753, 9, 46, 1, 47, 1, 47, 3, 47, 757, 8, 47, 1, 
-	48, 1, 48, 1, 49, 1, 49, 1, 49, 3, 49, 764, 8, 49, 1, 50, 1, 50, 1, 50, 
-	3, 50, 769, 8, 50, 1, 51, 1, 51, 3, 51, 773, 8, 51, 1, 52, 1, 52, 1, 52, 
-	1, 52, 1, 53, 1, 53, 3, 53, 781, 8, 53, 1, 54, 1, 54, 1, 54, 1, 54, 1, 
-	54, 1, 54, 1, 54, 1, 54, 5, 54, 791, 8, 54, 10, 54, 12, 54, 794, 9, 54, 
-	1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 5, 55, 804, 8, 
-	55, 10, 55, 12, 55, 807, 9, 55, 1, 56, 1, 56, 1, 56, 1, 56, 1, 56, 1, 56, 
-	1, 56, 1, 56, 1, 56, 3, 56, 818, 8, 56, 1, 57, 1, 57, 1, 57, 1, 57, 1, 
-	57, 1, 57, 1, 57, 1, 58, 1, 58, 1, 58, 5, 58, 830, 8, 58, 10, 58, 12, 58, 
-	833, 9, 58, 1, 59, 1, 59, 3, 59, 837, 8, 59, 1, 60, 1, 60, 1, 60, 1, 60, 
-	1, 61, 1, 61, 1, 61, 1, 61, 3, 61, 847, 8, 61, 1, 62, 1, 62, 1, 63, 1, 
-	63, 1, 63, 1, 63, 1, 63, 1, 63, 1, 63, 1, 63, 1, 64, 1, 64, 1, 64, 1, 64, 
-	1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 3, 64, 871, 8, 
-	64, 1, 65, 1, 65, 1, 65, 1, 65, 1, 65, 3, 65, 878, 8, 65, 1, 66, 1, 66, 
-	1, 66, 5, 66, 883, 8, 66, 10, 66, 12, 66, 886, 9, 66, 1, 67, 1, 67, 1, 
-	67, 1, 67, 1, 67, 1, 67, 1, 67, 1, 67, 3, 67, 896, 8, 67, 1, 68, 1, 68, 
-	1, 68, 1, 68, 1, 68, 1, 68, 1, 68, 1, 68, 3, 68, 906, 8, 68, 1, 69, 1, 
-	69, 1, 69, 1, 69, 1, 69, 3, 69, 913, 8, 69, 1, 70, 1, 70, 1, 70, 5, 70, 
-	918, 8, 70, 10, 70, 12, 70, 921, 9, 70, 1, 71, 1, 71, 1, 71, 1, 71, 1, 
-	71, 1, 71, 1, 71, 1, 71, 3, 71, 931, 8, 71, 1, 72, 1, 72, 1, 72, 1, 72, 
-	1, 72, 1, 72, 1, 72, 1, 72, 3, 72, 941, 8, 72, 1, 73, 1, 73, 1, 73, 1, 
-	73, 1, 73, 1, 73, 1, 73, 1, 73, 3, 73, 951, 8, 73, 1, 74, 1, 74, 1, 74, 
-	1, 74, 1, 74, 3, 74, 958, 8, 74, 1, 75, 1, 75, 1, 75, 5, 75, 963, 8, 75, 
-	10, 75, 12, 75, 966, 9, 75, 1, 76, 1, 76, 1, 76, 1, 76, 1, 76, 1, 76, 1, 
-	76, 1, 76, 3, 76, 976, 8, 76, 1, 77, 1, 77, 1, 77, 1, 77, 1, 78, 1, 78, 
-	1, 78, 1, 78, 1, 78, 1, 78, 1, 78, 3, 78, 989, 8, 78, 1, 79, 1, 79, 1, 
-	79, 1, 79, 1, 79, 1, 79, 1, 79, 1, 80, 1, 80, 1, 80, 1, 80, 1, 80, 3, 80, 
-	1003, 8, 80, 1, 81, 1, 81, 1, 81, 1, 81, 1, 81, 3, 81, 1010, 8, 81, 1, 
-	82, 1, 82, 1, 82, 1, 82, 1, 82, 1, 82, 1, 82, 1, 82, 3, 82, 1020, 8, 82, 
-	1, 83, 1, 83, 1, 83, 5, 83, 1025, 8, 83, 10, 83, 12, 83, 1028, 9, 83, 1, 
-	84, 1, 84, 1, 84, 1, 84, 1, 85, 1, 85, 1, 85, 1, 85, 1, 85, 1, 85, 1, 85, 
-	1, 85, 5, 85, 1042, 8, 85, 10, 85, 12, 85, 1045, 9, 85, 1, 86, 1, 86, 3, 
-	86, 1049, 8, 86, 1, 87, 1, 87, 3, 87, 1053, 8, 87, 1, 88, 1, 88, 1, 88, 
-	1, 88, 1, 88, 1, 88, 1, 88, 1, 89, 1, 89, 3, 89, 1064, 8, 89, 1, 90, 1, 
-	90, 3, 90, 1068, 8, 90, 1, 91, 1, 91, 3, 91, 1072, 8, 91, 1, 92, 1, 92, 
-	1, 92, 1, 92, 1, 93, 1, 93, 3, 93, 1080, 8, 93, 1, 94, 1, 94, 1, 94, 1, 
-	94, 1, 94, 1, 94, 1, 94, 1, 94, 5, 94, 1090, 8, 94, 10, 94, 12, 94, 1093, 
-	9, 94, 1, 95, 1, 95, 1, 95, 1, 95, 1, 95, 1, 95, 1, 95, 1, 95, 5, 95, 1103, 
-	8, 95, 10, 95, 12, 95, 1106, 9, 95, 1, 96, 1, 96, 1, 96, 1, 96, 1, 96, 
-	1, 96, 1, 96, 3, 96, 1115, 8, 96, 1, 97, 1, 97, 1, 97, 1, 97, 1, 97, 1, 
-	97, 1, 97, 1, 98, 1, 98, 1, 98, 5, 98, 1127, 8, 98, 10, 98, 12, 98, 1130, 
-	9, 98, 1, 99, 1, 99, 1, 99, 1, 99, 3, 99, 1136, 8, 99, 1, 100, 1, 100, 
-	1, 100, 1, 100, 1, 101, 1, 101, 1, 101, 3, 101, 1145, 8, 101, 1, 102, 1, 
-	102, 1, 103, 1, 103, 3, 103, 1151, 8, 103, 1, 104, 1, 104, 1, 105, 1, 105, 
-	1, 105, 1, 105, 1, 106, 1, 106, 1, 107, 1, 107, 1, 107, 1, 107, 1, 107, 
-	1, 107, 3, 107, 1167, 8, 107, 1, 108, 1, 108, 3, 108, 1171, 8, 108, 1, 
-	109, 1, 109, 1, 110, 1, 110, 1, 110, 1, 110, 1, 110, 1, 110, 3, 110, 1181, 
-	8, 110, 1, 111, 1, 111, 1, 111, 1, 111, 1, 111, 1, 111, 3, 111, 1189, 8, 
-	111, 1, 112, 1, 112, 1, 112, 5, 112, 1194, 8, 112, 10, 112, 12, 112, 1197, 
-	9, 112, 1, 113, 1, 113, 1, 113, 1, 113, 1, 113, 3, 113, 1204, 8, 113, 1, 
-	114, 1, 114, 1, 114, 3, 114, 1209, 8, 114, 1, 115, 1, 115, 1, 115, 1, 115, 
-	1, 115, 1, 115, 1, 115, 1, 115, 1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 
-	1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 3, 116, 1231, 8, 
-	116, 1, 117, 1, 117, 1, 117, 1, 117, 1, 117, 3, 117, 1238, 8, 117, 1, 118, 
-	1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 3, 118, 1248, 8, 
-	118, 1, 119, 1, 119, 1, 119, 1, 119, 1, 119, 3, 119, 1255, 8, 119, 1, 120, 
-	1, 120, 1, 120, 5, 120, 1260, 8, 120, 10, 120, 12, 120, 1263, 9, 120, 1, 
-	121, 1, 121, 1, 121, 1, 121, 1, 121, 3, 121, 1270, 8, 121, 1, 122, 1, 122, 
-	1, 122, 1, 122, 1, 122, 1, 122, 5, 122, 1278, 8, 122, 10, 122, 12, 122, 
-	1281, 9, 122, 1, 123, 1, 123, 1, 123, 1, 123, 3, 123, 1287, 8, 123, 1, 
-	124, 1, 124, 1, 124, 3, 124, 1292, 8, 124, 1, 125, 1, 125, 1, 126, 1, 126, 
-	1, 127, 1, 127, 1, 127, 1, 127, 3, 127, 1302, 8, 127, 1, 128, 1, 128, 3, 
-	128, 1306, 8, 128, 1, 129, 1, 129, 1, 130, 1, 130, 3, 130, 1312, 8, 130, 
-	1, 131, 1, 131, 1, 132, 1, 132, 1, 133, 1, 133, 1, 134, 1, 134, 1, 135, 
-	1, 135, 1, 136, 1, 136, 1, 137, 1, 137, 1, 138, 1, 138, 1, 139, 1, 139, 
-	3, 139, 1332, 8, 139, 1, 140, 1, 140, 3, 140, 1336, 8, 140, 1, 141, 1, 
-	141, 1, 142, 1, 142, 1, 143, 1, 143, 1, 144, 1, 144, 1, 145, 1, 145, 1, 
-	146, 1, 146, 1, 147, 1, 147, 1, 148, 1, 148, 1, 149, 1, 149, 1, 150, 1, 
-	150, 3, 150, 1358, 8, 150, 1, 151, 1, 151, 1, 152, 1, 152, 1, 152, 1, 152, 
-	1, 152, 1, 152, 1, 152, 1, 152, 3, 152, 1370, 8, 152, 1, 153, 1, 153, 1, 
-	153, 5, 153, 1375, 8, 153, 10, 153, 12, 153, 1378, 9, 153, 1, 154, 1, 154, 
-	3, 154, 1382, 8, 154, 1, 155, 1, 155, 1, 155, 1, 155, 1, 155, 1, 155, 1, 
-	155, 1, 155, 1, 156, 1, 156, 1, 157, 1, 157, 1, 157, 1, 157, 1, 157, 3, 
-	157, 1399, 8, 157, 1, 158, 1, 158, 1, 158, 5, 158, 1404, 8, 158, 10, 158, 
-	12, 158, 1407, 9, 158, 1, 159, 1, 159, 3, 159, 1411, 8, 159, 1, 160, 1, 
-	160, 1, 160, 1, 161, 1, 161, 1, 161, 3, 161, 1419, 8, 161, 1, 161, 1, 161, 
-	1, 162, 1, 162, 1, 163, 1, 163, 1, 163, 3, 163, 1428, 8, 163, 1, 164, 1, 
-	164, 1, 164, 3, 164, 1433, 8, 164, 1, 164, 1, 164, 1, 165, 1, 165, 1, 165, 
-	1, 166, 1, 166, 1, 166, 3, 166, 1443, 8, 166, 1, 166, 1, 166, 1, 167, 1, 
-	167, 1, 168, 1, 168, 1, 168, 3, 168, 1452, 8, 168, 1, 168, 1, 168, 1, 169, 
-	1, 169, 1, 170, 1, 170, 1, 170, 1, 171, 1, 171, 1, 171, 1, 171, 1, 171, 
-	1, 171, 3, 171, 1467, 8, 171, 1, 172, 1, 172, 1, 172, 5, 172, 1472, 8, 
-	172, 10, 172, 12, 172, 1475, 9, 172, 1, 173, 1, 173, 1, 173, 3, 173, 1480, 
-	8, 173, 1, 174, 1, 174, 3, 174, 1484, 8, 174, 1, 175, 1, 175, 1, 175, 1, 
-	175, 1, 176, 1, 176, 1, 176, 1, 176, 1, 177, 1, 177, 1, 177, 1, 177, 3, 
-	177, 1498, 8, 177, 1, 178, 1, 178, 1, 178, 1, 178, 1, 178, 3, 178, 1505, 
-	8, 178, 1, 179, 1, 179, 1, 180, 1, 180, 1, 180, 1, 180, 1, 180, 1, 180, 
-	1, 180, 1, 181, 1, 181, 1, 181, 1, 181, 1, 181, 1, 181, 1, 182, 1, 182, 
-	1, 182, 1, 182, 1, 183, 1, 183, 1, 183, 1, 183, 1, 183, 1, 183, 1, 183, 
-	1, 183, 1, 184, 1, 184, 1, 184, 5, 184, 1537, 8, 184, 10, 184, 12, 184, 
-	1540, 9, 184, 1, 185, 1, 185, 3, 185, 1544, 8, 185, 1, 186, 1, 186, 1, 
-	186, 3, 186, 1549, 8, 186, 1, 186, 1, 186, 1, 187, 1, 187, 1, 187, 1, 187, 
-	1, 187, 1, 188, 1, 188, 1, 188, 5, 188, 1561, 8, 188, 10, 188, 12, 188, 
-	1564, 9, 188, 1, 189, 1, 189, 1, 189, 1, 189, 1, 189, 1, 189, 3, 189, 1572, 
-	8, 189, 1, 190, 1, 190, 1, 190, 1, 190, 1, 190, 1, 190, 3, 190, 1580, 8, 
-	190, 1, 191, 1, 191, 1, 191, 1, 191, 1, 191, 1, 192, 1, 192, 1, 192, 1, 
-	192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 
-	192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 3, 192, 1607, 
-	8, 192, 1, 193, 1, 193, 1, 193, 1, 193, 1, 193, 3, 193, 1614, 8, 193, 1, 
-	194, 1, 194, 1, 194, 5, 194, 1619, 8, 194, 10, 194, 12, 194, 1622, 9, 194, 
-	1, 195, 1, 195, 3, 195, 1626, 8, 195, 1, 196, 1, 196, 1, 197, 1, 197, 1, 
-	198, 1, 198, 1, 199, 1, 199, 1, 200, 1, 200, 1, 200, 0, 11, 36, 38, 40, 
-	84, 86, 108, 110, 170, 188, 190, 244, 201, 0, 2, 4, 6, 8, 10, 12, 14, 16, 
-	18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 
-	54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 
-	90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 
-	122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150, 
-	152, 154, 156, 158, 160, 162, 164, 166, 168, 170, 172, 174, 176, 178, 180, 
-	182, 184, 186, 188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 
-	212, 214, 216, 218, 220, 222, 224, 226, 228, 230, 232, 234, 236, 238, 240, 
-	242, 244, 246, 248, 250, 252, 254, 256, 258, 260, 262, 264, 266, 268, 270, 
-	272, 274, 276, 278, 280, 282, 284, 286, 288, 290, 292, 294, 296, 298, 300, 
-	302, 304, 306, 308, 310, 312, 314, 316, 318, 320, 322, 324, 326, 328, 330, 
-	332, 334, 336, 338, 340, 342, 344, 346, 348, 350, 352, 354, 356, 358, 360, 
-	362, 364, 366, 368, 370, 372, 374, 376, 378, 380, 382, 384, 386, 388, 390, 
-	392, 394, 396, 398, 400, 0, 9, 3, 0, 61, 61, 63, 63, 65, 65, 2, 0, 54, 
-	54, 59, 59, 5, 0, 53, 53, 58, 58, 62, 62, 64, 64, 66, 66, 2, 0, 57, 57, 
-	60, 60, 1, 0, 46, 51, 1, 0, 44, 45, 2, 0, 56, 56, 68, 68, 1, 0, 94, 95, 
-	3, 0, 74, 74, 77, 77, 80, 80, 1621, 0, 405, 1, 0, 0, 0, 2, 412, 1, 0, 0, 
-	0, 4, 421, 1, 0, 0, 0, 6, 423, 1, 0, 0, 0, 8, 434, 1, 0, 0, 0, 10, 436, 
-	1, 0, 0, 0, 12, 447, 1, 0, 0, 0, 14, 458, 1, 0, 0, 0, 16, 469, 1, 0, 0, 
-	0, 18, 480, 1, 0, 0, 0, 20, 491, 1, 0, 0, 0, 22, 502, 1, 0, 0, 0, 24, 507, 
-	1, 0, 0, 0, 26, 511, 1, 0, 0, 0, 28, 517, 1, 0, 0, 0, 30, 522, 1, 0, 0, 
-	0, 32, 524, 1, 0, 0, 0, 34, 531, 1, 0, 0, 0, 36, 533, 1, 0, 0, 0, 38, 546, 
-	1, 0, 0, 0, 40, 559, 1, 0, 0, 0, 42, 582, 1, 0, 0, 0, 44, 584, 1, 0, 0, 
-	0, 46, 587, 1, 0, 0, 0, 48, 593, 1, 0, 0, 0, 50, 603, 1, 0, 0, 0, 52, 605, 
-	1, 0, 0, 0, 54, 609, 1, 0, 0, 0, 56, 618, 1, 0, 0, 0, 58, 636, 1, 0, 0, 
-	0, 60, 641, 1, 0, 0, 0, 62, 643, 1, 0, 0, 0, 64, 651, 1, 0, 0, 0, 66, 657, 
-	1, 0, 0, 0, 68, 659, 1, 0, 0, 0, 70, 668, 1, 0, 0, 0, 72, 670, 1, 0, 0, 
-	0, 74, 677, 1, 0, 0, 0, 76, 679, 1, 0, 0, 0, 78, 681, 1, 0, 0, 0, 80, 686, 
-	1, 0, 0, 0, 82, 696, 1, 0, 0, 0, 84, 698, 1, 0, 0, 0, 86, 711, 1, 0, 0, 
-	0, 88, 732, 1, 0, 0, 0, 90, 744, 1, 0, 0, 0, 92, 746, 1, 0, 0, 0, 94, 756, 
-	1, 0, 0, 0, 96, 758, 1, 0, 0, 0, 98, 763, 1, 0, 0, 0, 100, 768, 1, 0, 0, 
-	0, 102, 772, 1, 0, 0, 0, 104, 774, 1, 0, 0, 0, 106, 780, 1, 0, 0, 0, 108, 
-	782, 1, 0, 0, 0, 110, 795, 1, 0, 0, 0, 112, 817, 1, 0, 0, 0, 114, 819, 
-	1, 0, 0, 0, 116, 826, 1, 0, 0, 0, 118, 836, 1, 0, 0, 0, 120, 838, 1, 0, 
-	0, 0, 122, 846, 1, 0, 0, 0, 124, 848, 1, 0, 0, 0, 126, 850, 1, 0, 0, 0, 
-	128, 870, 1, 0, 0, 0, 130, 877, 1, 0, 0, 0, 132, 879, 1, 0, 0, 0, 134, 
-	895, 1, 0, 0, 0, 136, 905, 1, 0, 0, 0, 138, 912, 1, 0, 0, 0, 140, 914, 
-	1, 0, 0, 0, 142, 930, 1, 0, 0, 0, 144, 940, 1, 0, 0, 0, 146, 950, 1, 0, 
-	0, 0, 148, 957, 1, 0, 0, 0, 150, 959, 1, 0, 0, 0, 152, 975, 1, 0, 0, 0, 
-	154, 977, 1, 0, 0, 0, 156, 988, 1, 0, 0, 0, 158, 990, 1, 0, 0, 0, 160, 
-	1002, 1, 0, 0, 0, 162, 1009, 1, 0, 0, 0, 164, 1019, 1, 0, 0, 0, 166, 1021, 
-	1, 0, 0, 0, 168, 1029, 1, 0, 0, 0, 170, 1033, 1, 0, 0, 0, 172, 1048, 1, 
-	0, 0, 0, 174, 1052, 1, 0, 0, 0, 176, 1054, 1, 0, 0, 0, 178, 1063, 1, 0, 
-	0, 0, 180, 1067, 1, 0, 0, 0, 182, 1071, 1, 0, 0, 0, 184, 1073, 1, 0, 0, 
-	0, 186, 1079, 1, 0, 0, 0, 188, 1081, 1, 0, 0, 0, 190, 1094, 1, 0, 0, 0, 
-	192, 1114, 1, 0, 0, 0, 194, 1116, 1, 0, 0, 0, 196, 1123, 1, 0, 0, 0, 198, 
-	1135, 1, 0, 0, 0, 200, 1137, 1, 0, 0, 0, 202, 1144, 1, 0, 0, 0, 204, 1146, 
-	1, 0, 0, 0, 206, 1150, 1, 0, 0, 0, 208, 1152, 1, 0, 0, 0, 210, 1154, 1, 
-	0, 0, 0, 212, 1158, 1, 0, 0, 0, 214, 1166, 1, 0, 0, 0, 216, 1170, 1, 0, 
-	0, 0, 218, 1172, 1, 0, 0, 0, 220, 1180, 1, 0, 0, 0, 222, 1188, 1, 0, 0, 
-	0, 224, 1190, 1, 0, 0, 0, 226, 1203, 1, 0, 0, 0, 228, 1208, 1, 0, 0, 0, 
-	230, 1210, 1, 0, 0, 0, 232, 1230, 1, 0, 0, 0, 234, 1237, 1, 0, 0, 0, 236, 
-	1247, 1, 0, 0, 0, 238, 1254, 1, 0, 0, 0, 240, 1256, 1, 0, 0, 0, 242, 1269, 
-	1, 0, 0, 0, 244, 1271, 1, 0, 0, 0, 246, 1286, 1, 0, 0, 0, 248, 1291, 1, 
-	0, 0, 0, 250, 1293, 1, 0, 0, 0, 252, 1295, 1, 0, 0, 0, 254, 1301, 1, 0, 
-	0, 0, 256, 1305, 1, 0, 0, 0, 258, 1307, 1, 0, 0, 0, 260, 1311, 1, 0, 0, 
-	0, 262, 1313, 1, 0, 0, 0, 264, 1315, 1, 0, 0, 0, 266, 1317, 1, 0, 0, 0, 
-	268, 1319, 1, 0, 0, 0, 270, 1321, 1, 0, 0, 0, 272, 1323, 1, 0, 0, 0, 274, 
-	1325, 1, 0, 0, 0, 276, 1327, 1, 0, 0, 0, 278, 1331, 1, 0, 0, 0, 280, 1335, 
-	1, 0, 0, 0, 282, 1337, 1, 0, 0, 0, 284, 1339, 1, 0, 0, 0, 286, 1341, 1, 
-	0, 0, 0, 288, 1343, 1, 0, 0, 0, 290, 1345, 1, 0, 0, 0, 292, 1347, 1, 0, 
-	0, 0, 294, 1349, 1, 0, 0, 0, 296, 1351, 1, 0, 0, 0, 298, 1353, 1, 0, 0, 
-	0, 300, 1357, 1, 0, 0, 0, 302, 1359, 1, 0, 0, 0, 304, 1369, 1, 0, 0, 0, 
-	306, 1371, 1, 0, 0, 0, 308, 1381, 1, 0, 0, 0, 310, 1383, 1, 0, 0, 0, 312, 
-	1391, 1, 0, 0, 0, 314, 1398, 1, 0, 0, 0, 316, 1400, 1, 0, 0, 0, 318, 1408, 
-	1, 0, 0, 0, 320, 1412, 1, 0, 0, 0, 322, 1415, 1, 0, 0, 0, 324, 1422, 1, 
-	0, 0, 0, 326, 1427, 1, 0, 0, 0, 328, 1429, 1, 0, 0, 0, 330, 1436, 1, 0, 
-	0, 0, 332, 1439, 1, 0, 0, 0, 334, 1446, 1, 0, 0, 0, 336, 1448, 1, 0, 0, 
-	0, 338, 1455, 1, 0, 0, 0, 340, 1457, 1, 0, 0, 0, 342, 1466, 1, 0, 0, 0, 
-	344, 1468, 1, 0, 0, 0, 346, 1479, 1, 0, 0, 0, 348, 1483, 1, 0, 0, 0, 350, 
-	1485, 1, 0, 0, 0, 352, 1489, 1, 0, 0, 0, 354, 1497, 1, 0, 0, 0, 356, 1504, 
-	1, 0, 0, 0, 358, 1506, 1, 0, 0, 0, 360, 1508, 1, 0, 0, 0, 362, 1515, 1, 
-	0, 0, 0, 364, 1521, 1, 0, 0, 0, 366, 1525, 1, 0, 0, 0, 368, 1533, 1, 0, 
-	0, 0, 370, 1543, 1, 0, 0, 0, 372, 1545, 1, 0, 0, 0, 374, 1552, 1, 0, 0, 
-	0, 376, 1557, 1, 0, 0, 0, 378, 1571, 1, 0, 0, 0, 380, 1579, 1, 0, 0, 0, 
-	382, 1581, 1, 0, 0, 0, 384, 1606, 1, 0, 0, 0, 386, 1613, 1, 0, 0, 0, 388, 
-	1615, 1, 0, 0, 0, 390, 1625, 1, 0, 0, 0, 392, 1627, 1, 0, 0, 0, 394, 1629, 
-	1, 0, 0, 0, 396, 1631, 1, 0, 0, 0, 398, 1633, 1, 0, 0, 0, 400, 1635, 1, 
-	0, 0, 0, 402, 404, 3, 2, 1, 0, 403, 402, 1, 0, 0, 0, 404, 407, 1, 0, 0, 
-	0, 405, 403, 1, 0, 0, 0, 405, 406, 1, 0, 0, 0, 406, 408, 1, 0, 0, 0, 407, 
-	405, 1, 0, 0, 0, 408, 409, 5, 0, 0, 1, 409, 1, 1, 0, 0, 0, 410, 413, 3, 
-	4, 2, 0, 411, 413, 3, 372, 186, 0, 412, 410, 1, 0, 0, 0, 412, 411, 1, 0, 
-	0, 0, 413, 3, 1, 0, 0, 0, 414, 422, 3, 10, 5, 0, 415, 422, 3, 12, 6, 0, 
-	416, 422, 3, 14, 7, 0, 417, 422, 3, 16, 8, 0, 418, 422, 3, 18, 9, 0, 419, 
-	422, 3, 20, 10, 0, 420, 422, 3, 6, 3, 0, 421, 414, 1, 0, 0, 0, 421, 415, 
-	1, 0, 0, 0, 421, 416, 1, 0, 0, 0, 421, 417, 1, 0, 0, 0, 421, 418, 1, 0, 
-	0, 0, 421, 419, 1, 0, 0, 0, 421, 420, 1, 0, 0, 0, 422, 5, 1, 0, 0, 0, 423, 
-	424, 5, 1, 0, 0, 424, 425, 3, 390, 195, 0, 425, 426, 5, 2, 0, 0, 426, 427, 
-	3, 24, 12, 0, 427, 428, 5, 2, 0, 0, 428, 430, 3, 8, 4, 0, 429, 431, 3, 
-	22, 11, 0, 430, 429, 1, 0, 0, 0, 430, 431, 1, 0, 0, 0, 431, 432, 1, 0, 
-	0, 0, 432, 433, 5, 3, 0, 0, 433, 7, 1, 0, 0, 0, 434, 435, 3, 178, 89, 0, 
-	435, 9, 1, 0, 0, 0, 436, 437, 5, 4, 0, 0, 437, 438, 3, 390, 195, 0, 438, 
-	439, 5, 2, 0, 0, 439, 440, 3, 24, 12, 0, 440, 441, 5, 2, 0, 0, 441, 443, 
-	3, 26, 13, 0, 442, 444, 3, 22, 11, 0, 443, 442, 1, 0, 0, 0, 443, 444, 1, 
-	0, 0, 0, 444, 445, 1, 0, 0, 0, 445, 446, 5, 3, 0, 0, 446, 11, 1, 0, 0, 
-	0, 447, 448, 5, 5, 0, 0, 448, 449, 3, 390, 195, 0, 449, 450, 5, 2, 0, 0, 
-	450, 451, 3, 24, 12, 0, 451, 452, 5, 2, 0, 0, 452, 454, 3, 94, 47, 0, 453, 
-	455, 3, 22, 11, 0, 454, 453, 1, 0, 0, 0, 454, 455, 1, 0, 0, 0, 455, 456, 
-	1, 0, 0, 0, 456, 457, 5, 3, 0, 0, 457, 13, 1, 0, 0, 0, 458, 459, 5, 6, 
-	0, 0, 459, 460, 3, 390, 195, 0, 460, 461, 5, 2, 0, 0, 461, 462, 3, 24, 
-	12, 0, 462, 463, 5, 2, 0, 0, 463, 465, 3, 98, 49, 0, 464, 466, 3, 22, 11, 
-	0, 465, 464, 1, 0, 0, 0, 465, 466, 1, 0, 0, 0, 466, 467, 1, 0, 0, 0, 467, 
-	468, 5, 3, 0, 0, 468, 15, 1, 0, 0, 0, 469, 470, 5, 7, 0, 0, 470, 471, 3, 
-	390, 195, 0, 471, 472, 5, 2, 0, 0, 472, 473, 3, 24, 12, 0, 473, 474, 5, 
-	2, 0, 0, 474, 476, 3, 172, 86, 0, 475, 477, 3, 22, 11, 0, 476, 475, 1, 
-	0, 0, 0, 476, 477, 1, 0, 0, 0, 477, 478, 1, 0, 0, 0, 478, 479, 5, 3, 0, 
-	0, 479, 17, 1, 0, 0, 0, 480, 481, 5, 8, 0, 0, 481, 482, 3, 390, 195, 0, 
-	482, 483, 5, 2, 0, 0, 483, 484, 3, 24, 12, 0, 484, 485, 5, 2, 0, 0, 485, 
-	487, 3, 178, 89, 0, 486, 488, 3, 22, 11, 0, 487, 486, 1, 0, 0, 0, 487, 
-	488, 1, 0, 0, 0, 488, 489, 1, 0, 0, 0, 489, 490, 5, 3, 0, 0, 490, 19, 1, 
-	0, 0, 0, 491, 492, 5, 9, 0, 0, 492, 493, 3, 390, 195, 0, 493, 494, 5, 2, 
-	0, 0, 494, 495, 3, 24, 12, 0, 495, 496, 5, 2, 0, 0, 496, 498, 3, 242, 121, 
-	0, 497, 499, 3, 22, 11, 0, 498, 497, 1, 0, 0, 0, 498, 499, 1, 0, 0, 0, 
-	499, 500, 1, 0, 0, 0, 500, 501, 5, 3, 0, 0, 501, 21, 1, 0, 0, 0, 502, 503, 
-	5, 2, 0, 0, 503, 505, 3, 304, 152, 0, 504, 506, 3, 340, 170, 0, 505, 504, 
-	1, 0, 0, 0, 505, 506, 1, 0, 0, 0, 506, 23, 1, 0, 0, 0, 507, 508, 5, 94, 
-	0, 0, 508, 25, 1, 0, 0, 0, 509, 512, 3, 28, 14, 0, 510, 512, 3, 88, 44, 
-	0, 511, 509, 1, 0, 0, 0, 511, 510, 1, 0, 0, 0, 512, 27, 1, 0, 0, 0, 513, 
-	518, 3, 30, 15, 0, 514, 518, 3, 42, 21, 0, 515, 518, 3, 68, 34, 0, 516, 
-	518, 3, 72, 36, 0, 517, 513, 1, 0, 0, 0, 517, 514, 1, 0, 0, 0, 517, 515, 
-	1, 0, 0, 0, 517, 516, 1, 0, 0, 0, 518, 29, 1, 0, 0, 0, 519, 523, 3, 32, 
-	16, 0, 520, 523, 3, 34, 17, 0, 521, 523, 3, 80, 40, 0, 522, 519, 1, 0, 
-	0, 0, 522, 520, 1, 0, 0, 0, 522, 521, 1, 0, 0, 0, 523, 31, 1, 0, 0, 0, 
-	524, 525, 3, 42, 21, 0, 525, 526, 3, 254, 127, 0, 526, 527, 3, 42, 21, 
-	0, 527, 33, 1, 0, 0, 0, 528, 532, 3, 36, 18, 0, 529, 532, 3, 38, 19, 0, 
-	530, 532, 3, 40, 20, 0, 531, 528, 1, 0, 0, 0, 531, 529, 1, 0, 0, 0, 531, 
-	530, 1, 0, 0, 0, 532, 35, 1, 0, 0, 0, 533, 534, 6, 18, -1, 0, 534, 535, 
-	3, 42, 21, 0, 535, 536, 5, 44, 0, 0, 536, 537, 3, 42, 21, 0, 537, 543, 
-	1, 0, 0, 0, 538, 539, 10, 1, 0, 0, 539, 540, 5, 44, 0, 0, 540, 542, 3, 
-	42, 21, 0, 541, 538, 1, 0, 0, 0, 542, 545, 1, 0, 0, 0, 543, 541, 1, 0, 
-	0, 0, 543, 544, 1, 0, 0, 0, 544, 37, 1, 0, 0, 0, 545, 543, 1, 0, 0, 0, 
-	546, 547, 6, 19, -1, 0, 547, 548, 3, 42, 21, 0, 548, 549, 5, 45, 0, 0, 
-	549, 550, 3, 42, 21, 0, 550, 556, 1, 0, 0, 0, 551, 552, 10, 1, 0, 0, 552, 
-	553, 5, 45, 0, 0, 553, 555, 3, 42, 21, 0, 554, 551, 1, 0, 0, 0, 555, 558, 
-	1, 0, 0, 0, 556, 554, 1, 0, 0, 0, 556, 557, 1, 0, 0, 0, 557, 39, 1, 0, 
-	0, 0, 558, 556, 1, 0, 0, 0, 559, 560, 6, 20, -1, 0, 560, 561, 3, 42, 21, 
-	0, 561, 562, 5, 67, 0, 0, 562, 563, 3, 42, 21, 0, 563, 569, 1, 0, 0, 0, 
-	564, 565, 10, 1, 0, 0, 565, 566, 5, 67, 0, 0, 566, 568, 3, 42, 21, 0, 567, 
-	564, 1, 0, 0, 0, 568, 571, 1, 0, 0, 0, 569, 567, 1, 0, 0, 0, 569, 570, 
-	1, 0, 0, 0, 570, 41, 1, 0, 0, 0, 571, 569, 1, 0, 0, 0, 572, 583, 3, 44, 
-	22, 0, 573, 583, 3, 54, 27, 0, 574, 583, 3, 56, 28, 0, 575, 583, 3, 62, 
-	31, 0, 576, 583, 3, 64, 32, 0, 577, 583, 3, 90, 45, 0, 578, 579, 5, 10, 
-	0, 0, 579, 580, 3, 28, 14, 0, 580, 581, 5, 11, 0, 0, 581, 583, 1, 0, 0, 
-	0, 582, 572, 1, 0, 0, 0, 582, 573, 1, 0, 0, 0, 582, 574, 1, 0, 0, 0, 582, 
-	575, 1, 0, 0, 0, 582, 576, 1, 0, 0, 0, 582, 577, 1, 0, 0, 0, 582, 578, 
-	1, 0, 0, 0, 583, 43, 1, 0, 0, 0, 584, 585, 3, 46, 23, 0, 585, 586, 3, 42, 
-	21, 0, 586, 45, 1, 0, 0, 0, 587, 588, 3, 248, 124, 0, 588, 589, 5, 12, 
-	0, 0, 589, 590, 3, 48, 24, 0, 590, 591, 5, 13, 0, 0, 591, 592, 5, 14, 0, 
-	0, 592, 47, 1, 0, 0, 0, 593, 598, 3, 50, 25, 0, 594, 595, 5, 2, 0, 0, 595, 
-	597, 3, 50, 25, 0, 596, 594, 1, 0, 0, 0, 597, 600, 1, 0, 0, 0, 598, 596, 
-	1, 0, 0, 0, 598, 599, 1, 0, 0, 0, 599, 49, 1, 0, 0, 0, 600, 598, 1, 0, 
-	0, 0, 601, 604, 3, 52, 26, 0, 602, 604, 3, 302, 151, 0, 603, 601, 1, 0, 
-	0, 0, 603, 602, 1, 0, 0, 0, 604, 51, 1, 0, 0, 0, 605, 606, 3, 302, 151, 
-	0, 606, 607, 5, 14, 0, 0, 607, 608, 3, 74, 37, 0, 608, 53, 1, 0, 0, 0, 
-	609, 610, 3, 256, 128, 0, 610, 611, 5, 10, 0, 0, 611, 612, 3, 28, 14, 0, 
-	612, 613, 5, 11, 0, 0, 613, 55, 1, 0, 0, 0, 614, 619, 3, 58, 29, 0, 615, 
-	619, 3, 302, 151, 0, 616, 619, 3, 300, 150, 0, 617, 619, 3, 60, 30, 0, 
-	618, 614, 1, 0, 0, 0, 618, 615, 1, 0, 0, 0, 618, 616, 1, 0, 0, 0, 618, 
-	617, 1, 0, 0, 0, 619, 57, 1, 0, 0, 0, 620, 637, 3, 278, 139, 0, 621, 622, 
-	3, 290, 145, 0, 622, 623, 5, 10, 0, 0, 623, 624, 3, 66, 33, 0, 624, 625, 
-	5, 11, 0, 0, 625, 637, 1, 0, 0, 0, 626, 627, 3, 298, 149, 0, 627, 628, 
-	5, 10, 0, 0, 628, 629, 3, 66, 33, 0, 629, 630, 5, 11, 0, 0, 630, 637, 1, 
-	0, 0, 0, 631, 632, 3, 294, 147, 0, 632, 633, 5, 10, 0, 0, 633, 634, 3, 
-	66, 33, 0, 634, 635, 5, 11, 0, 0, 635, 637, 1, 0, 0, 0, 636, 620, 1, 0, 
-	0, 0, 636, 621, 1, 0, 0, 0, 636, 626, 1, 0, 0, 0, 636, 631, 1, 0, 0, 0, 
-	637, 59, 1, 0, 0, 0, 638, 642, 3, 254, 127, 0, 639, 642, 3, 266, 133, 0, 
-	640, 642, 3, 256, 128, 0, 641, 638, 1, 0, 0, 0, 641, 639, 1, 0, 0, 0, 641, 
-	640, 1, 0, 0, 0, 642, 61, 1, 0, 0, 0, 643, 644, 5, 15, 0, 0, 644, 645, 
-	3, 28, 14, 0, 645, 646, 5, 2, 0, 0, 646, 647, 3, 28, 14, 0, 647, 648, 5, 
-	2, 0, 0, 648, 649, 3, 28, 14, 0, 649, 650, 5, 11, 0, 0, 650, 63, 1, 0, 
-	0, 0, 651, 652, 5, 16, 0, 0, 652, 653, 3, 42, 21, 0, 653, 654, 5, 2, 0, 
-	0, 654, 655, 3, 26, 13, 0, 655, 656, 5, 11, 0, 0, 656, 65, 1, 0, 0, 0, 
-	657, 658, 3, 92, 46, 0, 658, 67, 1, 0, 0, 0, 659, 660, 3, 70, 35, 0, 660, 
-	661, 5, 14, 0, 0, 661, 662, 3, 74, 37, 0, 662, 69, 1, 0, 0, 0, 663, 669, 
-	3, 56, 28, 0, 664, 665, 5, 10, 0, 0, 665, 666, 3, 28, 14, 0, 666, 667, 
-	5, 11, 0, 0, 667, 669, 1, 0, 0, 0, 668, 663, 1, 0, 0, 0, 668, 664, 1, 0, 
-	0, 0, 669, 71, 1, 0, 0, 0, 670, 671, 3, 56, 28, 0, 671, 672, 5, 72, 0, 
-	0, 672, 673, 3, 56, 28, 0, 673, 73, 1, 0, 0, 0, 674, 678, 3, 76, 38, 0, 
-	675, 678, 3, 82, 41, 0, 676, 678, 3, 78, 39, 0, 677, 674, 1, 0, 0, 0, 677, 
-	675, 1, 0, 0, 0, 677, 676, 1, 0, 0, 0, 678, 75, 1, 0, 0, 0, 679, 680, 3, 
-	42, 21, 0, 680, 77, 1, 0, 0, 0, 681, 682, 3, 40, 20, 0, 682, 79, 1, 0, 
-	0, 0, 683, 687, 3, 82, 41, 0, 684, 687, 3, 84, 42, 0, 685, 687, 3, 86, 
-	43, 0, 686, 683, 1, 0, 0, 0, 686, 684, 1, 0, 0, 0, 686, 685, 1, 0, 0, 0, 
-	687, 81, 1, 0, 0, 0, 688, 689, 3, 76, 38, 0, 689, 690, 5, 69, 0, 0, 690, 
-	691, 3, 76, 38, 0, 691, 697, 1, 0, 0, 0, 692, 693, 3, 76, 38, 0, 693, 694, 
-	5, 69, 0, 0, 694, 695, 3, 82, 41, 0, 695, 697, 1, 0, 0, 0, 696, 688, 1, 
-	0, 0, 0, 696, 692, 1, 0, 0, 0, 697, 83, 1, 0, 0, 0, 698, 699, 6, 42, -1, 
-	0, 699, 700, 3, 76, 38, 0, 700, 701, 5, 70, 0, 0, 701, 702, 3, 76, 38, 
-	0, 702, 708, 1, 0, 0, 0, 703, 704, 10, 1, 0, 0, 704, 705, 5, 70, 0, 0, 
-	705, 707, 3, 76, 38, 0, 706, 703, 1, 0, 0, 0, 707, 710, 1, 0, 0, 0, 708, 
-	706, 1, 0, 0, 0, 708, 709, 1, 0, 0, 0, 709, 85, 1, 0, 0, 0, 710, 708, 1, 
-	0, 0, 0, 711, 712, 6, 43, -1, 0, 712, 713, 3, 76, 38, 0, 713, 714, 5, 71, 
-	0, 0, 714, 715, 3, 76, 38, 0, 715, 721, 1, 0, 0, 0, 716, 717, 10, 1, 0, 
-	0, 717, 718, 5, 71, 0, 0, 718, 720, 3, 76, 38, 0, 719, 716, 1, 0, 0, 0, 
-	720, 723, 1, 0, 0, 0, 721, 719, 1, 0, 0, 0, 721, 722, 1, 0, 0, 0, 722, 
-	87, 1, 0, 0, 0, 723, 721, 1, 0, 0, 0, 724, 725, 3, 90, 45, 0, 725, 726, 
-	5, 73, 0, 0, 726, 727, 3, 90, 45, 0, 727, 733, 1, 0, 0, 0, 728, 729, 5, 
-	10, 0, 0, 729, 730, 3, 88, 44, 0, 730, 731, 5, 11, 0, 0, 731, 733, 1, 0, 
-	0, 0, 732, 724, 1, 0, 0, 0, 732, 728, 1, 0, 0, 0, 733, 89, 1, 0, 0, 0, 
-	734, 745, 5, 17, 0, 0, 735, 736, 5, 12, 0, 0, 736, 737, 3, 92, 46, 0, 737, 
-	738, 5, 13, 0, 0, 738, 745, 1, 0, 0, 0, 739, 745, 5, 18, 0, 0, 740, 741, 
-	5, 19, 0, 0, 741, 742, 3, 92, 46, 0, 742, 743, 5, 20, 0, 0, 743, 745, 1, 
-	0, 0, 0, 744, 734, 1, 0, 0, 0, 744, 735, 1, 0, 0, 0, 744, 739, 1, 0, 0, 
-	0, 744, 740, 1, 0, 0, 0, 745, 91, 1, 0, 0, 0, 746, 751, 3, 28, 14, 0, 747, 
-	748, 5, 2, 0, 0, 748, 750, 3, 28, 14, 0, 749, 747, 1, 0, 0, 0, 750, 753, 
-	1, 0, 0, 0, 751, 749, 1, 0, 0, 0, 751, 752, 1, 0, 0, 0, 752, 93, 1, 0, 
-	0, 0, 753, 751, 1, 0, 0, 0, 754, 757, 3, 96, 48, 0, 755, 757, 3, 88, 44, 
-	0, 756, 754, 1, 0, 0, 0, 756, 755, 1, 0, 0, 0, 757, 95, 1, 0, 0, 0, 758, 
-	759, 3, 28, 14, 0, 759, 97, 1, 0, 0, 0, 760, 764, 3, 100, 50, 0, 761, 764, 
-	3, 152, 76, 0, 762, 764, 3, 146, 73, 0, 763, 760, 1, 0, 0, 0, 763, 761, 
-	1, 0, 0, 0, 763, 762, 1, 0, 0, 0, 764, 99, 1, 0, 0, 0, 765, 769, 3, 102, 
-	51, 0, 766, 769, 3, 112, 56, 0, 767, 769, 3, 154, 77, 0, 768, 765, 1, 0, 
-	0, 0, 768, 766, 1, 0, 0, 0, 768, 767, 1, 0, 0, 0, 769, 101, 1, 0, 0, 0, 
-	770, 773, 3, 104, 52, 0, 771, 773, 3, 106, 53, 0, 772, 770, 1, 0, 0, 0, 
-	772, 771, 1, 0, 0, 0, 773, 103, 1, 0, 0, 0, 774, 775, 3, 112, 56, 0, 775, 
-	776, 3, 264, 132, 0, 776, 777, 3, 112, 56, 0, 777, 105, 1, 0, 0, 0, 778, 
-	781, 3, 108, 54, 0, 779, 781, 3, 110, 55, 0, 780, 778, 1, 0, 0, 0, 780, 
-	779, 1, 0, 0, 0, 781, 107, 1, 0, 0, 0, 782, 783, 6, 54, -1, 0, 783, 784, 
-	3, 112, 56, 0, 784, 785, 5, 44, 0, 0, 785, 786, 3, 112, 56, 0, 786, 792, 
-	1, 0, 0, 0, 787, 788, 10, 1, 0, 0, 788, 789, 5, 44, 0, 0, 789, 791, 3, 
-	112, 56, 0, 790, 787, 1, 0, 0, 0, 791, 794, 1, 0, 0, 0, 792, 790, 1, 0, 
-	0, 0, 792, 793, 1, 0, 0, 0, 793, 109, 1, 0, 0, 0, 794, 792, 1, 0, 0, 0, 
-	795, 796, 6, 55, -1, 0, 796, 797, 3, 112, 56, 0, 797, 798, 5, 45, 0, 0, 
-	798, 799, 3, 112, 56, 0, 799, 805, 1, 0, 0, 0, 800, 801, 10, 1, 0, 0, 801, 
-	802, 5, 45, 0, 0, 802, 804, 3, 112, 56, 0, 803, 800, 1, 0, 0, 0, 804, 807, 
-	1, 0, 0, 0, 805, 803, 1, 0, 0, 0, 805, 806, 1, 0, 0, 0, 806, 111, 1, 0, 
-	0, 0, 807, 805, 1, 0, 0, 0, 808, 818, 3, 114, 57, 0, 809, 818, 3, 122, 
-	61, 0, 810, 818, 3, 124, 62, 0, 811, 818, 3, 126, 63, 0, 812, 818, 3, 128, 
-	64, 0, 813, 814, 5, 10, 0, 0, 814, 815, 3, 100, 50, 0, 815, 816, 5, 11, 
-	0, 0, 816, 818, 1, 0, 0, 0, 817, 808, 1, 0, 0, 0, 817, 809, 1, 0, 0, 0, 
-	817, 810, 1, 0, 0, 0, 817, 811, 1, 0, 0, 0, 817, 812, 1, 0, 0, 0, 817, 
-	813, 1, 0, 0, 0, 818, 113, 1, 0, 0, 0, 819, 820, 3, 262, 131, 0, 820, 821, 
-	5, 12, 0, 0, 821, 822, 3, 116, 58, 0, 822, 823, 5, 13, 0, 0, 823, 824, 
-	5, 14, 0, 0, 824, 825, 3, 112, 56, 0, 825, 115, 1, 0, 0, 0, 826, 831, 3, 
-	118, 59, 0, 827, 828, 5, 2, 0, 0, 828, 830, 3, 118, 59, 0, 829, 827, 1, 
-	0, 0, 0, 830, 833, 1, 0, 0, 0, 831, 829, 1, 0, 0, 0, 831, 832, 1, 0, 0, 
-	0, 832, 117, 1, 0, 0, 0, 833, 831, 1, 0, 0, 0, 834, 837, 3, 120, 60, 0, 
-	835, 837, 3, 302, 151, 0, 836, 834, 1, 0, 0, 0, 836, 835, 1, 0, 0, 0, 837, 
-	119, 1, 0, 0, 0, 838, 839, 3, 302, 151, 0, 839, 840, 5, 14, 0, 0, 840, 
-	841, 3, 164, 82, 0, 841, 121, 1, 0, 0, 0, 842, 843, 3, 268, 134, 0, 843, 
-	844, 3, 112, 56, 0, 844, 847, 1, 0, 0, 0, 845, 847, 3, 200, 100, 0, 846, 
-	842, 1, 0, 0, 0, 846, 845, 1, 0, 0, 0, 847, 123, 1, 0, 0, 0, 848, 849, 
-	3, 202, 101, 0, 849, 125, 1, 0, 0, 0, 850, 851, 5, 21, 0, 0, 851, 852, 
-	3, 100, 50, 0, 852, 853, 5, 2, 0, 0, 853, 854, 3, 100, 50, 0, 854, 855, 
-	5, 2, 0, 0, 855, 856, 3, 100, 50, 0, 856, 857, 5, 11, 0, 0, 857, 127, 1, 
-	0, 0, 0, 858, 859, 5, 22, 0, 0, 859, 860, 3, 130, 65, 0, 860, 861, 5, 2, 
-	0, 0, 861, 862, 3, 98, 49, 0, 862, 863, 5, 11, 0, 0, 863, 871, 1, 0, 0, 
-	0, 864, 865, 5, 23, 0, 0, 865, 866, 3, 138, 69, 0, 866, 867, 5, 2, 0, 0, 
-	867, 868, 3, 98, 49, 0, 868, 869, 5, 11, 0, 0, 869, 871, 1, 0, 0, 0, 870, 
-	858, 1, 0, 0, 0, 870, 864, 1, 0, 0, 0, 871, 129, 1, 0, 0, 0, 872, 878, 
-	3, 134, 67, 0, 873, 874, 5, 12, 0, 0, 874, 875, 3, 132, 66, 0, 875, 876, 
-	5, 13, 0, 0, 876, 878, 1, 0, 0, 0, 877, 872, 1, 0, 0, 0, 877, 873, 1, 0, 
-	0, 0, 878, 131, 1, 0, 0, 0, 879, 884, 3, 134, 67, 0, 880, 881, 5, 2, 0, 
-	0, 881, 883, 3, 134, 67, 0, 882, 880, 1, 0, 0, 0, 883, 886, 1, 0, 0, 0, 
-	884, 882, 1, 0, 0, 0, 884, 885, 1, 0, 0, 0, 885, 133, 1, 0, 0, 0, 886, 
-	884, 1, 0, 0, 0, 887, 888, 5, 57, 0, 0, 888, 889, 5, 12, 0, 0, 889, 890, 
-	3, 116, 58, 0, 890, 891, 5, 13, 0, 0, 891, 892, 5, 14, 0, 0, 892, 893, 
-	3, 134, 67, 0, 893, 896, 1, 0, 0, 0, 894, 896, 3, 136, 68, 0, 895, 887, 
-	1, 0, 0, 0, 895, 894, 1, 0, 0, 0, 896, 135, 1, 0, 0, 0, 897, 898, 3, 214, 
-	107, 0, 898, 899, 5, 56, 0, 0, 899, 900, 3, 226, 113, 0, 900, 906, 1, 0, 
-	0, 0, 901, 902, 5, 10, 0, 0, 902, 903, 3, 136, 68, 0, 903, 904, 5, 11, 
-	0, 0, 904, 906, 1, 0, 0, 0, 905, 897, 1, 0, 0, 0, 905, 901, 1, 0, 0, 0, 
-	906, 137, 1, 0, 0, 0, 907, 913, 3, 142, 71, 0, 908, 909, 5, 12, 0, 0, 909, 
-	910, 3, 140, 70, 0, 910, 911, 5, 13, 0, 0, 911, 913, 1, 0, 0, 0, 912, 907, 
-	1, 0, 0, 0, 912, 908, 1, 0, 0, 0, 913, 139, 1, 0, 0, 0, 914, 919, 3, 142, 
-	71, 0, 915, 916, 5, 2, 0, 0, 916, 918, 3, 142, 71, 0, 917, 915, 1, 0, 0, 
-	0, 918, 921, 1, 0, 0, 0, 919, 917, 1, 0, 0, 0, 919, 920, 1, 0, 0, 0, 920, 
-	141, 1, 0, 0, 0, 921, 919, 1, 0, 0, 0, 922, 923, 5, 57, 0, 0, 923, 924, 
-	5, 12, 0, 0, 924, 925, 3, 116, 58, 0, 925, 926, 5, 13, 0, 0, 926, 927, 
-	5, 14, 0, 0, 927, 928, 3, 142, 71, 0, 928, 931, 1, 0, 0, 0, 929, 931, 3, 
-	144, 72, 0, 930, 922, 1, 0, 0, 0, 930, 929, 1, 0, 0, 0, 931, 143, 1, 0, 
-	0, 0, 932, 933, 3, 204, 102, 0, 933, 934, 5, 46, 0, 0, 934, 935, 3, 112, 
-	56, 0, 935, 941, 1, 0, 0, 0, 936, 937, 5, 10, 0, 0, 937, 938, 3, 144, 72, 
-	0, 938, 939, 5, 11, 0, 0, 939, 941, 1, 0, 0, 0, 940, 932, 1, 0, 0, 0, 940, 
-	936, 1, 0, 0, 0, 941, 145, 1, 0, 0, 0, 942, 943, 3, 148, 74, 0, 943, 944, 
-	5, 73, 0, 0, 944, 945, 3, 148, 74, 0, 945, 951, 1, 0, 0, 0, 946, 947, 5, 
-	10, 0, 0, 947, 948, 3, 146, 73, 0, 948, 949, 5, 11, 0, 0, 949, 951, 1, 
-	0, 0, 0, 950, 942, 1, 0, 0, 0, 950, 946, 1, 0, 0, 0, 951, 147, 1, 0, 0, 
-	0, 952, 958, 5, 17, 0, 0, 953, 954, 5, 12, 0, 0, 954, 955, 3, 150, 75, 
-	0, 955, 956, 5, 13, 0, 0, 956, 958, 1, 0, 0, 0, 957, 952, 1, 0, 0, 0, 957, 
-	953, 1, 0, 0, 0, 958, 149, 1, 0, 0, 0, 959, 964, 3, 100, 50, 0, 960, 961, 
-	5, 2, 0, 0, 961, 963, 3, 100, 50, 0, 962, 960, 1, 0, 0, 0, 963, 966, 1, 
-	0, 0, 0, 964, 962, 1, 0, 0, 0, 964, 965, 1, 0, 0, 0, 965, 151, 1, 0, 0, 
-	0, 966, 964, 1, 0, 0, 0, 967, 968, 3, 280, 140, 0, 968, 969, 5, 14, 0, 
-	0, 969, 970, 3, 156, 78, 0, 970, 976, 1, 0, 0, 0, 971, 972, 5, 10, 0, 0, 
-	972, 973, 3, 152, 76, 0, 973, 974, 5, 11, 0, 0, 974, 976, 1, 0, 0, 0, 975, 
-	967, 1, 0, 0, 0, 975, 971, 1, 0, 0, 0, 976, 153, 1, 0, 0, 0, 977, 978, 
-	3, 280, 140, 0, 978, 979, 5, 72, 0, 0, 979, 980, 3, 278, 139, 0, 980, 155, 
-	1, 0, 0, 0, 981, 989, 3, 164, 82, 0, 982, 989, 3, 168, 84, 0, 983, 989, 
-	3, 158, 79, 0, 984, 985, 5, 10, 0, 0, 985, 986, 3, 156, 78, 0, 986, 987, 
-	5, 11, 0, 0, 987, 989, 1, 0, 0, 0, 988, 981, 1, 0, 0, 0, 988, 982, 1, 0, 
-	0, 0, 988, 983, 1, 0, 0, 0, 988, 984, 1, 0, 0, 0, 989, 157, 1, 0, 0, 0, 
-	990, 991, 5, 54, 0, 0, 991, 992, 5, 12, 0, 0, 992, 993, 3, 116, 58, 0, 
-	993, 994, 5, 13, 0, 0, 994, 995, 5, 14, 0, 0, 995, 996, 3, 160, 80, 0, 
-	996, 159, 1, 0, 0, 0, 997, 1003, 3, 164, 82, 0, 998, 999, 5, 10, 0, 0, 
-	999, 1000, 3, 168, 84, 0, 1000, 1001, 5, 11, 0, 0, 1001, 1003, 1, 0, 0, 
-	0, 1002, 997, 1, 0, 0, 0, 1002, 998, 1, 0, 0, 0, 1003, 161, 1, 0, 0, 0, 
-	1004, 1010, 3, 164, 82, 0, 1005, 1006, 5, 10, 0, 0, 1006, 1007, 3, 170, 
-	85, 0, 1007, 1008, 5, 11, 0, 0, 1008, 1010, 1, 0, 0, 0, 1009, 1004, 1, 
-	0, 0, 0, 1009, 1005, 1, 0, 0, 0, 1010, 163, 1, 0, 0, 0, 1011, 1020, 3, 
-	270, 135, 0, 1012, 1020, 3, 274, 137, 0, 1013, 1014, 3, 272, 136, 0, 1014, 
-	1015, 5, 10, 0, 0, 1015, 1016, 3, 166, 83, 0, 1016, 1017, 5, 11, 0, 0, 
-	1017, 1020, 1, 0, 0, 0, 1018, 1020, 3, 302, 151, 0, 1019, 1011, 1, 0, 0, 
-	0, 1019, 1012, 1, 0, 0, 0, 1019, 1013, 1, 0, 0, 0, 1019, 1018, 1, 0, 0, 
-	0, 1020, 165, 1, 0, 0, 0, 1021, 1026, 3, 164, 82, 0, 1022, 1023, 5, 2, 
-	0, 0, 1023, 1025, 3, 164, 82, 0, 1024, 1022, 1, 0, 0, 0, 1025, 1028, 1, 
-	0, 0, 0, 1026, 1024, 1, 0, 0, 0, 1026, 1027, 1, 0, 0, 0, 1027, 167, 1, 
-	0, 0, 0, 1028, 1026, 1, 0, 0, 0, 1029, 1030, 3, 162, 81, 0, 1030, 1031, 
-	5, 69, 0, 0, 1031, 1032, 3, 164, 82, 0, 1032, 169, 1, 0, 0, 0, 1033, 1034, 
-	6, 85, -1, 0, 1034, 1035, 3, 162, 81, 0, 1035, 1036, 5, 70, 0, 0, 1036, 
-	1037, 3, 164, 82, 0, 1037, 1043, 1, 0, 0, 0, 1038, 1039, 10, 1, 0, 0, 1039, 
-	1040, 5, 70, 0, 0, 1040, 1042, 3, 164, 82, 0, 1041, 1038, 1, 0, 0, 0, 1042, 
-	1045, 1, 0, 0, 0, 1043, 1041, 1, 0, 0, 0, 1043, 1044, 1, 0, 0, 0, 1044, 
-	171, 1, 0, 0, 0, 1045, 1043, 1, 0, 0, 0, 1046, 1049, 3, 174, 87, 0, 1047, 
-	1049, 3, 152, 76, 0, 1048, 1046, 1, 0, 0, 0, 1048, 1047, 1, 0, 0, 0, 1049, 
-	173, 1, 0, 0, 0, 1050, 1053, 3, 176, 88, 0, 1051, 1053, 3, 242, 121, 0, 
-	1052, 1050, 1, 0, 0, 0, 1052, 1051, 1, 0, 0, 0, 1053, 175, 1, 0, 0, 0, 
-	1054, 1055, 5, 57, 0, 0, 1055, 1056, 5, 12, 0, 0, 1056, 1057, 3, 116, 58, 
-	0, 1057, 1058, 5, 13, 0, 0, 1058, 1059, 5, 14, 0, 0, 1059, 1060, 3, 242, 
-	121, 0, 1060, 177, 1, 0, 0, 0, 1061, 1064, 3, 180, 90, 0, 1062, 1064, 3, 
-	236, 118, 0, 1063, 1061, 1, 0, 0, 0, 1063, 1062, 1, 0, 0, 0, 1064, 179, 
-	1, 0, 0, 0, 1065, 1068, 3, 182, 91, 0, 1066, 1068, 3, 192, 96, 0, 1067, 
-	1065, 1, 0, 0, 0, 1067, 1066, 1, 0, 0, 0, 1068, 181, 1, 0, 0, 0, 1069, 
-	1072, 3, 184, 92, 0, 1070, 1072, 3, 186, 93, 0, 1071, 1069, 1, 0, 0, 0, 
-	1071, 1070, 1, 0, 0, 0, 1072, 183, 1, 0, 0, 0, 1073, 1074, 3, 192, 96, 
-	0, 1074, 1075, 3, 264, 132, 0, 1075, 1076, 3, 192, 96, 0, 1076, 185, 1, 
-	0, 0, 0, 1077, 1080, 3, 188, 94, 0, 1078, 1080, 3, 190, 95, 0, 1079, 1077, 
-	1, 0, 0, 0, 1079, 1078, 1, 0, 0, 0, 1080, 187, 1, 0, 0, 0, 1081, 1082, 
-	6, 94, -1, 0, 1082, 1083, 3, 192, 96, 0, 1083, 1084, 5, 44, 0, 0, 1084, 
-	1085, 3, 192, 96, 0, 1085, 1091, 1, 0, 0, 0, 1086, 1087, 10, 1, 0, 0, 1087, 
-	1088, 5, 44, 0, 0, 1088, 1090, 3, 192, 96, 0, 1089, 1086, 1, 0, 0, 0, 1090, 
-	1093, 1, 0, 0, 0, 1091, 1089, 1, 0, 0, 0, 1091, 1092, 1, 0, 0, 0, 1092, 
-	189, 1, 0, 0, 0, 1093, 1091, 1, 0, 0, 0, 1094, 1095, 6, 95, -1, 0, 1095, 
-	1096, 3, 192, 96, 0, 1096, 1097, 5, 45, 0, 0, 1097, 1098, 3, 192, 96, 0, 
-	1098, 1104, 1, 0, 0, 0, 1099, 1100, 10, 1, 0, 0, 1100, 1101, 5, 45, 0, 
-	0, 1101, 1103, 3, 192, 96, 0, 1102, 1099, 1, 0, 0, 0, 1103, 1106, 1, 0, 
-	0, 0, 1104, 1102, 1, 0, 0, 0, 1104, 1105, 1, 0, 0, 0, 1105, 191, 1, 0, 
-	0, 0, 1106, 1104, 1, 0, 0, 0, 1107, 1115, 3, 194, 97, 0, 1108, 1115, 3, 
-	198, 99, 0, 1109, 1115, 3, 202, 101, 0, 1110, 1111, 5, 10, 0, 0, 1111, 
-	1112, 3, 180, 90, 0, 1112, 1113, 5, 11, 0, 0, 1113, 1115, 1, 0, 0, 0, 1114, 
-	1107, 1, 0, 0, 0, 1114, 1108, 1, 0, 0, 0, 1114, 1109, 1, 0, 0, 0, 1114, 
-	1110, 1, 0, 0, 0, 1115, 193, 1, 0, 0, 0, 1116, 1117, 3, 262, 131, 0, 1117, 
-	1118, 5, 12, 0, 0, 1118, 1119, 3, 196, 98, 0, 1119, 1120, 5, 13, 0, 0, 
-	1120, 1121, 5, 14, 0, 0, 1121, 1122, 3, 192, 96, 0, 1122, 195, 1, 0, 0, 
-	0, 1123, 1128, 3, 302, 151, 0, 1124, 1125, 5, 2, 0, 0, 1125, 1127, 3, 302, 
-	151, 0, 1126, 1124, 1, 0, 0, 0, 1127, 1130, 1, 0, 0, 0, 1128, 1126, 1, 
-	0, 0, 0, 1128, 1129, 1, 0, 0, 0, 1129, 197, 1, 0, 0, 0, 1130, 1128, 1, 
-	0, 0, 0, 1131, 1132, 3, 268, 134, 0, 1132, 1133, 3, 192, 96, 0, 1133, 1136, 
-	1, 0, 0, 0, 1134, 1136, 3, 200, 100, 0, 1135, 1131, 1, 0, 0, 0, 1135, 1134, 
-	1, 0, 0, 0, 1136, 199, 1, 0, 0, 0, 1137, 1138, 3, 226, 113, 0, 1138, 1139, 
-	5, 55, 0, 0, 1139, 1140, 3, 226, 113, 0, 1140, 201, 1, 0, 0, 0, 1141, 1145, 
-	3, 204, 102, 0, 1142, 1145, 3, 206, 103, 0, 1143, 1145, 3, 212, 106, 0, 
-	1144, 1141, 1, 0, 0, 0, 1144, 1142, 1, 0, 0, 0, 1144, 1143, 1, 0, 0, 0, 
-	1145, 203, 1, 0, 0, 0, 1146, 1147, 3, 214, 107, 0, 1147, 205, 1, 0, 0, 
-	0, 1148, 1151, 3, 208, 104, 0, 1149, 1151, 3, 210, 105, 0, 1150, 1148, 
-	1, 0, 0, 0, 1150, 1149, 1, 0, 0, 0, 1151, 207, 1, 0, 0, 0, 1152, 1153, 
-	3, 216, 108, 0, 1153, 209, 1, 0, 0, 0, 1154, 1155, 3, 226, 113, 0, 1155, 
-	1156, 3, 286, 143, 0, 1156, 1157, 3, 226, 113, 0, 1157, 211, 1, 0, 0, 0, 
-	1158, 1159, 3, 222, 111, 0, 1159, 213, 1, 0, 0, 0, 1160, 1167, 3, 288, 
-	144, 0, 1161, 1162, 3, 290, 145, 0, 1162, 1163, 5, 10, 0, 0, 1163, 1164, 
-	3, 224, 112, 0, 1164, 1165, 5, 11, 0, 0, 1165, 1167, 1, 0, 0, 0, 1166, 
-	1160, 1, 0, 0, 0, 1166, 1161, 1, 0, 0, 0, 1167, 215, 1, 0, 0, 0, 1168, 
-	1171, 3, 300, 150, 0, 1169, 1171, 3, 218, 109, 0, 1170, 1168, 1, 0, 0, 
-	0, 1170, 1169, 1, 0, 0, 0, 1171, 217, 1, 0, 0, 0, 1172, 1173, 3, 220, 110, 
-	0, 1173, 219, 1, 0, 0, 0, 1174, 1181, 3, 296, 148, 0, 1175, 1176, 3, 298, 
-	149, 0, 1176, 1177, 5, 10, 0, 0, 1177, 1178, 3, 224, 112, 0, 1178, 1179, 
-	5, 11, 0, 0, 1179, 1181, 1, 0, 0, 0, 1180, 1174, 1, 0, 0, 0, 1180, 1175, 
-	1, 0, 0, 0, 1181, 221, 1, 0, 0, 0, 1182, 1189, 3, 292, 146, 0, 1183, 1184, 
-	3, 294, 147, 0, 1184, 1185, 5, 10, 0, 0, 1185, 1186, 3, 224, 112, 0, 1186, 
-	1187, 5, 11, 0, 0, 1187, 1189, 1, 0, 0, 0, 1188, 1182, 1, 0, 0, 0, 1188, 
-	1183, 1, 0, 0, 0, 1189, 223, 1, 0, 0, 0, 1190, 1195, 3, 226, 113, 0, 1191, 
-	1192, 5, 2, 0, 0, 1192, 1194, 3, 226, 113, 0, 1193, 1191, 1, 0, 0, 0, 1194, 
-	1197, 1, 0, 0, 0, 1195, 1193, 1, 0, 0, 0, 1195, 1196, 1, 0, 0, 0, 1196, 
-	225, 1, 0, 0, 0, 1197, 1195, 1, 0, 0, 0, 1198, 1204, 3, 228, 114, 0, 1199, 
-	1204, 3, 302, 151, 0, 1200, 1204, 3, 230, 115, 0, 1201, 1204, 3, 232, 116, 
-	0, 1202, 1204, 3, 234, 117, 0, 1203, 1198, 1, 0, 0, 0, 1203, 1199, 1, 0, 
-	0, 0, 1203, 1200, 1, 0, 0, 0, 1203, 1201, 1, 0, 0, 0, 1203, 1202, 1, 0, 
-	0, 0, 1204, 227, 1, 0, 0, 0, 1205, 1209, 3, 214, 107, 0, 1206, 1209, 3, 
-	216, 108, 0, 1207, 1209, 3, 222, 111, 0, 1208, 1205, 1, 0, 0, 0, 1208, 
-	1206, 1, 0, 0, 0, 1208, 1207, 1, 0, 0, 0, 1209, 229, 1, 0, 0, 0, 1210, 
-	1211, 5, 24, 0, 0, 1211, 1212, 3, 100, 50, 0, 1212, 1213, 5, 2, 0, 0, 1213, 
-	1214, 3, 226, 113, 0, 1214, 1215, 5, 2, 0, 0, 1215, 1216, 3, 226, 113, 
-	0, 1216, 1217, 5, 11, 0, 0, 1217, 231, 1, 0, 0, 0, 1218, 1219, 5, 25, 0, 
-	0, 1219, 1220, 3, 138, 69, 0, 1220, 1221, 5, 2, 0, 0, 1221, 1222, 3, 226, 
-	113, 0, 1222, 1223, 5, 11, 0, 0, 1223, 1231, 1, 0, 0, 0, 1224, 1225, 5, 
-	26, 0, 0, 1225, 1226, 3, 130, 65, 0, 1226, 1227, 5, 2, 0, 0, 1227, 1228, 
-	3, 226, 113, 0, 1228, 1229, 5, 11, 0, 0, 1229, 1231, 1, 0, 0, 0, 1230, 
-	1218, 1, 0, 0, 0, 1230, 1224, 1, 0, 0, 0, 1231, 233, 1, 0, 0, 0, 1232, 
-	1238, 5, 18, 0, 0, 1233, 1234, 5, 19, 0, 0, 1234, 1235, 3, 224, 112, 0, 
-	1235, 1236, 5, 20, 0, 0, 1236, 1238, 1, 0, 0, 0, 1237, 1232, 1, 0, 0, 0, 
-	1237, 1233, 1, 0, 0, 0, 1238, 235, 1, 0, 0, 0, 1239, 1240, 3, 238, 119, 
-	0, 1240, 1241, 5, 73, 0, 0, 1241, 1242, 3, 238, 119, 0, 1242, 1248, 1, 
-	0, 0, 0, 1243, 1244, 5, 10, 0, 0, 1244, 1245, 3, 236, 118, 0, 1245, 1246, 
-	5, 11, 0, 0, 1246, 1248, 1, 0, 0, 0, 1247, 1239, 1, 0, 0, 0, 1247, 1243, 
-	1, 0, 0, 0, 1248, 237, 1, 0, 0, 0, 1249, 1255, 5, 17, 0, 0, 1250, 1251, 
-	5, 12, 0, 0, 1251, 1252, 3, 240, 120, 0, 1252, 1253, 5, 13, 0, 0, 1253, 
-	1255, 1, 0, 0, 0, 1254, 1249, 1, 0, 0, 0, 1254, 1250, 1, 0, 0, 0, 1255, 
-	239, 1, 0, 0, 0, 1256, 1261, 3, 180, 90, 0, 1257, 1258, 5, 2, 0, 0, 1258, 
-	1260, 3, 180, 90, 0, 1259, 1257, 1, 0, 0, 0, 1260, 1263, 1, 0, 0, 0, 1261, 
-	1259, 1, 0, 0, 0, 1261, 1262, 1, 0, 0, 0, 1262, 241, 1, 0, 0, 0, 1263, 
-	1261, 1, 0, 0, 0, 1264, 1270, 3, 244, 122, 0, 1265, 1266, 5, 10, 0, 0, 
-	1266, 1267, 3, 244, 122, 0, 1267, 1268, 5, 11, 0, 0, 1268, 1270, 1, 0, 
-	0, 0, 1269, 1264, 1, 0, 0, 0, 1269, 1265, 1, 0, 0, 0, 1270, 243, 1, 0, 
-	0, 0, 1271, 1272, 6, 122, -1, 0, 1272, 1273, 3, 246, 123, 0, 1273, 1279, 
-	1, 0, 0, 0, 1274, 1275, 10, 1, 0, 0, 1275, 1276, 5, 44, 0, 0, 1276, 1278, 
-	3, 246, 123, 0, 1277, 1274, 1, 0, 0, 0, 1278, 1281, 1, 0, 0, 0, 1279, 1277, 
-	1, 0, 0, 0, 1279, 1280, 1, 0, 0, 0, 1280, 245, 1, 0, 0, 0, 1281, 1279, 
-	1, 0, 0, 0, 1282, 1287, 3, 202, 101, 0, 1283, 1284, 5, 52, 0, 0, 1284, 
-	1287, 3, 202, 101, 0, 1285, 1287, 3, 200, 100, 0, 1286, 1282, 1, 0, 0, 
-	0, 1286, 1283, 1, 0, 0, 0, 1286, 1285, 1, 0, 0, 0, 1287, 247, 1, 0, 0, 
-	0, 1288, 1292, 3, 262, 131, 0, 1289, 1292, 3, 250, 125, 0, 1290, 1292, 
-	3, 252, 126, 0, 1291, 1288, 1, 0, 0, 0, 1291, 1289, 1, 0, 0, 0, 1291, 1290, 
-	1, 0, 0, 0, 1292, 249, 1, 0, 0, 0, 1293, 1294, 7, 0, 0, 0, 1294, 251, 1, 
-	0, 0, 0, 1295, 1296, 7, 1, 0, 0, 1296, 253, 1, 0, 0, 0, 1297, 1302, 5, 
-	56, 0, 0, 1298, 1302, 5, 55, 0, 0, 1299, 1302, 3, 264, 132, 0, 1300, 1302, 
-	5, 68, 0, 0, 1301, 1297, 1, 0, 0, 0, 1301, 1298, 1, 0, 0, 0, 1301, 1299, 
-	1, 0, 0, 0, 1301, 1300, 1, 0, 0, 0, 1302, 255, 1, 0, 0, 0, 1303, 1306, 
-	3, 268, 134, 0, 1304, 1306, 3, 258, 129, 0, 1305, 1303, 1, 0, 0, 0, 1305, 
-	1304, 1, 0, 0, 0, 1306, 257, 1, 0, 0, 0, 1307, 1308, 7, 2, 0, 0, 1308, 
-	259, 1, 0, 0, 0, 1309, 1312, 3, 264, 132, 0, 1310, 1312, 5, 68, 0, 0, 1311, 
-	1309, 1, 0, 0, 0, 1311, 1310, 1, 0, 0, 0, 1312, 261, 1, 0, 0, 0, 1313, 
-	1314, 7, 3, 0, 0, 1314, 263, 1, 0, 0, 0, 1315, 1316, 7, 4, 0, 0, 1316, 
-	265, 1, 0, 0, 0, 1317, 1318, 7, 5, 0, 0, 1318, 267, 1, 0, 0, 0, 1319, 1320, 
-	5, 52, 0, 0, 1320, 269, 1, 0, 0, 0, 1321, 1322, 3, 272, 136, 0, 1322, 271, 
-	1, 0, 0, 0, 1323, 1324, 3, 392, 196, 0, 1324, 273, 1, 0, 0, 0, 1325, 1326, 
-	5, 91, 0, 0, 1326, 275, 1, 0, 0, 0, 1327, 1328, 3, 396, 198, 0, 1328, 277, 
-	1, 0, 0, 0, 1329, 1332, 3, 280, 140, 0, 1330, 1332, 3, 296, 148, 0, 1331, 
-	1329, 1, 0, 0, 0, 1331, 1330, 1, 0, 0, 0, 1332, 279, 1, 0, 0, 0, 1333, 
-	1336, 3, 288, 144, 0, 1334, 1336, 3, 292, 146, 0, 1335, 1333, 1, 0, 0, 
-	0, 1335, 1334, 1, 0, 0, 0, 1336, 281, 1, 0, 0, 0, 1337, 1338, 5, 91, 0, 
-	0, 1338, 283, 1, 0, 0, 0, 1339, 1340, 5, 91, 0, 0, 1340, 285, 1, 0, 0, 
-	0, 1341, 1342, 7, 6, 0, 0, 1342, 287, 1, 0, 0, 0, 1343, 1344, 3, 290, 145, 
-	0, 1344, 289, 1, 0, 0, 0, 1345, 1346, 3, 392, 196, 0, 1346, 291, 1, 0, 
-	0, 0, 1347, 1348, 3, 294, 147, 0, 1348, 293, 1, 0, 0, 0, 1349, 1350, 3, 
-	396, 198, 0, 1350, 295, 1, 0, 0, 0, 1351, 1352, 3, 298, 149, 0, 1352, 297, 
-	1, 0, 0, 0, 1353, 1354, 3, 394, 197, 0, 1354, 299, 1, 0, 0, 0, 1355, 1358, 
-	3, 398, 199, 0, 1356, 1358, 5, 96, 0, 0, 1357, 1355, 1, 0, 0, 0, 1357, 
-	1356, 1, 0, 0, 0, 1358, 301, 1, 0, 0, 0, 1359, 1360, 5, 93, 0, 0, 1360, 
-	303, 1, 0, 0, 0, 1361, 1370, 3, 308, 154, 0, 1362, 1370, 3, 322, 161, 0, 
-	1363, 1370, 3, 326, 163, 0, 1364, 1370, 5, 94, 0, 0, 1365, 1366, 5, 12, 
-	0, 0, 1366, 1367, 3, 306, 153, 0, 1367, 1368, 5, 13, 0, 0, 1368, 1370, 
-	1, 0, 0, 0, 1369, 1361, 1, 0, 0, 0, 1369, 1362, 1, 0, 0, 0, 1369, 1363, 
-	1, 0, 0, 0, 1369, 1364, 1, 0, 0, 0, 1369, 1365, 1, 0, 0, 0, 1370, 305, 
-	1, 0, 0, 0, 1371, 1376, 3, 304, 152, 0, 1372, 1373, 5, 2, 0, 0, 1373, 1375, 
-	3, 304, 152, 0, 1374, 1372, 1, 0, 0, 0, 1375, 1378, 1, 0, 0, 0, 1376, 1374, 
-	1, 0, 0, 0, 1376, 1377, 1, 0, 0, 0, 1377, 307, 1, 0, 0, 0, 1378, 1376, 
-	1, 0, 0, 0, 1379, 1382, 3, 390, 195, 0, 1380, 1382, 3, 310, 155, 0, 1381, 
-	1379, 1, 0, 0, 0, 1381, 1380, 1, 0, 0, 0, 1382, 309, 1, 0, 0, 0, 1383, 
-	1384, 5, 27, 0, 0, 1384, 1385, 3, 312, 156, 0, 1385, 1386, 5, 2, 0, 0, 
-	1386, 1387, 3, 342, 171, 0, 1387, 1388, 5, 2, 0, 0, 1388, 1389, 3, 314, 
-	157, 0, 1389, 1390, 5, 11, 0, 0, 1390, 311, 1, 0, 0, 0, 1391, 1392, 3, 
-	392, 196, 0, 1392, 313, 1, 0, 0, 0, 1393, 1399, 5, 17, 0, 0, 1394, 1395, 
-	5, 12, 0, 0, 1395, 1396, 3, 316, 158, 0, 1396, 1397, 5, 13, 0, 0, 1397, 
-	1399, 1, 0, 0, 0, 1398, 1393, 1, 0, 0, 0, 1398, 1394, 1, 0, 0, 0, 1399, 
-	315, 1, 0, 0, 0, 1400, 1405, 3, 318, 159, 0, 1401, 1402, 5, 2, 0, 0, 1402, 
-	1404, 3, 318, 159, 0, 1403, 1401, 1, 0, 0, 0, 1404, 1407, 1, 0, 0, 0, 1405, 
-	1403, 1, 0, 0, 0, 1405, 1406, 1, 0, 0, 0, 1406, 317, 1, 0, 0, 0, 1407, 
-	1405, 1, 0, 0, 0, 1408, 1410, 3, 304, 152, 0, 1409, 1411, 3, 320, 160, 
-	0, 1410, 1409, 1, 0, 0, 0, 1410, 1411, 1, 0, 0, 0, 1411, 319, 1, 0, 0, 
-	0, 1412, 1413, 5, 14, 0, 0, 1413, 1414, 3, 386, 193, 0, 1414, 321, 1, 0, 
-	0, 0, 1415, 1416, 5, 28, 0, 0, 1416, 1418, 3, 324, 162, 0, 1417, 1419, 
-	3, 340, 170, 0, 1418, 1417, 1, 0, 0, 0, 1418, 1419, 1, 0, 0, 0, 1419, 1420, 
-	1, 0, 0, 0, 1420, 1421, 5, 11, 0, 0, 1421, 323, 1, 0, 0, 0, 1422, 1423, 
-	5, 94, 0, 0, 1423, 325, 1, 0, 0, 0, 1424, 1428, 3, 328, 164, 0, 1425, 1428, 
-	3, 332, 166, 0, 1426, 1428, 3, 336, 168, 0, 1427, 1424, 1, 0, 0, 0, 1427, 
-	1425, 1, 0, 0, 0, 1427, 1426, 1, 0, 0, 0, 1428, 327, 1, 0, 0, 0, 1429, 
-	1430, 5, 29, 0, 0, 1430, 1432, 3, 400, 200, 0, 1431, 1433, 3, 330, 165, 
-	0, 1432, 1431, 1, 0, 0, 0, 1432, 1433, 1, 0, 0, 0, 1433, 1434, 1, 0, 0, 
-	0, 1434, 1435, 5, 11, 0, 0, 1435, 329, 1, 0, 0, 0, 1436, 1437, 5, 2, 0, 
-	0, 1437, 1438, 3, 390, 195, 0, 1438, 331, 1, 0, 0, 0, 1439, 1440, 5, 30, 
-	0, 0, 1440, 1442, 3, 334, 167, 0, 1441, 1443, 3, 340, 170, 0, 1442, 1441, 
-	1, 0, 0, 0, 1442, 1443, 1, 0, 0, 0, 1443, 1444, 1, 0, 0, 0, 1444, 1445, 
-	5, 11, 0, 0, 1445, 333, 1, 0, 0, 0, 1446, 1447, 5, 94, 0, 0, 1447, 335, 
-	1, 0, 0, 0, 1448, 1449, 5, 31, 0, 0, 1449, 1451, 3, 338, 169, 0, 1450, 
-	1452, 3, 340, 170, 0, 1451, 1450, 1, 0, 0, 0, 1451, 1452, 1, 0, 0, 0, 1452, 
-	1453, 1, 0, 0, 0, 1453, 1454, 5, 11, 0, 0, 1454, 337, 1, 0, 0, 0, 1455, 
-	1456, 3, 392, 196, 0, 1456, 339, 1, 0, 0, 0, 1457, 1458, 5, 2, 0, 0, 1458, 
-	1459, 3, 342, 171, 0, 1459, 341, 1, 0, 0, 0, 1460, 1467, 5, 17, 0, 0, 1461, 
-	1462, 5, 12, 0, 0, 1462, 1463, 3, 344, 172, 0, 1463, 1464, 5, 13, 0, 0, 
-	1464, 1467, 1, 0, 0, 0, 1465, 1467, 3, 386, 193, 0, 1466, 1460, 1, 0, 0, 
-	0, 1466, 1461, 1, 0, 0, 0, 1466, 1465, 1, 0, 0, 0, 1467, 343, 1, 0, 0, 
-	0, 1468, 1473, 3, 346, 173, 0, 1469, 1470, 5, 2, 0, 0, 1470, 1472, 3, 346, 
-	173, 0, 1471, 1469, 1, 0, 0, 0, 1472, 1475, 1, 0, 0, 0, 1473, 1471, 1, 
-	0, 0, 0, 1473, 1474, 1, 0, 0, 0, 1474, 345, 1, 0, 0, 0, 1475, 1473, 1, 
-	0, 0, 0, 1476, 1480, 3, 348, 174, 0, 1477, 1480, 3, 354, 177, 0, 1478, 
-	1480, 3, 382, 191, 0, 1479, 1476, 1, 0, 0, 0, 1479, 1477, 1, 0, 0, 0, 1479, 
-	1478, 1, 0, 0, 0, 1480, 347, 1, 0, 0, 0, 1481, 1484, 3, 350, 175, 0, 1482, 
-	1484, 3, 352, 176, 0, 1483, 1481, 1, 0, 0, 0, 1483, 1482, 1, 0, 0, 0, 1484, 
-	349, 1, 0, 0, 0, 1485, 1486, 5, 32, 0, 0, 1486, 1487, 3, 392, 196, 0, 1487, 
-	1488, 5, 11, 0, 0, 1488, 351, 1, 0, 0, 0, 1489, 1490, 5, 33, 0, 0, 1490, 
-	1491, 3, 392, 196, 0, 1491, 1492, 5, 11, 0, 0, 1492, 353, 1, 0, 0, 0, 1493, 
-	1498, 3, 356, 178, 0, 1494, 1498, 3, 362, 181, 0, 1495, 1498, 3, 366, 183, 
-	0, 1496, 1498, 3, 364, 182, 0, 1497, 1493, 1, 0, 0, 0, 1497, 1494, 1, 0, 
-	0, 0, 1497, 1495, 1, 0, 0, 0, 1497, 1496, 1, 0, 0, 0, 1498, 355, 1, 0, 
-	0, 0, 1499, 1500, 5, 34, 0, 0, 1500, 1501, 3, 358, 179, 0, 1501, 1502, 
-	5, 11, 0, 0, 1502, 1505, 1, 0, 0, 0, 1503, 1505, 3, 360, 180, 0, 1504, 
-	1499, 1, 0, 0, 0, 1504, 1503, 1, 0, 0, 0, 1505, 357, 1, 0, 0, 0, 1506, 
-	1507, 5, 94, 0, 0, 1507, 359, 1, 0, 0, 0, 1508, 1509, 3, 312, 156, 0, 1509, 
-	1510, 5, 10, 0, 0, 1510, 1511, 3, 392, 196, 0, 1511, 1512, 5, 2, 0, 0, 
-	1512, 1513, 3, 386, 193, 0, 1513, 1514, 5, 11, 0, 0, 1514, 361, 1, 0, 0, 
-	0, 1515, 1516, 5, 35, 0, 0, 1516, 1517, 5, 12, 0, 0, 1517, 1518, 3, 376, 
-	188, 0, 1518, 1519, 5, 13, 0, 0, 1519, 1520, 5, 11, 0, 0, 1520, 363, 1, 
-	0, 0, 0, 1521, 1522, 5, 36, 0, 0, 1522, 1523, 3, 328, 164, 0, 1523, 1524, 
-	5, 11, 0, 0, 1524, 365, 1, 0, 0, 0, 1525, 1526, 5, 37, 0, 0, 1526, 1527, 
-	3, 392, 196, 0, 1527, 1528, 5, 2, 0, 0, 1528, 1529, 5, 12, 0, 0, 1529, 
-	1530, 3, 368, 184, 0, 1530, 1531, 5, 13, 0, 0, 1531, 1532, 5, 11, 0, 0, 
-	1532, 367, 1, 0, 0, 0, 1533, 1538, 3, 370, 185, 0, 1534, 1535, 5, 2, 0, 
-	0, 1535, 1537, 3, 370, 185, 0, 1536, 1534, 1, 0, 0, 0, 1537, 1540, 1, 0, 
-	0, 0, 1538, 1536, 1, 0, 0, 0, 1538, 1539, 1, 0, 0, 0, 1539, 369, 1, 0, 
-	0, 0, 1540, 1538, 1, 0, 0, 0, 1541, 1544, 3, 290, 145, 0, 1542, 1544, 3, 
-	302, 151, 0, 1543, 1541, 1, 0, 0, 0, 1543, 1542, 1, 0, 0, 0, 1544, 371, 
-	1, 0, 0, 0, 1545, 1546, 5, 38, 0, 0, 1546, 1548, 3, 400, 200, 0, 1547, 
-	1549, 3, 374, 187, 0, 1548, 1547, 1, 0, 0, 0, 1548, 1549, 1, 0, 0, 0, 1549, 
-	1550, 1, 0, 0, 0, 1550, 1551, 5, 3, 0, 0, 1551, 373, 1, 0, 0, 0, 1552, 
-	1553, 5, 2, 0, 0, 1553, 1554, 5, 12, 0, 0, 1554, 1555, 3, 376, 188, 0, 
-	1555, 1556, 5, 13, 0, 0, 1556, 375, 1, 0, 0, 0, 1557, 1562, 3, 390, 195, 
-	0, 1558, 1559, 5, 2, 0, 0, 1559, 1561, 3, 390, 195, 0, 1560, 1558, 1, 0, 
-	0, 0, 1561, 1564, 1, 0, 0, 0, 1562, 1560, 1, 0, 0, 0, 1562, 1563, 1, 0, 
-	0, 0, 1563, 377, 1, 0, 0, 0, 1564, 1562, 1, 0, 0, 0, 1565, 1572, 3, 380, 
-	190, 0, 1566, 1567, 3, 380, 190, 0, 1567, 1568, 5, 14, 0, 0, 1568, 1569, 
-	3, 378, 189, 0, 1569, 1572, 1, 0, 0, 0, 1570, 1572, 3, 386, 193, 0, 1571, 
-	1565, 1, 0, 0, 0, 1571, 1566, 1, 0, 0, 0, 1571, 1570, 1, 0, 0, 0, 1572, 
-	379, 1, 0, 0, 0, 1573, 1580, 3, 392, 196, 0, 1574, 1580, 3, 382, 191, 0, 
-	1575, 1580, 3, 302, 151, 0, 1576, 1580, 3, 398, 199, 0, 1577, 1580, 5, 
-	96, 0, 0, 1578, 1580, 3, 384, 192, 0, 1579, 1573, 1, 0, 0, 0, 1579, 1574, 
-	1, 0, 0, 0, 1579, 1575, 1, 0, 0, 0, 1579, 1576, 1, 0, 0, 0, 1579, 1577, 
-	1, 0, 0, 0, 1579, 1578, 1, 0, 0, 0, 1580, 381, 1, 0, 0, 0, 1581, 1582, 
-	3, 392, 196, 0, 1582, 1583, 5, 10, 0, 0, 1583, 1584, 3, 388, 194, 0, 1584, 
-	1585, 5, 11, 0, 0, 1585, 383, 1, 0, 0, 0, 1586, 1587, 5, 39, 0, 0, 1587, 
-	1588, 3, 26, 13, 0, 1588, 1589, 5, 11, 0, 0, 1589, 1607, 1, 0, 0, 0, 1590, 
-	1591, 5, 40, 0, 0, 1591, 1592, 3, 98, 49, 0, 1592, 1593, 5, 11, 0, 0, 1593, 
-	1607, 1, 0, 0, 0, 1594, 1595, 5, 41, 0, 0, 1595, 1596, 3, 178, 89, 0, 1596, 
-	1597, 5, 11, 0, 0, 1597, 1607, 1, 0, 0, 0, 1598, 1599, 5, 42, 0, 0, 1599, 
-	1600, 3, 242, 121, 0, 1600, 1601, 5, 11, 0, 0, 1601, 1607, 1, 0, 0, 0, 
-	1602, 1603, 5, 43, 0, 0, 1603, 1604, 3, 226, 113, 0, 1604, 1605, 5, 11, 
-	0, 0, 1605, 1607, 1, 0, 0, 0, 1606, 1586, 1, 0, 0, 0, 1606, 1590, 1, 0, 
-	0, 0, 1606, 1594, 1, 0, 0, 0, 1606, 1598, 1, 0, 0, 0, 1606, 1602, 1, 0, 
-	0, 0, 1607, 385, 1, 0, 0, 0, 1608, 1614, 5, 17, 0, 0, 1609, 1610, 5, 12, 
-	0, 0, 1610, 1611, 3, 388, 194, 0, 1611, 1612, 5, 13, 0, 0, 1612, 1614, 
-	1, 0, 0, 0, 1613, 1608, 1, 0, 0, 0, 1613, 1609, 1, 0, 0, 0, 1614, 387, 
-	1, 0, 0, 0, 1615, 1620, 3, 378, 189, 0, 1616, 1617, 5, 2, 0, 0, 1617, 1619, 
-	3, 378, 189, 0, 1618, 1616, 1, 0, 0, 0, 1619, 1622, 1, 0, 0, 0, 1620, 1618, 
-	1, 0, 0, 0, 1620, 1621, 1, 0, 0, 0, 1621, 389, 1, 0, 0, 0, 1622, 1620, 
-	1, 0, 0, 0, 1623, 1626, 3, 392, 196, 0, 1624, 1626, 5, 80, 0, 0, 1625, 
-	1623, 1, 0, 0, 0, 1625, 1624, 1, 0, 0, 0, 1626, 391, 1, 0, 0, 0, 1627, 
-	1628, 7, 7, 0, 0, 1628, 393, 1, 0, 0, 0, 1629, 1630, 5, 91, 0, 0, 1630, 
-	395, 1, 0, 0, 0, 1631, 1632, 5, 92, 0, 0, 1632, 397, 1, 0, 0, 0, 1633, 
-	1634, 7, 8, 0, 0, 1634, 399, 1, 0, 0, 0, 1635, 1636, 5, 95, 0, 0, 1636, 
-	401, 1, 0, 0, 0, 125, 405, 412, 421, 430, 443, 454, 465, 476, 487, 498, 
-	505, 511, 517, 522, 531, 543, 556, 569, 582, 598, 603, 618, 636, 641, 668, 
-	677, 686, 696, 708, 721, 732, 744, 751, 756, 763, 768, 772, 780, 792, 805, 
-	817, 831, 836, 846, 870, 877, 884, 895, 905, 912, 919, 930, 940, 950, 957, 
-	964, 975, 988, 1002, 1009, 1019, 1026, 1043, 1048, 1052, 1063, 1067, 1071, 
-	1079, 1091, 1104, 1114, 1128, 1135, 1144, 1150, 1166, 1170, 1180, 1188, 
-	1195, 1203, 1208, 1230, 1237, 1247, 1254, 1261, 1269, 1279, 1286, 1291, 
-	1301, 1305, 1311, 1331, 1335, 1357, 1369, 1376, 1381, 1398, 1405, 1410, 
-	1418, 1427, 1432, 1442, 1451, 1466, 1473, 1479, 1483, 1497, 1504, 1538, 
-	1543, 1548, 1562, 1571, 1579, 1606, 1613, 1620, 1625
-];
+	static ref _serializedATN: Vec<i32> = vec![
+		4, 1, 99, 1638, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 
+		7, 4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 
+		7, 10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 
+		7, 15, 2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 
+		7, 20, 2, 21, 7, 21, 2, 22, 7, 22, 2, 23, 7, 23, 2, 24, 7, 24, 2, 25, 
+		7, 25, 2, 26, 7, 26, 2, 27, 7, 27, 2, 28, 7, 28, 2, 29, 7, 29, 2, 30, 
+		7, 30, 2, 31, 7, 31, 2, 32, 7, 32, 2, 33, 7, 33, 2, 34, 7, 34, 2, 35, 
+		7, 35, 2, 36, 7, 36, 2, 37, 7, 37, 2, 38, 7, 38, 2, 39, 7, 39, 2, 40, 
+		7, 40, 2, 41, 7, 41, 2, 42, 7, 42, 2, 43, 7, 43, 2, 44, 7, 44, 2, 45, 
+		7, 45, 2, 46, 7, 46, 2, 47, 7, 47, 2, 48, 7, 48, 2, 49, 7, 49, 2, 50, 
+		7, 50, 2, 51, 7, 51, 2, 52, 7, 52, 2, 53, 7, 53, 2, 54, 7, 54, 2, 55, 
+		7, 55, 2, 56, 7, 56, 2, 57, 7, 57, 2, 58, 7, 58, 2, 59, 7, 59, 2, 60, 
+		7, 60, 2, 61, 7, 61, 2, 62, 7, 62, 2, 63, 7, 63, 2, 64, 7, 64, 2, 65, 
+		7, 65, 2, 66, 7, 66, 2, 67, 7, 67, 2, 68, 7, 68, 2, 69, 7, 69, 2, 70, 
+		7, 70, 2, 71, 7, 71, 2, 72, 7, 72, 2, 73, 7, 73, 2, 74, 7, 74, 2, 75, 
+		7, 75, 2, 76, 7, 76, 2, 77, 7, 77, 2, 78, 7, 78, 2, 79, 7, 79, 2, 80, 
+		7, 80, 2, 81, 7, 81, 2, 82, 7, 82, 2, 83, 7, 83, 2, 84, 7, 84, 2, 85, 
+		7, 85, 2, 86, 7, 86, 2, 87, 7, 87, 2, 88, 7, 88, 2, 89, 7, 89, 2, 90, 
+		7, 90, 2, 91, 7, 91, 2, 92, 7, 92, 2, 93, 7, 93, 2, 94, 7, 94, 2, 95, 
+		7, 95, 2, 96, 7, 96, 2, 97, 7, 97, 2, 98, 7, 98, 2, 99, 7, 99, 2, 100, 
+		7, 100, 2, 101, 7, 101, 2, 102, 7, 102, 2, 103, 7, 103, 2, 104, 7, 104, 
+		2, 105, 7, 105, 2, 106, 7, 106, 2, 107, 7, 107, 2, 108, 7, 108, 2, 109, 
+		7, 109, 2, 110, 7, 110, 2, 111, 7, 111, 2, 112, 7, 112, 2, 113, 7, 113, 
+		2, 114, 7, 114, 2, 115, 7, 115, 2, 116, 7, 116, 2, 117, 7, 117, 2, 118, 
+		7, 118, 2, 119, 7, 119, 2, 120, 7, 120, 2, 121, 7, 121, 2, 122, 7, 122, 
+		2, 123, 7, 123, 2, 124, 7, 124, 2, 125, 7, 125, 2, 126, 7, 126, 2, 127, 
+		7, 127, 2, 128, 7, 128, 2, 129, 7, 129, 2, 130, 7, 130, 2, 131, 7, 131, 
+		2, 132, 7, 132, 2, 133, 7, 133, 2, 134, 7, 134, 2, 135, 7, 135, 2, 136, 
+		7, 136, 2, 137, 7, 137, 2, 138, 7, 138, 2, 139, 7, 139, 2, 140, 7, 140, 
+		2, 141, 7, 141, 2, 142, 7, 142, 2, 143, 7, 143, 2, 144, 7, 144, 2, 145, 
+		7, 145, 2, 146, 7, 146, 2, 147, 7, 147, 2, 148, 7, 148, 2, 149, 7, 149, 
+		2, 150, 7, 150, 2, 151, 7, 151, 2, 152, 7, 152, 2, 153, 7, 153, 2, 154, 
+		7, 154, 2, 155, 7, 155, 2, 156, 7, 156, 2, 157, 7, 157, 2, 158, 7, 158, 
+		2, 159, 7, 159, 2, 160, 7, 160, 2, 161, 7, 161, 2, 162, 7, 162, 2, 163, 
+		7, 163, 2, 164, 7, 164, 2, 165, 7, 165, 2, 166, 7, 166, 2, 167, 7, 167, 
+		2, 168, 7, 168, 2, 169, 7, 169, 2, 170, 7, 170, 2, 171, 7, 171, 2, 172, 
+		7, 172, 2, 173, 7, 173, 2, 174, 7, 174, 2, 175, 7, 175, 2, 176, 7, 176, 
+		2, 177, 7, 177, 2, 178, 7, 178, 2, 179, 7, 179, 2, 180, 7, 180, 2, 181, 
+		7, 181, 2, 182, 7, 182, 2, 183, 7, 183, 2, 184, 7, 184, 2, 185, 7, 185, 
+		2, 186, 7, 186, 2, 187, 7, 187, 2, 188, 7, 188, 2, 189, 7, 189, 2, 190, 
+		7, 190, 2, 191, 7, 191, 2, 192, 7, 192, 2, 193, 7, 193, 2, 194, 7, 194, 
+		2, 195, 7, 195, 2, 196, 7, 196, 2, 197, 7, 197, 2, 198, 7, 198, 2, 199, 
+		7, 199, 2, 200, 7, 200, 1, 0, 5, 0, 404, 8, 0, 10, 0, 12, 0, 407, 9, 0, 
+		1, 0, 1, 0, 1, 1, 1, 1, 3, 1, 413, 8, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 
+		1, 2, 1, 2, 3, 2, 422, 8, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 
+		3, 3, 431, 8, 3, 1, 3, 1, 3, 1, 4, 1, 4, 1, 5, 1, 5, 1, 5, 1, 5, 1, 5, 
+		1, 5, 1, 5, 3, 5, 444, 8, 5, 1, 5, 1, 5, 1, 6, 1, 6, 1, 6, 1, 6, 1, 6, 
+		1, 6, 1, 6, 3, 6, 455, 8, 6, 1, 6, 1, 6, 1, 7, 1, 7, 1, 7, 1, 7, 1, 7, 
+		1, 7, 1, 7, 3, 7, 466, 8, 7, 1, 7, 1, 7, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 
+		1, 8, 1, 8, 3, 8, 477, 8, 8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 
+		1, 9, 1, 9, 3, 9, 488, 8, 9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 1, 10, 1, 
+		10, 1, 10, 1, 10, 3, 10, 499, 8, 10, 1, 10, 1, 10, 1, 11, 1, 11, 1, 11, 
+		3, 11, 506, 8, 11, 1, 12, 1, 12, 1, 13, 1, 13, 3, 13, 512, 8, 13, 1, 14, 
+		1, 14, 1, 14, 1, 14, 3, 14, 518, 8, 14, 1, 15, 1, 15, 1, 15, 3, 15, 523, 
+		8, 15, 1, 16, 1, 16, 1, 16, 1, 16, 1, 17, 1, 17, 1, 17, 3, 17, 532, 8, 
+		17, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 5, 18, 542, 
+		8, 18, 10, 18, 12, 18, 545, 9, 18, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 
+		1, 19, 1, 19, 1, 19, 5, 19, 555, 8, 19, 10, 19, 12, 19, 558, 9, 19, 1, 
+		20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 5, 20, 568, 8, 20, 
+		10, 20, 12, 20, 571, 9, 20, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 1, 21, 
+		1, 21, 1, 21, 1, 21, 1, 21, 3, 21, 583, 8, 21, 1, 22, 1, 22, 1, 22, 1, 
+		23, 1, 23, 1, 23, 1, 23, 1, 23, 1, 23, 1, 24, 1, 24, 1, 24, 5, 24, 597, 
+		8, 24, 10, 24, 12, 24, 600, 9, 24, 1, 25, 1, 25, 3, 25, 604, 8, 25, 1, 
+		26, 1, 26, 1, 26, 1, 26, 1, 27, 1, 27, 1, 27, 1, 27, 1, 27, 1, 28, 1, 
+		28, 1, 28, 1, 28, 3, 28, 619, 8, 28, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 
+		1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 1, 29, 
+		1, 29, 3, 29, 637, 8, 29, 1, 30, 1, 30, 1, 30, 3, 30, 642, 8, 30, 1, 31, 
+		1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 31, 1, 32, 1, 32, 1, 32, 
+		1, 32, 1, 32, 1, 32, 1, 33, 1, 33, 1, 34, 1, 34, 1, 34, 1, 34, 1, 35, 
+		1, 35, 1, 35, 1, 35, 1, 35, 3, 35, 669, 8, 35, 1, 36, 1, 36, 1, 36, 1, 
+		36, 1, 37, 1, 37, 1, 37, 3, 37, 678, 8, 37, 1, 38, 1, 38, 1, 39, 1, 39, 
+		1, 40, 1, 40, 1, 40, 3, 40, 687, 8, 40, 1, 41, 1, 41, 1, 41, 1, 41, 1, 
+		41, 1, 41, 1, 41, 1, 41, 3, 41, 697, 8, 41, 1, 42, 1, 42, 1, 42, 1, 42, 
+		1, 42, 1, 42, 1, 42, 1, 42, 5, 42, 707, 8, 42, 10, 42, 12, 42, 710, 9, 
+		42, 1, 43, 1, 43, 1, 43, 1, 43, 1, 43, 1, 43, 1, 43, 1, 43, 5, 43, 720, 
+		8, 43, 10, 43, 12, 43, 723, 9, 43, 1, 44, 1, 44, 1, 44, 1, 44, 1, 44, 
+		1, 44, 1, 44, 1, 44, 3, 44, 733, 8, 44, 1, 45, 1, 45, 1, 45, 1, 45, 1, 
+		45, 1, 45, 1, 45, 1, 45, 1, 45, 1, 45, 3, 45, 745, 8, 45, 1, 46, 1, 46, 
+		1, 46, 5, 46, 750, 8, 46, 10, 46, 12, 46, 753, 9, 46, 1, 47, 1, 47, 3, 
+		47, 757, 8, 47, 1, 48, 1, 48, 1, 49, 1, 49, 1, 49, 3, 49, 764, 8, 49, 
+		1, 50, 1, 50, 1, 50, 3, 50, 769, 8, 50, 1, 51, 1, 51, 3, 51, 773, 8, 51, 
+		1, 52, 1, 52, 1, 52, 1, 52, 1, 53, 1, 53, 3, 53, 781, 8, 53, 1, 54, 1, 
+		54, 1, 54, 1, 54, 1, 54, 1, 54, 1, 54, 1, 54, 5, 54, 791, 8, 54, 10, 54, 
+		12, 54, 794, 9, 54, 1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 1, 55, 1, 
+		55, 5, 55, 804, 8, 55, 10, 55, 12, 55, 807, 9, 55, 1, 56, 1, 56, 1, 56, 
+		1, 56, 1, 56, 1, 56, 1, 56, 1, 56, 1, 56, 3, 56, 818, 8, 56, 1, 57, 1, 
+		57, 1, 57, 1, 57, 1, 57, 1, 57, 1, 57, 1, 58, 1, 58, 1, 58, 5, 58, 830, 
+		8, 58, 10, 58, 12, 58, 833, 9, 58, 1, 59, 1, 59, 3, 59, 837, 8, 59, 1, 
+		60, 1, 60, 1, 60, 1, 60, 1, 61, 1, 61, 1, 61, 1, 61, 3, 61, 847, 8, 61, 
+		1, 62, 1, 62, 1, 63, 1, 63, 1, 63, 1, 63, 1, 63, 1, 63, 1, 63, 1, 63, 
+		1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 1, 64, 
+		1, 64, 1, 64, 3, 64, 871, 8, 64, 1, 65, 1, 65, 1, 65, 1, 65, 1, 65, 3, 
+		65, 878, 8, 65, 1, 66, 1, 66, 1, 66, 5, 66, 883, 8, 66, 10, 66, 12, 66, 
+		886, 9, 66, 1, 67, 1, 67, 1, 67, 1, 67, 1, 67, 1, 67, 1, 67, 1, 67, 3, 
+		67, 896, 8, 67, 1, 68, 1, 68, 1, 68, 1, 68, 1, 68, 1, 68, 1, 68, 1, 68, 
+		3, 68, 906, 8, 68, 1, 69, 1, 69, 1, 69, 1, 69, 1, 69, 3, 69, 913, 8, 69, 
+		1, 70, 1, 70, 1, 70, 5, 70, 918, 8, 70, 10, 70, 12, 70, 921, 9, 70, 1, 
+		71, 1, 71, 1, 71, 1, 71, 1, 71, 1, 71, 1, 71, 1, 71, 3, 71, 931, 8, 71, 
+		1, 72, 1, 72, 1, 72, 1, 72, 1, 72, 1, 72, 1, 72, 1, 72, 3, 72, 941, 8, 
+		72, 1, 73, 1, 73, 1, 73, 1, 73, 1, 73, 1, 73, 1, 73, 1, 73, 3, 73, 951, 
+		8, 73, 1, 74, 1, 74, 1, 74, 1, 74, 1, 74, 3, 74, 958, 8, 74, 1, 75, 1, 
+		75, 1, 75, 5, 75, 963, 8, 75, 10, 75, 12, 75, 966, 9, 75, 1, 76, 1, 76, 
+		1, 76, 1, 76, 1, 76, 1, 76, 1, 76, 1, 76, 3, 76, 976, 8, 76, 1, 77, 1, 
+		77, 1, 77, 1, 77, 1, 78, 1, 78, 1, 78, 1, 78, 1, 78, 1, 78, 1, 78, 3, 
+		78, 989, 8, 78, 1, 79, 1, 79, 1, 79, 1, 79, 1, 79, 1, 79, 1, 79, 1, 80, 
+		1, 80, 1, 80, 1, 80, 1, 80, 3, 80, 1003, 8, 80, 1, 81, 1, 81, 1, 81, 1, 
+		81, 1, 81, 3, 81, 1010, 8, 81, 1, 82, 1, 82, 1, 82, 1, 82, 1, 82, 1, 82, 
+		1, 82, 1, 82, 3, 82, 1020, 8, 82, 1, 83, 1, 83, 1, 83, 5, 83, 1025, 8, 
+		83, 10, 83, 12, 83, 1028, 9, 83, 1, 84, 1, 84, 1, 84, 1, 84, 1, 85, 1, 
+		85, 1, 85, 1, 85, 1, 85, 1, 85, 1, 85, 1, 85, 5, 85, 1042, 8, 85, 10, 
+		85, 12, 85, 1045, 9, 85, 1, 86, 1, 86, 3, 86, 1049, 8, 86, 1, 87, 1, 87, 
+		3, 87, 1053, 8, 87, 1, 88, 1, 88, 1, 88, 1, 88, 1, 88, 1, 88, 1, 88, 1, 
+		89, 1, 89, 3, 89, 1064, 8, 89, 1, 90, 1, 90, 3, 90, 1068, 8, 90, 1, 91, 
+		1, 91, 3, 91, 1072, 8, 91, 1, 92, 1, 92, 1, 92, 1, 92, 1, 93, 1, 93, 3, 
+		93, 1080, 8, 93, 1, 94, 1, 94, 1, 94, 1, 94, 1, 94, 1, 94, 1, 94, 1, 94, 
+		5, 94, 1090, 8, 94, 10, 94, 12, 94, 1093, 9, 94, 1, 95, 1, 95, 1, 95, 
+		1, 95, 1, 95, 1, 95, 1, 95, 1, 95, 5, 95, 1103, 8, 95, 10, 95, 12, 95, 
+		1106, 9, 95, 1, 96, 1, 96, 1, 96, 1, 96, 1, 96, 1, 96, 1, 96, 3, 96, 1115, 
+		8, 96, 1, 97, 1, 97, 1, 97, 1, 97, 1, 97, 1, 97, 1, 97, 1, 98, 1, 98, 
+		1, 98, 5, 98, 1127, 8, 98, 10, 98, 12, 98, 1130, 9, 98, 1, 99, 1, 99, 
+		1, 99, 1, 99, 3, 99, 1136, 8, 99, 1, 100, 1, 100, 1, 100, 1, 100, 1, 101, 
+		1, 101, 1, 101, 3, 101, 1145, 8, 101, 1, 102, 1, 102, 1, 103, 1, 103, 
+		3, 103, 1151, 8, 103, 1, 104, 1, 104, 1, 105, 1, 105, 1, 105, 1, 105, 
+		1, 106, 1, 106, 1, 107, 1, 107, 1, 107, 1, 107, 1, 107, 1, 107, 3, 107, 
+		1167, 8, 107, 1, 108, 1, 108, 3, 108, 1171, 8, 108, 1, 109, 1, 109, 1, 
+		110, 1, 110, 1, 110, 1, 110, 1, 110, 1, 110, 3, 110, 1181, 8, 110, 1, 
+		111, 1, 111, 1, 111, 1, 111, 1, 111, 1, 111, 3, 111, 1189, 8, 111, 1, 
+		112, 1, 112, 1, 112, 5, 112, 1194, 8, 112, 10, 112, 12, 112, 1197, 9, 
+		112, 1, 113, 1, 113, 1, 113, 1, 113, 1, 113, 3, 113, 1204, 8, 113, 1, 
+		114, 1, 114, 1, 114, 3, 114, 1209, 8, 114, 1, 115, 1, 115, 1, 115, 1, 
+		115, 1, 115, 1, 115, 1, 115, 1, 115, 1, 116, 1, 116, 1, 116, 1, 116, 1, 
+		116, 1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 1, 116, 3, 116, 1231, 
+		8, 116, 1, 117, 1, 117, 1, 117, 1, 117, 1, 117, 3, 117, 1238, 8, 117, 
+		1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 1, 118, 3, 118, 
+		1248, 8, 118, 1, 119, 1, 119, 1, 119, 1, 119, 1, 119, 3, 119, 1255, 8, 
+		119, 1, 120, 1, 120, 1, 120, 5, 120, 1260, 8, 120, 10, 120, 12, 120, 1263, 
+		9, 120, 1, 121, 1, 121, 1, 121, 1, 121, 1, 121, 3, 121, 1270, 8, 121, 
+		1, 122, 1, 122, 1, 122, 1, 122, 1, 122, 1, 122, 5, 122, 1278, 8, 122, 
+		10, 122, 12, 122, 1281, 9, 122, 1, 123, 1, 123, 1, 123, 1, 123, 3, 123, 
+		1287, 8, 123, 1, 124, 1, 124, 1, 124, 3, 124, 1292, 8, 124, 1, 125, 1, 
+		125, 1, 126, 1, 126, 1, 127, 1, 127, 1, 127, 1, 127, 3, 127, 1302, 8, 
+		127, 1, 128, 1, 128, 3, 128, 1306, 8, 128, 1, 129, 1, 129, 1, 130, 1, 
+		130, 3, 130, 1312, 8, 130, 1, 131, 1, 131, 1, 132, 1, 132, 1, 133, 1, 
+		133, 1, 134, 1, 134, 1, 135, 1, 135, 1, 136, 1, 136, 1, 137, 1, 137, 1, 
+		138, 1, 138, 1, 139, 1, 139, 3, 139, 1332, 8, 139, 1, 140, 1, 140, 3, 
+		140, 1336, 8, 140, 1, 141, 1, 141, 1, 142, 1, 142, 1, 143, 1, 143, 1, 
+		144, 1, 144, 1, 145, 1, 145, 1, 146, 1, 146, 1, 147, 1, 147, 1, 148, 1, 
+		148, 1, 149, 1, 149, 1, 150, 1, 150, 3, 150, 1358, 8, 150, 1, 151, 1, 
+		151, 1, 152, 1, 152, 1, 152, 1, 152, 1, 152, 1, 152, 1, 152, 1, 152, 3, 
+		152, 1370, 8, 152, 1, 153, 1, 153, 1, 153, 5, 153, 1375, 8, 153, 10, 153, 
+		12, 153, 1378, 9, 153, 1, 154, 1, 154, 3, 154, 1382, 8, 154, 1, 155, 1, 
+		155, 1, 155, 1, 155, 1, 155, 1, 155, 1, 155, 1, 155, 1, 156, 1, 156, 1, 
+		157, 1, 157, 1, 157, 1, 157, 1, 157, 3, 157, 1399, 8, 157, 1, 158, 1, 
+		158, 1, 158, 5, 158, 1404, 8, 158, 10, 158, 12, 158, 1407, 9, 158, 1, 
+		159, 1, 159, 3, 159, 1411, 8, 159, 1, 160, 1, 160, 1, 160, 1, 161, 1, 
+		161, 1, 161, 3, 161, 1419, 8, 161, 1, 161, 1, 161, 1, 162, 1, 162, 1, 
+		163, 1, 163, 1, 163, 3, 163, 1428, 8, 163, 1, 164, 1, 164, 1, 164, 3, 
+		164, 1433, 8, 164, 1, 164, 1, 164, 1, 165, 1, 165, 1, 165, 1, 166, 1, 
+		166, 1, 166, 3, 166, 1443, 8, 166, 1, 166, 1, 166, 1, 167, 1, 167, 1, 
+		168, 1, 168, 1, 168, 3, 168, 1452, 8, 168, 1, 168, 1, 168, 1, 169, 1, 
+		169, 1, 170, 1, 170, 1, 170, 1, 171, 1, 171, 1, 171, 1, 171, 1, 171, 1, 
+		171, 3, 171, 1467, 8, 171, 1, 172, 1, 172, 1, 172, 5, 172, 1472, 8, 172, 
+		10, 172, 12, 172, 1475, 9, 172, 1, 173, 1, 173, 1, 173, 3, 173, 1480, 
+		8, 173, 1, 174, 1, 174, 3, 174, 1484, 8, 174, 1, 175, 1, 175, 1, 175, 
+		1, 175, 1, 176, 1, 176, 1, 176, 1, 176, 1, 177, 1, 177, 1, 177, 1, 177, 
+		3, 177, 1498, 8, 177, 1, 178, 1, 178, 1, 178, 1, 178, 1, 178, 3, 178, 
+		1505, 8, 178, 1, 179, 1, 179, 1, 180, 1, 180, 1, 180, 1, 180, 1, 180, 
+		1, 180, 1, 180, 1, 181, 1, 181, 1, 181, 1, 181, 1, 181, 1, 181, 1, 182, 
+		1, 182, 1, 182, 1, 182, 1, 183, 1, 183, 1, 183, 1, 183, 1, 183, 1, 183, 
+		1, 183, 1, 183, 1, 184, 1, 184, 1, 184, 5, 184, 1537, 8, 184, 10, 184, 
+		12, 184, 1540, 9, 184, 1, 185, 1, 185, 3, 185, 1544, 8, 185, 1, 186, 1, 
+		186, 1, 186, 3, 186, 1549, 8, 186, 1, 186, 1, 186, 1, 187, 1, 187, 1, 
+		187, 1, 187, 1, 187, 1, 188, 1, 188, 1, 188, 5, 188, 1561, 8, 188, 10, 
+		188, 12, 188, 1564, 9, 188, 1, 189, 1, 189, 1, 189, 1, 189, 1, 189, 1, 
+		189, 3, 189, 1572, 8, 189, 1, 190, 1, 190, 1, 190, 1, 190, 1, 190, 1, 
+		190, 3, 190, 1580, 8, 190, 1, 191, 1, 191, 1, 191, 1, 191, 1, 191, 1, 
+		192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 
+		192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 192, 1, 
+		192, 1, 192, 3, 192, 1607, 8, 192, 1, 193, 1, 193, 1, 193, 1, 193, 1, 
+		193, 3, 193, 1614, 8, 193, 1, 194, 1, 194, 1, 194, 5, 194, 1619, 8, 194, 
+		10, 194, 12, 194, 1622, 9, 194, 1, 195, 1, 195, 3, 195, 1626, 8, 195, 
+		1, 196, 1, 196, 1, 197, 1, 197, 1, 198, 1, 198, 1, 199, 1, 199, 1, 200, 
+		1, 200, 1, 200, 0, 11, 36, 38, 40, 84, 86, 108, 110, 170, 188, 190, 244, 
+		201, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 
+		36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 
+		72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 
+		106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 
+		134, 136, 138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160, 
+		162, 164, 166, 168, 170, 172, 174, 176, 178, 180, 182, 184, 186, 188, 
+		190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 
+		218, 220, 222, 224, 226, 228, 230, 232, 234, 236, 238, 240, 242, 244, 
+		246, 248, 250, 252, 254, 256, 258, 260, 262, 264, 266, 268, 270, 272, 
+		274, 276, 278, 280, 282, 284, 286, 288, 290, 292, 294, 296, 298, 300, 
+		302, 304, 306, 308, 310, 312, 314, 316, 318, 320, 322, 324, 326, 328, 
+		330, 332, 334, 336, 338, 340, 342, 344, 346, 348, 350, 352, 354, 356, 
+		358, 360, 362, 364, 366, 368, 370, 372, 374, 376, 378, 380, 382, 384, 
+		386, 388, 390, 392, 394, 396, 398, 400, 0, 9, 3, 0, 61, 61, 63, 63, 65, 
+		65, 2, 0, 54, 54, 59, 59, 5, 0, 53, 53, 58, 58, 62, 62, 64, 64, 66, 66, 
+		2, 0, 57, 57, 60, 60, 1, 0, 46, 51, 1, 0, 44, 45, 2, 0, 56, 56, 68, 68, 
+		1, 0, 94, 95, 3, 0, 74, 74, 77, 77, 80, 80, 1621, 0, 405, 1, 0, 0, 0, 
+		2, 412, 1, 0, 0, 0, 4, 421, 1, 0, 0, 0, 6, 423, 1, 0, 0, 0, 8, 434, 1, 
+		0, 0, 0, 10, 436, 1, 0, 0, 0, 12, 447, 1, 0, 0, 0, 14, 458, 1, 0, 0, 0, 
+		16, 469, 1, 0, 0, 0, 18, 480, 1, 0, 0, 0, 20, 491, 1, 0, 0, 0, 22, 502, 
+		1, 0, 0, 0, 24, 507, 1, 0, 0, 0, 26, 511, 1, 0, 0, 0, 28, 517, 1, 0, 0, 
+		0, 30, 522, 1, 0, 0, 0, 32, 524, 1, 0, 0, 0, 34, 531, 1, 0, 0, 0, 36, 
+		533, 1, 0, 0, 0, 38, 546, 1, 0, 0, 0, 40, 559, 1, 0, 0, 0, 42, 582, 1, 
+		0, 0, 0, 44, 584, 1, 0, 0, 0, 46, 587, 1, 0, 0, 0, 48, 593, 1, 0, 0, 0, 
+		50, 603, 1, 0, 0, 0, 52, 605, 1, 0, 0, 0, 54, 609, 1, 0, 0, 0, 56, 618, 
+		1, 0, 0, 0, 58, 636, 1, 0, 0, 0, 60, 641, 1, 0, 0, 0, 62, 643, 1, 0, 0, 
+		0, 64, 651, 1, 0, 0, 0, 66, 657, 1, 0, 0, 0, 68, 659, 1, 0, 0, 0, 70, 
+		668, 1, 0, 0, 0, 72, 670, 1, 0, 0, 0, 74, 677, 1, 0, 0, 0, 76, 679, 1, 
+		0, 0, 0, 78, 681, 1, 0, 0, 0, 80, 686, 1, 0, 0, 0, 82, 696, 1, 0, 0, 0, 
+		84, 698, 1, 0, 0, 0, 86, 711, 1, 0, 0, 0, 88, 732, 1, 0, 0, 0, 90, 744, 
+		1, 0, 0, 0, 92, 746, 1, 0, 0, 0, 94, 756, 1, 0, 0, 0, 96, 758, 1, 0, 0, 
+		0, 98, 763, 1, 0, 0, 0, 100, 768, 1, 0, 0, 0, 102, 772, 1, 0, 0, 0, 104, 
+		774, 1, 0, 0, 0, 106, 780, 1, 0, 0, 0, 108, 782, 1, 0, 0, 0, 110, 795, 
+		1, 0, 0, 0, 112, 817, 1, 0, 0, 0, 114, 819, 1, 0, 0, 0, 116, 826, 1, 0, 
+		0, 0, 118, 836, 1, 0, 0, 0, 120, 838, 1, 0, 0, 0, 122, 846, 1, 0, 0, 0, 
+		124, 848, 1, 0, 0, 0, 126, 850, 1, 0, 0, 0, 128, 870, 1, 0, 0, 0, 130, 
+		877, 1, 0, 0, 0, 132, 879, 1, 0, 0, 0, 134, 895, 1, 0, 0, 0, 136, 905, 
+		1, 0, 0, 0, 138, 912, 1, 0, 0, 0, 140, 914, 1, 0, 0, 0, 142, 930, 1, 0, 
+		0, 0, 144, 940, 1, 0, 0, 0, 146, 950, 1, 0, 0, 0, 148, 957, 1, 0, 0, 0, 
+		150, 959, 1, 0, 0, 0, 152, 975, 1, 0, 0, 0, 154, 977, 1, 0, 0, 0, 156, 
+		988, 1, 0, 0, 0, 158, 990, 1, 0, 0, 0, 160, 1002, 1, 0, 0, 0, 162, 1009, 
+		1, 0, 0, 0, 164, 1019, 1, 0, 0, 0, 166, 1021, 1, 0, 0, 0, 168, 1029, 1, 
+		0, 0, 0, 170, 1033, 1, 0, 0, 0, 172, 1048, 1, 0, 0, 0, 174, 1052, 1, 0, 
+		0, 0, 176, 1054, 1, 0, 0, 0, 178, 1063, 1, 0, 0, 0, 180, 1067, 1, 0, 0, 
+		0, 182, 1071, 1, 0, 0, 0, 184, 1073, 1, 0, 0, 0, 186, 1079, 1, 0, 0, 0, 
+		188, 1081, 1, 0, 0, 0, 190, 1094, 1, 0, 0, 0, 192, 1114, 1, 0, 0, 0, 194, 
+		1116, 1, 0, 0, 0, 196, 1123, 1, 0, 0, 0, 198, 1135, 1, 0, 0, 0, 200, 1137, 
+		1, 0, 0, 0, 202, 1144, 1, 0, 0, 0, 204, 1146, 1, 0, 0, 0, 206, 1150, 1, 
+		0, 0, 0, 208, 1152, 1, 0, 0, 0, 210, 1154, 1, 0, 0, 0, 212, 1158, 1, 0, 
+		0, 0, 214, 1166, 1, 0, 0, 0, 216, 1170, 1, 0, 0, 0, 218, 1172, 1, 0, 0, 
+		0, 220, 1180, 1, 0, 0, 0, 222, 1188, 1, 0, 0, 0, 224, 1190, 1, 0, 0, 0, 
+		226, 1203, 1, 0, 0, 0, 228, 1208, 1, 0, 0, 0, 230, 1210, 1, 0, 0, 0, 232, 
+		1230, 1, 0, 0, 0, 234, 1237, 1, 0, 0, 0, 236, 1247, 1, 0, 0, 0, 238, 1254, 
+		1, 0, 0, 0, 240, 1256, 1, 0, 0, 0, 242, 1269, 1, 0, 0, 0, 244, 1271, 1, 
+		0, 0, 0, 246, 1286, 1, 0, 0, 0, 248, 1291, 1, 0, 0, 0, 250, 1293, 1, 0, 
+		0, 0, 252, 1295, 1, 0, 0, 0, 254, 1301, 1, 0, 0, 0, 256, 1305, 1, 0, 0, 
+		0, 258, 1307, 1, 0, 0, 0, 260, 1311, 1, 0, 0, 0, 262, 1313, 1, 0, 0, 0, 
+		264, 1315, 1, 0, 0, 0, 266, 1317, 1, 0, 0, 0, 268, 1319, 1, 0, 0, 0, 270, 
+		1321, 1, 0, 0, 0, 272, 1323, 1, 0, 0, 0, 274, 1325, 1, 0, 0, 0, 276, 1327, 
+		1, 0, 0, 0, 278, 1331, 1, 0, 0, 0, 280, 1335, 1, 0, 0, 0, 282, 1337, 1, 
+		0, 0, 0, 284, 1339, 1, 0, 0, 0, 286, 1341, 1, 0, 0, 0, 288, 1343, 1, 0, 
+		0, 0, 290, 1345, 1, 0, 0, 0, 292, 1347, 1, 0, 0, 0, 294, 1349, 1, 0, 0, 
+		0, 296, 1351, 1, 0, 0, 0, 298, 1353, 1, 0, 0, 0, 300, 1357, 1, 0, 0, 0, 
+		302, 1359, 1, 0, 0, 0, 304, 1369, 1, 0, 0, 0, 306, 1371, 1, 0, 0, 0, 308, 
+		1381, 1, 0, 0, 0, 310, 1383, 1, 0, 0, 0, 312, 1391, 1, 0, 0, 0, 314, 1398, 
+		1, 0, 0, 0, 316, 1400, 1, 0, 0, 0, 318, 1408, 1, 0, 0, 0, 320, 1412, 1, 
+		0, 0, 0, 322, 1415, 1, 0, 0, 0, 324, 1422, 1, 0, 0, 0, 326, 1427, 1, 0, 
+		0, 0, 328, 1429, 1, 0, 0, 0, 330, 1436, 1, 0, 0, 0, 332, 1439, 1, 0, 0, 
+		0, 334, 1446, 1, 0, 0, 0, 336, 1448, 1, 0, 0, 0, 338, 1455, 1, 0, 0, 0, 
+		340, 1457, 1, 0, 0, 0, 342, 1466, 1, 0, 0, 0, 344, 1468, 1, 0, 0, 0, 346, 
+		1479, 1, 0, 0, 0, 348, 1483, 1, 0, 0, 0, 350, 1485, 1, 0, 0, 0, 352, 1489, 
+		1, 0, 0, 0, 354, 1497, 1, 0, 0, 0, 356, 1504, 1, 0, 0, 0, 358, 1506, 1, 
+		0, 0, 0, 360, 1508, 1, 0, 0, 0, 362, 1515, 1, 0, 0, 0, 364, 1521, 1, 0, 
+		0, 0, 366, 1525, 1, 0, 0, 0, 368, 1533, 1, 0, 0, 0, 370, 1543, 1, 0, 0, 
+		0, 372, 1545, 1, 0, 0, 0, 374, 1552, 1, 0, 0, 0, 376, 1557, 1, 0, 0, 0, 
+		378, 1571, 1, 0, 0, 0, 380, 1579, 1, 0, 0, 0, 382, 1581, 1, 0, 0, 0, 384, 
+		1606, 1, 0, 0, 0, 386, 1613, 1, 0, 0, 0, 388, 1615, 1, 0, 0, 0, 390, 1625, 
+		1, 0, 0, 0, 392, 1627, 1, 0, 0, 0, 394, 1629, 1, 0, 0, 0, 396, 1631, 1, 
+		0, 0, 0, 398, 1633, 1, 0, 0, 0, 400, 1635, 1, 0, 0, 0, 402, 404, 3, 2, 
+		1, 0, 403, 402, 1, 0, 0, 0, 404, 407, 1, 0, 0, 0, 405, 403, 1, 0, 0, 0, 
+		405, 406, 1, 0, 0, 0, 406, 408, 1, 0, 0, 0, 407, 405, 1, 0, 0, 0, 408, 
+		409, 5, 0, 0, 1, 409, 1, 1, 0, 0, 0, 410, 413, 3, 4, 2, 0, 411, 413, 3, 
+		372, 186, 0, 412, 410, 1, 0, 0, 0, 412, 411, 1, 0, 0, 0, 413, 3, 1, 0, 
+		0, 0, 414, 422, 3, 10, 5, 0, 415, 422, 3, 12, 6, 0, 416, 422, 3, 14, 7, 
+		0, 417, 422, 3, 16, 8, 0, 418, 422, 3, 18, 9, 0, 419, 422, 3, 20, 10, 
+		0, 420, 422, 3, 6, 3, 0, 421, 414, 1, 0, 0, 0, 421, 415, 1, 0, 0, 0, 421, 
+		416, 1, 0, 0, 0, 421, 417, 1, 0, 0, 0, 421, 418, 1, 0, 0, 0, 421, 419, 
+		1, 0, 0, 0, 421, 420, 1, 0, 0, 0, 422, 5, 1, 0, 0, 0, 423, 424, 5, 1, 
+		0, 0, 424, 425, 3, 390, 195, 0, 425, 426, 5, 2, 0, 0, 426, 427, 3, 24, 
+		12, 0, 427, 428, 5, 2, 0, 0, 428, 430, 3, 8, 4, 0, 429, 431, 3, 22, 11, 
+		0, 430, 429, 1, 0, 0, 0, 430, 431, 1, 0, 0, 0, 431, 432, 1, 0, 0, 0, 432, 
+		433, 5, 3, 0, 0, 433, 7, 1, 0, 0, 0, 434, 435, 3, 178, 89, 0, 435, 9, 
+		1, 0, 0, 0, 436, 437, 5, 4, 0, 0, 437, 438, 3, 390, 195, 0, 438, 439, 
+		5, 2, 0, 0, 439, 440, 3, 24, 12, 0, 440, 441, 5, 2, 0, 0, 441, 443, 3, 
+		26, 13, 0, 442, 444, 3, 22, 11, 0, 443, 442, 1, 0, 0, 0, 443, 444, 1, 
+		0, 0, 0, 444, 445, 1, 0, 0, 0, 445, 446, 5, 3, 0, 0, 446, 11, 1, 0, 0, 
+		0, 447, 448, 5, 5, 0, 0, 448, 449, 3, 390, 195, 0, 449, 450, 5, 2, 0, 
+		0, 450, 451, 3, 24, 12, 0, 451, 452, 5, 2, 0, 0, 452, 454, 3, 94, 47, 
+		0, 453, 455, 3, 22, 11, 0, 454, 453, 1, 0, 0, 0, 454, 455, 1, 0, 0, 0, 
+		455, 456, 1, 0, 0, 0, 456, 457, 5, 3, 0, 0, 457, 13, 1, 0, 0, 0, 458, 
+		459, 5, 6, 0, 0, 459, 460, 3, 390, 195, 0, 460, 461, 5, 2, 0, 0, 461, 
+		462, 3, 24, 12, 0, 462, 463, 5, 2, 0, 0, 463, 465, 3, 98, 49, 0, 464, 
+		466, 3, 22, 11, 0, 465, 464, 1, 0, 0, 0, 465, 466, 1, 0, 0, 0, 466, 467, 
+		1, 0, 0, 0, 467, 468, 5, 3, 0, 0, 468, 15, 1, 0, 0, 0, 469, 470, 5, 7, 
+		0, 0, 470, 471, 3, 390, 195, 0, 471, 472, 5, 2, 0, 0, 472, 473, 3, 24, 
+		12, 0, 473, 474, 5, 2, 0, 0, 474, 476, 3, 172, 86, 0, 475, 477, 3, 22, 
+		11, 0, 476, 475, 1, 0, 0, 0, 476, 477, 1, 0, 0, 0, 477, 478, 1, 0, 0, 
+		0, 478, 479, 5, 3, 0, 0, 479, 17, 1, 0, 0, 0, 480, 481, 5, 8, 0, 0, 481, 
+		482, 3, 390, 195, 0, 482, 483, 5, 2, 0, 0, 483, 484, 3, 24, 12, 0, 484, 
+		485, 5, 2, 0, 0, 485, 487, 3, 178, 89, 0, 486, 488, 3, 22, 11, 0, 487, 
+		486, 1, 0, 0, 0, 487, 488, 1, 0, 0, 0, 488, 489, 1, 0, 0, 0, 489, 490, 
+		5, 3, 0, 0, 490, 19, 1, 0, 0, 0, 491, 492, 5, 9, 0, 0, 492, 493, 3, 390, 
+		195, 0, 493, 494, 5, 2, 0, 0, 494, 495, 3, 24, 12, 0, 495, 496, 5, 2, 
+		0, 0, 496, 498, 3, 242, 121, 0, 497, 499, 3, 22, 11, 0, 498, 497, 1, 0, 
+		0, 0, 498, 499, 1, 0, 0, 0, 499, 500, 1, 0, 0, 0, 500, 501, 5, 3, 0, 0, 
+		501, 21, 1, 0, 0, 0, 502, 503, 5, 2, 0, 0, 503, 505, 3, 304, 152, 0, 504, 
+		506, 3, 340, 170, 0, 505, 504, 1, 0, 0, 0, 505, 506, 1, 0, 0, 0, 506, 
+		23, 1, 0, 0, 0, 507, 508, 5, 94, 0, 0, 508, 25, 1, 0, 0, 0, 509, 512, 
+		3, 28, 14, 0, 510, 512, 3, 88, 44, 0, 511, 509, 1, 0, 0, 0, 511, 510, 
+		1, 0, 0, 0, 512, 27, 1, 0, 0, 0, 513, 518, 3, 30, 15, 0, 514, 518, 3, 
+		42, 21, 0, 515, 518, 3, 68, 34, 0, 516, 518, 3, 72, 36, 0, 517, 513, 1, 
+		0, 0, 0, 517, 514, 1, 0, 0, 0, 517, 515, 1, 0, 0, 0, 517, 516, 1, 0, 0, 
+		0, 518, 29, 1, 0, 0, 0, 519, 523, 3, 32, 16, 0, 520, 523, 3, 34, 17, 0, 
+		521, 523, 3, 80, 40, 0, 522, 519, 1, 0, 0, 0, 522, 520, 1, 0, 0, 0, 522, 
+		521, 1, 0, 0, 0, 523, 31, 1, 0, 0, 0, 524, 525, 3, 42, 21, 0, 525, 526, 
+		3, 254, 127, 0, 526, 527, 3, 42, 21, 0, 527, 33, 1, 0, 0, 0, 528, 532, 
+		3, 36, 18, 0, 529, 532, 3, 38, 19, 0, 530, 532, 3, 40, 20, 0, 531, 528, 
+		1, 0, 0, 0, 531, 529, 1, 0, 0, 0, 531, 530, 1, 0, 0, 0, 532, 35, 1, 0, 
+		0, 0, 533, 534, 6, 18, -1, 0, 534, 535, 3, 42, 21, 0, 535, 536, 5, 44, 
+		0, 0, 536, 537, 3, 42, 21, 0, 537, 543, 1, 0, 0, 0, 538, 539, 10, 1, 0, 
+		0, 539, 540, 5, 44, 0, 0, 540, 542, 3, 42, 21, 0, 541, 538, 1, 0, 0, 0, 
+		542, 545, 1, 0, 0, 0, 543, 541, 1, 0, 0, 0, 543, 544, 1, 0, 0, 0, 544, 
+		37, 1, 0, 0, 0, 545, 543, 1, 0, 0, 0, 546, 547, 6, 19, -1, 0, 547, 548, 
+		3, 42, 21, 0, 548, 549, 5, 45, 0, 0, 549, 550, 3, 42, 21, 0, 550, 556, 
+		1, 0, 0, 0, 551, 552, 10, 1, 0, 0, 552, 553, 5, 45, 0, 0, 553, 555, 3, 
+		42, 21, 0, 554, 551, 1, 0, 0, 0, 555, 558, 1, 0, 0, 0, 556, 554, 1, 0, 
+		0, 0, 556, 557, 1, 0, 0, 0, 557, 39, 1, 0, 0, 0, 558, 556, 1, 0, 0, 0, 
+		559, 560, 6, 20, -1, 0, 560, 561, 3, 42, 21, 0, 561, 562, 5, 67, 0, 0, 
+		562, 563, 3, 42, 21, 0, 563, 569, 1, 0, 0, 0, 564, 565, 10, 1, 0, 0, 565, 
+		566, 5, 67, 0, 0, 566, 568, 3, 42, 21, 0, 567, 564, 1, 0, 0, 0, 568, 571, 
+		1, 0, 0, 0, 569, 567, 1, 0, 0, 0, 569, 570, 1, 0, 0, 0, 570, 41, 1, 0, 
+		0, 0, 571, 569, 1, 0, 0, 0, 572, 583, 3, 44, 22, 0, 573, 583, 3, 54, 27, 
+		0, 574, 583, 3, 56, 28, 0, 575, 583, 3, 62, 31, 0, 576, 583, 3, 64, 32, 
+		0, 577, 583, 3, 90, 45, 0, 578, 579, 5, 10, 0, 0, 579, 580, 3, 28, 14, 
+		0, 580, 581, 5, 11, 0, 0, 581, 583, 1, 0, 0, 0, 582, 572, 1, 0, 0, 0, 
+		582, 573, 1, 0, 0, 0, 582, 574, 1, 0, 0, 0, 582, 575, 1, 0, 0, 0, 582, 
+		576, 1, 0, 0, 0, 582, 577, 1, 0, 0, 0, 582, 578, 1, 0, 0, 0, 583, 43, 
+		1, 0, 0, 0, 584, 585, 3, 46, 23, 0, 585, 586, 3, 42, 21, 0, 586, 45, 1, 
+		0, 0, 0, 587, 588, 3, 248, 124, 0, 588, 589, 5, 12, 0, 0, 589, 590, 3, 
+		48, 24, 0, 590, 591, 5, 13, 0, 0, 591, 592, 5, 14, 0, 0, 592, 47, 1, 0, 
+		0, 0, 593, 598, 3, 50, 25, 0, 594, 595, 5, 2, 0, 0, 595, 597, 3, 50, 25, 
+		0, 596, 594, 1, 0, 0, 0, 597, 600, 1, 0, 0, 0, 598, 596, 1, 0, 0, 0, 598, 
+		599, 1, 0, 0, 0, 599, 49, 1, 0, 0, 0, 600, 598, 1, 0, 0, 0, 601, 604, 
+		3, 52, 26, 0, 602, 604, 3, 302, 151, 0, 603, 601, 1, 0, 0, 0, 603, 602, 
+		1, 0, 0, 0, 604, 51, 1, 0, 0, 0, 605, 606, 3, 302, 151, 0, 606, 607, 5, 
+		14, 0, 0, 607, 608, 3, 74, 37, 0, 608, 53, 1, 0, 0, 0, 609, 610, 3, 256, 
+		128, 0, 610, 611, 5, 10, 0, 0, 611, 612, 3, 28, 14, 0, 612, 613, 5, 11, 
+		0, 0, 613, 55, 1, 0, 0, 0, 614, 619, 3, 58, 29, 0, 615, 619, 3, 302, 151, 
+		0, 616, 619, 3, 300, 150, 0, 617, 619, 3, 60, 30, 0, 618, 614, 1, 0, 0, 
+		0, 618, 615, 1, 0, 0, 0, 618, 616, 1, 0, 0, 0, 618, 617, 1, 0, 0, 0, 619, 
+		57, 1, 0, 0, 0, 620, 637, 3, 278, 139, 0, 621, 622, 3, 290, 145, 0, 622, 
+		623, 5, 10, 0, 0, 623, 624, 3, 66, 33, 0, 624, 625, 5, 11, 0, 0, 625, 
+		637, 1, 0, 0, 0, 626, 627, 3, 298, 149, 0, 627, 628, 5, 10, 0, 0, 628, 
+		629, 3, 66, 33, 0, 629, 630, 5, 11, 0, 0, 630, 637, 1, 0, 0, 0, 631, 632, 
+		3, 294, 147, 0, 632, 633, 5, 10, 0, 0, 633, 634, 3, 66, 33, 0, 634, 635, 
+		5, 11, 0, 0, 635, 637, 1, 0, 0, 0, 636, 620, 1, 0, 0, 0, 636, 621, 1, 
+		0, 0, 0, 636, 626, 1, 0, 0, 0, 636, 631, 1, 0, 0, 0, 637, 59, 1, 0, 0, 
+		0, 638, 642, 3, 254, 127, 0, 639, 642, 3, 266, 133, 0, 640, 642, 3, 256, 
+		128, 0, 641, 638, 1, 0, 0, 0, 641, 639, 1, 0, 0, 0, 641, 640, 1, 0, 0, 
+		0, 642, 61, 1, 0, 0, 0, 643, 644, 5, 15, 0, 0, 644, 645, 3, 28, 14, 0, 
+		645, 646, 5, 2, 0, 0, 646, 647, 3, 28, 14, 0, 647, 648, 5, 2, 0, 0, 648, 
+		649, 3, 28, 14, 0, 649, 650, 5, 11, 0, 0, 650, 63, 1, 0, 0, 0, 651, 652, 
+		5, 16, 0, 0, 652, 653, 3, 42, 21, 0, 653, 654, 5, 2, 0, 0, 654, 655, 3, 
+		26, 13, 0, 655, 656, 5, 11, 0, 0, 656, 65, 1, 0, 0, 0, 657, 658, 3, 92, 
+		46, 0, 658, 67, 1, 0, 0, 0, 659, 660, 3, 70, 35, 0, 660, 661, 5, 14, 0, 
+		0, 661, 662, 3, 74, 37, 0, 662, 69, 1, 0, 0, 0, 663, 669, 3, 56, 28, 0, 
+		664, 665, 5, 10, 0, 0, 665, 666, 3, 28, 14, 0, 666, 667, 5, 11, 0, 0, 
+		667, 669, 1, 0, 0, 0, 668, 663, 1, 0, 0, 0, 668, 664, 1, 0, 0, 0, 669, 
+		71, 1, 0, 0, 0, 670, 671, 3, 56, 28, 0, 671, 672, 5, 72, 0, 0, 672, 673, 
+		3, 56, 28, 0, 673, 73, 1, 0, 0, 0, 674, 678, 3, 76, 38, 0, 675, 678, 3, 
+		82, 41, 0, 676, 678, 3, 78, 39, 0, 677, 674, 1, 0, 0, 0, 677, 675, 1, 
+		0, 0, 0, 677, 676, 1, 0, 0, 0, 678, 75, 1, 0, 0, 0, 679, 680, 3, 42, 21, 
+		0, 680, 77, 1, 0, 0, 0, 681, 682, 3, 40, 20, 0, 682, 79, 1, 0, 0, 0, 683, 
+		687, 3, 82, 41, 0, 684, 687, 3, 84, 42, 0, 685, 687, 3, 86, 43, 0, 686, 
+		683, 1, 0, 0, 0, 686, 684, 1, 0, 0, 0, 686, 685, 1, 0, 0, 0, 687, 81, 
+		1, 0, 0, 0, 688, 689, 3, 76, 38, 0, 689, 690, 5, 69, 0, 0, 690, 691, 3, 
+		76, 38, 0, 691, 697, 1, 0, 0, 0, 692, 693, 3, 76, 38, 0, 693, 694, 5, 
+		69, 0, 0, 694, 695, 3, 82, 41, 0, 695, 697, 1, 0, 0, 0, 696, 688, 1, 0, 
+		0, 0, 696, 692, 1, 0, 0, 0, 697, 83, 1, 0, 0, 0, 698, 699, 6, 42, -1, 
+		0, 699, 700, 3, 76, 38, 0, 700, 701, 5, 70, 0, 0, 701, 702, 3, 76, 38, 
+		0, 702, 708, 1, 0, 0, 0, 703, 704, 10, 1, 0, 0, 704, 705, 5, 70, 0, 0, 
+		705, 707, 3, 76, 38, 0, 706, 703, 1, 0, 0, 0, 707, 710, 1, 0, 0, 0, 708, 
+		706, 1, 0, 0, 0, 708, 709, 1, 0, 0, 0, 709, 85, 1, 0, 0, 0, 710, 708, 
+		1, 0, 0, 0, 711, 712, 6, 43, -1, 0, 712, 713, 3, 76, 38, 0, 713, 714, 
+		5, 71, 0, 0, 714, 715, 3, 76, 38, 0, 715, 721, 1, 0, 0, 0, 716, 717, 10, 
+		1, 0, 0, 717, 718, 5, 71, 0, 0, 718, 720, 3, 76, 38, 0, 719, 716, 1, 0, 
+		0, 0, 720, 723, 1, 0, 0, 0, 721, 719, 1, 0, 0, 0, 721, 722, 1, 0, 0, 0, 
+		722, 87, 1, 0, 0, 0, 723, 721, 1, 0, 0, 0, 724, 725, 3, 90, 45, 0, 725, 
+		726, 5, 73, 0, 0, 726, 727, 3, 90, 45, 0, 727, 733, 1, 0, 0, 0, 728, 729, 
+		5, 10, 0, 0, 729, 730, 3, 88, 44, 0, 730, 731, 5, 11, 0, 0, 731, 733, 
+		1, 0, 0, 0, 732, 724, 1, 0, 0, 0, 732, 728, 1, 0, 0, 0, 733, 89, 1, 0, 
+		0, 0, 734, 745, 5, 17, 0, 0, 735, 736, 5, 12, 0, 0, 736, 737, 3, 92, 46, 
+		0, 737, 738, 5, 13, 0, 0, 738, 745, 1, 0, 0, 0, 739, 745, 5, 18, 0, 0, 
+		740, 741, 5, 19, 0, 0, 741, 742, 3, 92, 46, 0, 742, 743, 5, 20, 0, 0, 
+		743, 745, 1, 0, 0, 0, 744, 734, 1, 0, 0, 0, 744, 735, 1, 0, 0, 0, 744, 
+		739, 1, 0, 0, 0, 744, 740, 1, 0, 0, 0, 745, 91, 1, 0, 0, 0, 746, 751, 
+		3, 28, 14, 0, 747, 748, 5, 2, 0, 0, 748, 750, 3, 28, 14, 0, 749, 747, 
+		1, 0, 0, 0, 750, 753, 1, 0, 0, 0, 751, 749, 1, 0, 0, 0, 751, 752, 1, 0, 
+		0, 0, 752, 93, 1, 0, 0, 0, 753, 751, 1, 0, 0, 0, 754, 757, 3, 96, 48, 
+		0, 755, 757, 3, 88, 44, 0, 756, 754, 1, 0, 0, 0, 756, 755, 1, 0, 0, 0, 
+		757, 95, 1, 0, 0, 0, 758, 759, 3, 28, 14, 0, 759, 97, 1, 0, 0, 0, 760, 
+		764, 3, 100, 50, 0, 761, 764, 3, 152, 76, 0, 762, 764, 3, 146, 73, 0, 
+		763, 760, 1, 0, 0, 0, 763, 761, 1, 0, 0, 0, 763, 762, 1, 0, 0, 0, 764, 
+		99, 1, 0, 0, 0, 765, 769, 3, 102, 51, 0, 766, 769, 3, 112, 56, 0, 767, 
+		769, 3, 154, 77, 0, 768, 765, 1, 0, 0, 0, 768, 766, 1, 0, 0, 0, 768, 767, 
+		1, 0, 0, 0, 769, 101, 1, 0, 0, 0, 770, 773, 3, 104, 52, 0, 771, 773, 3, 
+		106, 53, 0, 772, 770, 1, 0, 0, 0, 772, 771, 1, 0, 0, 0, 773, 103, 1, 0, 
+		0, 0, 774, 775, 3, 112, 56, 0, 775, 776, 3, 264, 132, 0, 776, 777, 3, 
+		112, 56, 0, 777, 105, 1, 0, 0, 0, 778, 781, 3, 108, 54, 0, 779, 781, 3, 
+		110, 55, 0, 780, 778, 1, 0, 0, 0, 780, 779, 1, 0, 0, 0, 781, 107, 1, 0, 
+		0, 0, 782, 783, 6, 54, -1, 0, 783, 784, 3, 112, 56, 0, 784, 785, 5, 44, 
+		0, 0, 785, 786, 3, 112, 56, 0, 786, 792, 1, 0, 0, 0, 787, 788, 10, 1, 
+		0, 0, 788, 789, 5, 44, 0, 0, 789, 791, 3, 112, 56, 0, 790, 787, 1, 0, 
+		0, 0, 791, 794, 1, 0, 0, 0, 792, 790, 1, 0, 0, 0, 792, 793, 1, 0, 0, 0, 
+		793, 109, 1, 0, 0, 0, 794, 792, 1, 0, 0, 0, 795, 796, 6, 55, -1, 0, 796, 
+		797, 3, 112, 56, 0, 797, 798, 5, 45, 0, 0, 798, 799, 3, 112, 56, 0, 799, 
+		805, 1, 0, 0, 0, 800, 801, 10, 1, 0, 0, 801, 802, 5, 45, 0, 0, 802, 804, 
+		3, 112, 56, 0, 803, 800, 1, 0, 0, 0, 804, 807, 1, 0, 0, 0, 805, 803, 1, 
+		0, 0, 0, 805, 806, 1, 0, 0, 0, 806, 111, 1, 0, 0, 0, 807, 805, 1, 0, 0, 
+		0, 808, 818, 3, 114, 57, 0, 809, 818, 3, 122, 61, 0, 810, 818, 3, 124, 
+		62, 0, 811, 818, 3, 126, 63, 0, 812, 818, 3, 128, 64, 0, 813, 814, 5, 
+		10, 0, 0, 814, 815, 3, 100, 50, 0, 815, 816, 5, 11, 0, 0, 816, 818, 1, 
+		0, 0, 0, 817, 808, 1, 0, 0, 0, 817, 809, 1, 0, 0, 0, 817, 810, 1, 0, 0, 
+		0, 817, 811, 1, 0, 0, 0, 817, 812, 1, 0, 0, 0, 817, 813, 1, 0, 0, 0, 818, 
+		113, 1, 0, 0, 0, 819, 820, 3, 262, 131, 0, 820, 821, 5, 12, 0, 0, 821, 
+		822, 3, 116, 58, 0, 822, 823, 5, 13, 0, 0, 823, 824, 5, 14, 0, 0, 824, 
+		825, 3, 112, 56, 0, 825, 115, 1, 0, 0, 0, 826, 831, 3, 118, 59, 0, 827, 
+		828, 5, 2, 0, 0, 828, 830, 3, 118, 59, 0, 829, 827, 1, 0, 0, 0, 830, 833, 
+		1, 0, 0, 0, 831, 829, 1, 0, 0, 0, 831, 832, 1, 0, 0, 0, 832, 117, 1, 0, 
+		0, 0, 833, 831, 1, 0, 0, 0, 834, 837, 3, 120, 60, 0, 835, 837, 3, 302, 
+		151, 0, 836, 834, 1, 0, 0, 0, 836, 835, 1, 0, 0, 0, 837, 119, 1, 0, 0, 
+		0, 838, 839, 3, 302, 151, 0, 839, 840, 5, 14, 0, 0, 840, 841, 3, 164, 
+		82, 0, 841, 121, 1, 0, 0, 0, 842, 843, 3, 268, 134, 0, 843, 844, 3, 112, 
+		56, 0, 844, 847, 1, 0, 0, 0, 845, 847, 3, 200, 100, 0, 846, 842, 1, 0, 
+		0, 0, 846, 845, 1, 0, 0, 0, 847, 123, 1, 0, 0, 0, 848, 849, 3, 202, 101, 
+		0, 849, 125, 1, 0, 0, 0, 850, 851, 5, 21, 0, 0, 851, 852, 3, 100, 50, 
+		0, 852, 853, 5, 2, 0, 0, 853, 854, 3, 100, 50, 0, 854, 855, 5, 2, 0, 0, 
+		855, 856, 3, 100, 50, 0, 856, 857, 5, 11, 0, 0, 857, 127, 1, 0, 0, 0, 
+		858, 859, 5, 22, 0, 0, 859, 860, 3, 130, 65, 0, 860, 861, 5, 2, 0, 0, 
+		861, 862, 3, 98, 49, 0, 862, 863, 5, 11, 0, 0, 863, 871, 1, 0, 0, 0, 864, 
+		865, 5, 23, 0, 0, 865, 866, 3, 138, 69, 0, 866, 867, 5, 2, 0, 0, 867, 
+		868, 3, 98, 49, 0, 868, 869, 5, 11, 0, 0, 869, 871, 1, 0, 0, 0, 870, 858, 
+		1, 0, 0, 0, 870, 864, 1, 0, 0, 0, 871, 129, 1, 0, 0, 0, 872, 878, 3, 134, 
+		67, 0, 873, 874, 5, 12, 0, 0, 874, 875, 3, 132, 66, 0, 875, 876, 5, 13, 
+		0, 0, 876, 878, 1, 0, 0, 0, 877, 872, 1, 0, 0, 0, 877, 873, 1, 0, 0, 0, 
+		878, 131, 1, 0, 0, 0, 879, 884, 3, 134, 67, 0, 880, 881, 5, 2, 0, 0, 881, 
+		883, 3, 134, 67, 0, 882, 880, 1, 0, 0, 0, 883, 886, 1, 0, 0, 0, 884, 882, 
+		1, 0, 0, 0, 884, 885, 1, 0, 0, 0, 885, 133, 1, 0, 0, 0, 886, 884, 1, 0, 
+		0, 0, 887, 888, 5, 57, 0, 0, 888, 889, 5, 12, 0, 0, 889, 890, 3, 116, 
+		58, 0, 890, 891, 5, 13, 0, 0, 891, 892, 5, 14, 0, 0, 892, 893, 3, 134, 
+		67, 0, 893, 896, 1, 0, 0, 0, 894, 896, 3, 136, 68, 0, 895, 887, 1, 0, 
+		0, 0, 895, 894, 1, 0, 0, 0, 896, 135, 1, 0, 0, 0, 897, 898, 3, 214, 107, 
+		0, 898, 899, 5, 56, 0, 0, 899, 900, 3, 226, 113, 0, 900, 906, 1, 0, 0, 
+		0, 901, 902, 5, 10, 0, 0, 902, 903, 3, 136, 68, 0, 903, 904, 5, 11, 0, 
+		0, 904, 906, 1, 0, 0, 0, 905, 897, 1, 0, 0, 0, 905, 901, 1, 0, 0, 0, 906, 
+		137, 1, 0, 0, 0, 907, 913, 3, 142, 71, 0, 908, 909, 5, 12, 0, 0, 909, 
+		910, 3, 140, 70, 0, 910, 911, 5, 13, 0, 0, 911, 913, 1, 0, 0, 0, 912, 
+		907, 1, 0, 0, 0, 912, 908, 1, 0, 0, 0, 913, 139, 1, 0, 0, 0, 914, 919, 
+		3, 142, 71, 0, 915, 916, 5, 2, 0, 0, 916, 918, 3, 142, 71, 0, 917, 915, 
+		1, 0, 0, 0, 918, 921, 1, 0, 0, 0, 919, 917, 1, 0, 0, 0, 919, 920, 1, 0, 
+		0, 0, 920, 141, 1, 0, 0, 0, 921, 919, 1, 0, 0, 0, 922, 923, 5, 57, 0, 
+		0, 923, 924, 5, 12, 0, 0, 924, 925, 3, 116, 58, 0, 925, 926, 5, 13, 0, 
+		0, 926, 927, 5, 14, 0, 0, 927, 928, 3, 142, 71, 0, 928, 931, 1, 0, 0, 
+		0, 929, 931, 3, 144, 72, 0, 930, 922, 1, 0, 0, 0, 930, 929, 1, 0, 0, 0, 
+		931, 143, 1, 0, 0, 0, 932, 933, 3, 204, 102, 0, 933, 934, 5, 46, 0, 0, 
+		934, 935, 3, 112, 56, 0, 935, 941, 1, 0, 0, 0, 936, 937, 5, 10, 0, 0, 
+		937, 938, 3, 144, 72, 0, 938, 939, 5, 11, 0, 0, 939, 941, 1, 0, 0, 0, 
+		940, 932, 1, 0, 0, 0, 940, 936, 1, 0, 0, 0, 941, 145, 1, 0, 0, 0, 942, 
+		943, 3, 148, 74, 0, 943, 944, 5, 73, 0, 0, 944, 945, 3, 148, 74, 0, 945, 
+		951, 1, 0, 0, 0, 946, 947, 5, 10, 0, 0, 947, 948, 3, 146, 73, 0, 948, 
+		949, 5, 11, 0, 0, 949, 951, 1, 0, 0, 0, 950, 942, 1, 0, 0, 0, 950, 946, 
+		1, 0, 0, 0, 951, 147, 1, 0, 0, 0, 952, 958, 5, 17, 0, 0, 953, 954, 5, 
+		12, 0, 0, 954, 955, 3, 150, 75, 0, 955, 956, 5, 13, 0, 0, 956, 958, 1, 
+		0, 0, 0, 957, 952, 1, 0, 0, 0, 957, 953, 1, 0, 0, 0, 958, 149, 1, 0, 0, 
+		0, 959, 964, 3, 100, 50, 0, 960, 961, 5, 2, 0, 0, 961, 963, 3, 100, 50, 
+		0, 962, 960, 1, 0, 0, 0, 963, 966, 1, 0, 0, 0, 964, 962, 1, 0, 0, 0, 964, 
+		965, 1, 0, 0, 0, 965, 151, 1, 0, 0, 0, 966, 964, 1, 0, 0, 0, 967, 968, 
+		3, 280, 140, 0, 968, 969, 5, 14, 0, 0, 969, 970, 3, 156, 78, 0, 970, 976, 
+		1, 0, 0, 0, 971, 972, 5, 10, 0, 0, 972, 973, 3, 152, 76, 0, 973, 974, 
+		5, 11, 0, 0, 974, 976, 1, 0, 0, 0, 975, 967, 1, 0, 0, 0, 975, 971, 1, 
+		0, 0, 0, 976, 153, 1, 0, 0, 0, 977, 978, 3, 280, 140, 0, 978, 979, 5, 
+		72, 0, 0, 979, 980, 3, 278, 139, 0, 980, 155, 1, 0, 0, 0, 981, 989, 3, 
+		164, 82, 0, 982, 989, 3, 168, 84, 0, 983, 989, 3, 158, 79, 0, 984, 985, 
+		5, 10, 0, 0, 985, 986, 3, 156, 78, 0, 986, 987, 5, 11, 0, 0, 987, 989, 
+		1, 0, 0, 0, 988, 981, 1, 0, 0, 0, 988, 982, 1, 0, 0, 0, 988, 983, 1, 0, 
+		0, 0, 988, 984, 1, 0, 0, 0, 989, 157, 1, 0, 0, 0, 990, 991, 5, 54, 0, 
+		0, 991, 992, 5, 12, 0, 0, 992, 993, 3, 116, 58, 0, 993, 994, 5, 13, 0, 
+		0, 994, 995, 5, 14, 0, 0, 995, 996, 3, 160, 80, 0, 996, 159, 1, 0, 0, 
+		0, 997, 1003, 3, 164, 82, 0, 998, 999, 5, 10, 0, 0, 999, 1000, 3, 168, 
+		84, 0, 1000, 1001, 5, 11, 0, 0, 1001, 1003, 1, 0, 0, 0, 1002, 997, 1, 
+		0, 0, 0, 1002, 998, 1, 0, 0, 0, 1003, 161, 1, 0, 0, 0, 1004, 1010, 3, 
+		164, 82, 0, 1005, 1006, 5, 10, 0, 0, 1006, 1007, 3, 170, 85, 0, 1007, 
+		1008, 5, 11, 0, 0, 1008, 1010, 1, 0, 0, 0, 1009, 1004, 1, 0, 0, 0, 1009, 
+		1005, 1, 0, 0, 0, 1010, 163, 1, 0, 0, 0, 1011, 1020, 3, 270, 135, 0, 1012, 
+		1020, 3, 274, 137, 0, 1013, 1014, 3, 272, 136, 0, 1014, 1015, 5, 10, 0, 
+		0, 1015, 1016, 3, 166, 83, 0, 1016, 1017, 5, 11, 0, 0, 1017, 1020, 1, 
+		0, 0, 0, 1018, 1020, 3, 302, 151, 0, 1019, 1011, 1, 0, 0, 0, 1019, 1012, 
+		1, 0, 0, 0, 1019, 1013, 1, 0, 0, 0, 1019, 1018, 1, 0, 0, 0, 1020, 165, 
+		1, 0, 0, 0, 1021, 1026, 3, 164, 82, 0, 1022, 1023, 5, 2, 0, 0, 1023, 1025, 
+		3, 164, 82, 0, 1024, 1022, 1, 0, 0, 0, 1025, 1028, 1, 0, 0, 0, 1026, 1024, 
+		1, 0, 0, 0, 1026, 1027, 1, 0, 0, 0, 1027, 167, 1, 0, 0, 0, 1028, 1026, 
+		1, 0, 0, 0, 1029, 1030, 3, 162, 81, 0, 1030, 1031, 5, 69, 0, 0, 1031, 
+		1032, 3, 164, 82, 0, 1032, 169, 1, 0, 0, 0, 1033, 1034, 6, 85, -1, 0, 
+		1034, 1035, 3, 162, 81, 0, 1035, 1036, 5, 70, 0, 0, 1036, 1037, 3, 164, 
+		82, 0, 1037, 1043, 1, 0, 0, 0, 1038, 1039, 10, 1, 0, 0, 1039, 1040, 5, 
+		70, 0, 0, 1040, 1042, 3, 164, 82, 0, 1041, 1038, 1, 0, 0, 0, 1042, 1045, 
+		1, 0, 0, 0, 1043, 1041, 1, 0, 0, 0, 1043, 1044, 1, 0, 0, 0, 1044, 171, 
+		1, 0, 0, 0, 1045, 1043, 1, 0, 0, 0, 1046, 1049, 3, 174, 87, 0, 1047, 1049, 
+		3, 152, 76, 0, 1048, 1046, 1, 0, 0, 0, 1048, 1047, 1, 0, 0, 0, 1049, 173, 
+		1, 0, 0, 0, 1050, 1053, 3, 176, 88, 0, 1051, 1053, 3, 242, 121, 0, 1052, 
+		1050, 1, 0, 0, 0, 1052, 1051, 1, 0, 0, 0, 1053, 175, 1, 0, 0, 0, 1054, 
+		1055, 5, 57, 0, 0, 1055, 1056, 5, 12, 0, 0, 1056, 1057, 3, 116, 58, 0, 
+		1057, 1058, 5, 13, 0, 0, 1058, 1059, 5, 14, 0, 0, 1059, 1060, 3, 242, 
+		121, 0, 1060, 177, 1, 0, 0, 0, 1061, 1064, 3, 180, 90, 0, 1062, 1064, 
+		3, 236, 118, 0, 1063, 1061, 1, 0, 0, 0, 1063, 1062, 1, 0, 0, 0, 1064, 
+		179, 1, 0, 0, 0, 1065, 1068, 3, 182, 91, 0, 1066, 1068, 3, 192, 96, 0, 
+		1067, 1065, 1, 0, 0, 0, 1067, 1066, 1, 0, 0, 0, 1068, 181, 1, 0, 0, 0, 
+		1069, 1072, 3, 184, 92, 0, 1070, 1072, 3, 186, 93, 0, 1071, 1069, 1, 0, 
+		0, 0, 1071, 1070, 1, 0, 0, 0, 1072, 183, 1, 0, 0, 0, 1073, 1074, 3, 192, 
+		96, 0, 1074, 1075, 3, 264, 132, 0, 1075, 1076, 3, 192, 96, 0, 1076, 185, 
+		1, 0, 0, 0, 1077, 1080, 3, 188, 94, 0, 1078, 1080, 3, 190, 95, 0, 1079, 
+		1077, 1, 0, 0, 0, 1079, 1078, 1, 0, 0, 0, 1080, 187, 1, 0, 0, 0, 1081, 
+		1082, 6, 94, -1, 0, 1082, 1083, 3, 192, 96, 0, 1083, 1084, 5, 44, 0, 0, 
+		1084, 1085, 3, 192, 96, 0, 1085, 1091, 1, 0, 0, 0, 1086, 1087, 10, 1, 
+		0, 0, 1087, 1088, 5, 44, 0, 0, 1088, 1090, 3, 192, 96, 0, 1089, 1086, 
+		1, 0, 0, 0, 1090, 1093, 1, 0, 0, 0, 1091, 1089, 1, 0, 0, 0, 1091, 1092, 
+		1, 0, 0, 0, 1092, 189, 1, 0, 0, 0, 1093, 1091, 1, 0, 0, 0, 1094, 1095, 
+		6, 95, -1, 0, 1095, 1096, 3, 192, 96, 0, 1096, 1097, 5, 45, 0, 0, 1097, 
+		1098, 3, 192, 96, 0, 1098, 1104, 1, 0, 0, 0, 1099, 1100, 10, 1, 0, 0, 
+		1100, 1101, 5, 45, 0, 0, 1101, 1103, 3, 192, 96, 0, 1102, 1099, 1, 0, 
+		0, 0, 1103, 1106, 1, 0, 0, 0, 1104, 1102, 1, 0, 0, 0, 1104, 1105, 1, 0, 
+		0, 0, 1105, 191, 1, 0, 0, 0, 1106, 1104, 1, 0, 0, 0, 1107, 1115, 3, 194, 
+		97, 0, 1108, 1115, 3, 198, 99, 0, 1109, 1115, 3, 202, 101, 0, 1110, 1111, 
+		5, 10, 0, 0, 1111, 1112, 3, 180, 90, 0, 1112, 1113, 5, 11, 0, 0, 1113, 
+		1115, 1, 0, 0, 0, 1114, 1107, 1, 0, 0, 0, 1114, 1108, 1, 0, 0, 0, 1114, 
+		1109, 1, 0, 0, 0, 1114, 1110, 1, 0, 0, 0, 1115, 193, 1, 0, 0, 0, 1116, 
+		1117, 3, 262, 131, 0, 1117, 1118, 5, 12, 0, 0, 1118, 1119, 3, 196, 98, 
+		0, 1119, 1120, 5, 13, 0, 0, 1120, 1121, 5, 14, 0, 0, 1121, 1122, 3, 192, 
+		96, 0, 1122, 195, 1, 0, 0, 0, 1123, 1128, 3, 302, 151, 0, 1124, 1125, 
+		5, 2, 0, 0, 1125, 1127, 3, 302, 151, 0, 1126, 1124, 1, 0, 0, 0, 1127, 
+		1130, 1, 0, 0, 0, 1128, 1126, 1, 0, 0, 0, 1128, 1129, 1, 0, 0, 0, 1129, 
+		197, 1, 0, 0, 0, 1130, 1128, 1, 0, 0, 0, 1131, 1132, 3, 268, 134, 0, 1132, 
+		1133, 3, 192, 96, 0, 1133, 1136, 1, 0, 0, 0, 1134, 1136, 3, 200, 100, 
+		0, 1135, 1131, 1, 0, 0, 0, 1135, 1134, 1, 0, 0, 0, 1136, 199, 1, 0, 0, 
+		0, 1137, 1138, 3, 226, 113, 0, 1138, 1139, 5, 55, 0, 0, 1139, 1140, 3, 
+		226, 113, 0, 1140, 201, 1, 0, 0, 0, 1141, 1145, 3, 204, 102, 0, 1142, 
+		1145, 3, 206, 103, 0, 1143, 1145, 3, 212, 106, 0, 1144, 1141, 1, 0, 0, 
+		0, 1144, 1142, 1, 0, 0, 0, 1144, 1143, 1, 0, 0, 0, 1145, 203, 1, 0, 0, 
+		0, 1146, 1147, 3, 214, 107, 0, 1147, 205, 1, 0, 0, 0, 1148, 1151, 3, 208, 
+		104, 0, 1149, 1151, 3, 210, 105, 0, 1150, 1148, 1, 0, 0, 0, 1150, 1149, 
+		1, 0, 0, 0, 1151, 207, 1, 0, 0, 0, 1152, 1153, 3, 216, 108, 0, 1153, 209, 
+		1, 0, 0, 0, 1154, 1155, 3, 226, 113, 0, 1155, 1156, 3, 286, 143, 0, 1156, 
+		1157, 3, 226, 113, 0, 1157, 211, 1, 0, 0, 0, 1158, 1159, 3, 222, 111, 
+		0, 1159, 213, 1, 0, 0, 0, 1160, 1167, 3, 288, 144, 0, 1161, 1162, 3, 290, 
+		145, 0, 1162, 1163, 5, 10, 0, 0, 1163, 1164, 3, 224, 112, 0, 1164, 1165, 
+		5, 11, 0, 0, 1165, 1167, 1, 0, 0, 0, 1166, 1160, 1, 0, 0, 0, 1166, 1161, 
+		1, 0, 0, 0, 1167, 215, 1, 0, 0, 0, 1168, 1171, 3, 300, 150, 0, 1169, 1171, 
+		3, 218, 109, 0, 1170, 1168, 1, 0, 0, 0, 1170, 1169, 1, 0, 0, 0, 1171, 
+		217, 1, 0, 0, 0, 1172, 1173, 3, 220, 110, 0, 1173, 219, 1, 0, 0, 0, 1174, 
+		1181, 3, 296, 148, 0, 1175, 1176, 3, 298, 149, 0, 1176, 1177, 5, 10, 0, 
+		0, 1177, 1178, 3, 224, 112, 0, 1178, 1179, 5, 11, 0, 0, 1179, 1181, 1, 
+		0, 0, 0, 1180, 1174, 1, 0, 0, 0, 1180, 1175, 1, 0, 0, 0, 1181, 221, 1, 
+		0, 0, 0, 1182, 1189, 3, 292, 146, 0, 1183, 1184, 3, 294, 147, 0, 1184, 
+		1185, 5, 10, 0, 0, 1185, 1186, 3, 224, 112, 0, 1186, 1187, 5, 11, 0, 0, 
+		1187, 1189, 1, 0, 0, 0, 1188, 1182, 1, 0, 0, 0, 1188, 1183, 1, 0, 0, 0, 
+		1189, 223, 1, 0, 0, 0, 1190, 1195, 3, 226, 113, 0, 1191, 1192, 5, 2, 0, 
+		0, 1192, 1194, 3, 226, 113, 0, 1193, 1191, 1, 0, 0, 0, 1194, 1197, 1, 
+		0, 0, 0, 1195, 1193, 1, 0, 0, 0, 1195, 1196, 1, 0, 0, 0, 1196, 225, 1, 
+		0, 0, 0, 1197, 1195, 1, 0, 0, 0, 1198, 1204, 3, 228, 114, 0, 1199, 1204, 
+		3, 302, 151, 0, 1200, 1204, 3, 230, 115, 0, 1201, 1204, 3, 232, 116, 0, 
+		1202, 1204, 3, 234, 117, 0, 1203, 1198, 1, 0, 0, 0, 1203, 1199, 1, 0, 
+		0, 0, 1203, 1200, 1, 0, 0, 0, 1203, 1201, 1, 0, 0, 0, 1203, 1202, 1, 0, 
+		0, 0, 1204, 227, 1, 0, 0, 0, 1205, 1209, 3, 214, 107, 0, 1206, 1209, 3, 
+		216, 108, 0, 1207, 1209, 3, 222, 111, 0, 1208, 1205, 1, 0, 0, 0, 1208, 
+		1206, 1, 0, 0, 0, 1208, 1207, 1, 0, 0, 0, 1209, 229, 1, 0, 0, 0, 1210, 
+		1211, 5, 24, 0, 0, 1211, 1212, 3, 100, 50, 0, 1212, 1213, 5, 2, 0, 0, 
+		1213, 1214, 3, 226, 113, 0, 1214, 1215, 5, 2, 0, 0, 1215, 1216, 3, 226, 
+		113, 0, 1216, 1217, 5, 11, 0, 0, 1217, 231, 1, 0, 0, 0, 1218, 1219, 5, 
+		25, 0, 0, 1219, 1220, 3, 138, 69, 0, 1220, 1221, 5, 2, 0, 0, 1221, 1222, 
+		3, 226, 113, 0, 1222, 1223, 5, 11, 0, 0, 1223, 1231, 1, 0, 0, 0, 1224, 
+		1225, 5, 26, 0, 0, 1225, 1226, 3, 130, 65, 0, 1226, 1227, 5, 2, 0, 0, 
+		1227, 1228, 3, 226, 113, 0, 1228, 1229, 5, 11, 0, 0, 1229, 1231, 1, 0, 
+		0, 0, 1230, 1218, 1, 0, 0, 0, 1230, 1224, 1, 0, 0, 0, 1231, 233, 1, 0, 
+		0, 0, 1232, 1238, 5, 18, 0, 0, 1233, 1234, 5, 19, 0, 0, 1234, 1235, 3, 
+		224, 112, 0, 1235, 1236, 5, 20, 0, 0, 1236, 1238, 1, 0, 0, 0, 1237, 1232, 
+		1, 0, 0, 0, 1237, 1233, 1, 0, 0, 0, 1238, 235, 1, 0, 0, 0, 1239, 1240, 
+		3, 238, 119, 0, 1240, 1241, 5, 73, 0, 0, 1241, 1242, 3, 238, 119, 0, 1242, 
+		1248, 1, 0, 0, 0, 1243, 1244, 5, 10, 0, 0, 1244, 1245, 3, 236, 118, 0, 
+		1245, 1246, 5, 11, 0, 0, 1246, 1248, 1, 0, 0, 0, 1247, 1239, 1, 0, 0, 
+		0, 1247, 1243, 1, 0, 0, 0, 1248, 237, 1, 0, 0, 0, 1249, 1255, 5, 17, 0, 
+		0, 1250, 1251, 5, 12, 0, 0, 1251, 1252, 3, 240, 120, 0, 1252, 1253, 5, 
+		13, 0, 0, 1253, 1255, 1, 0, 0, 0, 1254, 1249, 1, 0, 0, 0, 1254, 1250, 
+		1, 0, 0, 0, 1255, 239, 1, 0, 0, 0, 1256, 1261, 3, 180, 90, 0, 1257, 1258, 
+		5, 2, 0, 0, 1258, 1260, 3, 180, 90, 0, 1259, 1257, 1, 0, 0, 0, 1260, 1263, 
+		1, 0, 0, 0, 1261, 1259, 1, 0, 0, 0, 1261, 1262, 1, 0, 0, 0, 1262, 241, 
+		1, 0, 0, 0, 1263, 1261, 1, 0, 0, 0, 1264, 1270, 3, 244, 122, 0, 1265, 
+		1266, 5, 10, 0, 0, 1266, 1267, 3, 244, 122, 0, 1267, 1268, 5, 11, 0, 0, 
+		1268, 1270, 1, 0, 0, 0, 1269, 1264, 1, 0, 0, 0, 1269, 1265, 1, 0, 0, 0, 
+		1270, 243, 1, 0, 0, 0, 1271, 1272, 6, 122, -1, 0, 1272, 1273, 3, 246, 
+		123, 0, 1273, 1279, 1, 0, 0, 0, 1274, 1275, 10, 1, 0, 0, 1275, 1276, 5, 
+		44, 0, 0, 1276, 1278, 3, 246, 123, 0, 1277, 1274, 1, 0, 0, 0, 1278, 1281, 
+		1, 0, 0, 0, 1279, 1277, 1, 0, 0, 0, 1279, 1280, 1, 0, 0, 0, 1280, 245, 
+		1, 0, 0, 0, 1281, 1279, 1, 0, 0, 0, 1282, 1287, 3, 202, 101, 0, 1283, 
+		1284, 5, 52, 0, 0, 1284, 1287, 3, 202, 101, 0, 1285, 1287, 3, 200, 100, 
+		0, 1286, 1282, 1, 0, 0, 0, 1286, 1283, 1, 0, 0, 0, 1286, 1285, 1, 0, 0, 
+		0, 1287, 247, 1, 0, 0, 0, 1288, 1292, 3, 262, 131, 0, 1289, 1292, 3, 250, 
+		125, 0, 1290, 1292, 3, 252, 126, 0, 1291, 1288, 1, 0, 0, 0, 1291, 1289, 
+		1, 0, 0, 0, 1291, 1290, 1, 0, 0, 0, 1292, 249, 1, 0, 0, 0, 1293, 1294, 
+		7, 0, 0, 0, 1294, 251, 1, 0, 0, 0, 1295, 1296, 7, 1, 0, 0, 1296, 253, 
+		1, 0, 0, 0, 1297, 1302, 5, 56, 0, 0, 1298, 1302, 5, 55, 0, 0, 1299, 1302, 
+		3, 264, 132, 0, 1300, 1302, 5, 68, 0, 0, 1301, 1297, 1, 0, 0, 0, 1301, 
+		1298, 1, 0, 0, 0, 1301, 1299, 1, 0, 0, 0, 1301, 1300, 1, 0, 0, 0, 1302, 
+		255, 1, 0, 0, 0, 1303, 1306, 3, 268, 134, 0, 1304, 1306, 3, 258, 129, 
+		0, 1305, 1303, 1, 0, 0, 0, 1305, 1304, 1, 0, 0, 0, 1306, 257, 1, 0, 0, 
+		0, 1307, 1308, 7, 2, 0, 0, 1308, 259, 1, 0, 0, 0, 1309, 1312, 3, 264, 
+		132, 0, 1310, 1312, 5, 68, 0, 0, 1311, 1309, 1, 0, 0, 0, 1311, 1310, 1, 
+		0, 0, 0, 1312, 261, 1, 0, 0, 0, 1313, 1314, 7, 3, 0, 0, 1314, 263, 1, 
+		0, 0, 0, 1315, 1316, 7, 4, 0, 0, 1316, 265, 1, 0, 0, 0, 1317, 1318, 7, 
+		5, 0, 0, 1318, 267, 1, 0, 0, 0, 1319, 1320, 5, 52, 0, 0, 1320, 269, 1, 
+		0, 0, 0, 1321, 1322, 3, 272, 136, 0, 1322, 271, 1, 0, 0, 0, 1323, 1324, 
+		3, 392, 196, 0, 1324, 273, 1, 0, 0, 0, 1325, 1326, 5, 91, 0, 0, 1326, 
+		275, 1, 0, 0, 0, 1327, 1328, 3, 396, 198, 0, 1328, 277, 1, 0, 0, 0, 1329, 
+		1332, 3, 280, 140, 0, 1330, 1332, 3, 296, 148, 0, 1331, 1329, 1, 0, 0, 
+		0, 1331, 1330, 1, 0, 0, 0, 1332, 279, 1, 0, 0, 0, 1333, 1336, 3, 288, 
+		144, 0, 1334, 1336, 3, 292, 146, 0, 1335, 1333, 1, 0, 0, 0, 1335, 1334, 
+		1, 0, 0, 0, 1336, 281, 1, 0, 0, 0, 1337, 1338, 5, 91, 0, 0, 1338, 283, 
+		1, 0, 0, 0, 1339, 1340, 5, 91, 0, 0, 1340, 285, 1, 0, 0, 0, 1341, 1342, 
+		7, 6, 0, 0, 1342, 287, 1, 0, 0, 0, 1343, 1344, 3, 290, 145, 0, 1344, 289, 
+		1, 0, 0, 0, 1345, 1346, 3, 392, 196, 0, 1346, 291, 1, 0, 0, 0, 1347, 1348, 
+		3, 294, 147, 0, 1348, 293, 1, 0, 0, 0, 1349, 1350, 3, 396, 198, 0, 1350, 
+		295, 1, 0, 0, 0, 1351, 1352, 3, 298, 149, 0, 1352, 297, 1, 0, 0, 0, 1353, 
+		1354, 3, 394, 197, 0, 1354, 299, 1, 0, 0, 0, 1355, 1358, 3, 398, 199, 
+		0, 1356, 1358, 5, 96, 0, 0, 1357, 1355, 1, 0, 0, 0, 1357, 1356, 1, 0, 
+		0, 0, 1358, 301, 1, 0, 0, 0, 1359, 1360, 5, 93, 0, 0, 1360, 303, 1, 0, 
+		0, 0, 1361, 1370, 3, 308, 154, 0, 1362, 1370, 3, 322, 161, 0, 1363, 1370, 
+		3, 326, 163, 0, 1364, 1370, 5, 94, 0, 0, 1365, 1366, 5, 12, 0, 0, 1366, 
+		1367, 3, 306, 153, 0, 1367, 1368, 5, 13, 0, 0, 1368, 1370, 1, 0, 0, 0, 
+		1369, 1361, 1, 0, 0, 0, 1369, 1362, 1, 0, 0, 0, 1369, 1363, 1, 0, 0, 0, 
+		1369, 1364, 1, 0, 0, 0, 1369, 1365, 1, 0, 0, 0, 1370, 305, 1, 0, 0, 0, 
+		1371, 1376, 3, 304, 152, 0, 1372, 1373, 5, 2, 0, 0, 1373, 1375, 3, 304, 
+		152, 0, 1374, 1372, 1, 0, 0, 0, 1375, 1378, 1, 0, 0, 0, 1376, 1374, 1, 
+		0, 0, 0, 1376, 1377, 1, 0, 0, 0, 1377, 307, 1, 0, 0, 0, 1378, 1376, 1, 
+		0, 0, 0, 1379, 1382, 3, 390, 195, 0, 1380, 1382, 3, 310, 155, 0, 1381, 
+		1379, 1, 0, 0, 0, 1381, 1380, 1, 0, 0, 0, 1382, 309, 1, 0, 0, 0, 1383, 
+		1384, 5, 27, 0, 0, 1384, 1385, 3, 312, 156, 0, 1385, 1386, 5, 2, 0, 0, 
+		1386, 1387, 3, 342, 171, 0, 1387, 1388, 5, 2, 0, 0, 1388, 1389, 3, 314, 
+		157, 0, 1389, 1390, 5, 11, 0, 0, 1390, 311, 1, 0, 0, 0, 1391, 1392, 3, 
+		392, 196, 0, 1392, 313, 1, 0, 0, 0, 1393, 1399, 5, 17, 0, 0, 1394, 1395, 
+		5, 12, 0, 0, 1395, 1396, 3, 316, 158, 0, 1396, 1397, 5, 13, 0, 0, 1397, 
+		1399, 1, 0, 0, 0, 1398, 1393, 1, 0, 0, 0, 1398, 1394, 1, 0, 0, 0, 1399, 
+		315, 1, 0, 0, 0, 1400, 1405, 3, 318, 159, 0, 1401, 1402, 5, 2, 0, 0, 1402, 
+		1404, 3, 318, 159, 0, 1403, 1401, 1, 0, 0, 0, 1404, 1407, 1, 0, 0, 0, 
+		1405, 1403, 1, 0, 0, 0, 1405, 1406, 1, 0, 0, 0, 1406, 317, 1, 0, 0, 0, 
+		1407, 1405, 1, 0, 0, 0, 1408, 1410, 3, 304, 152, 0, 1409, 1411, 3, 320, 
+		160, 0, 1410, 1409, 1, 0, 0, 0, 1410, 1411, 1, 0, 0, 0, 1411, 319, 1, 
+		0, 0, 0, 1412, 1413, 5, 14, 0, 0, 1413, 1414, 3, 386, 193, 0, 1414, 321, 
+		1, 0, 0, 0, 1415, 1416, 5, 28, 0, 0, 1416, 1418, 3, 324, 162, 0, 1417, 
+		1419, 3, 340, 170, 0, 1418, 1417, 1, 0, 0, 0, 1418, 1419, 1, 0, 0, 0, 
+		1419, 1420, 1, 0, 0, 0, 1420, 1421, 5, 11, 0, 0, 1421, 323, 1, 0, 0, 0, 
+		1422, 1423, 5, 94, 0, 0, 1423, 325, 1, 0, 0, 0, 1424, 1428, 3, 328, 164, 
+		0, 1425, 1428, 3, 332, 166, 0, 1426, 1428, 3, 336, 168, 0, 1427, 1424, 
+		1, 0, 0, 0, 1427, 1425, 1, 0, 0, 0, 1427, 1426, 1, 0, 0, 0, 1428, 327, 
+		1, 0, 0, 0, 1429, 1430, 5, 29, 0, 0, 1430, 1432, 3, 400, 200, 0, 1431, 
+		1433, 3, 330, 165, 0, 1432, 1431, 1, 0, 0, 0, 1432, 1433, 1, 0, 0, 0, 
+		1433, 1434, 1, 0, 0, 0, 1434, 1435, 5, 11, 0, 0, 1435, 329, 1, 0, 0, 0, 
+		1436, 1437, 5, 2, 0, 0, 1437, 1438, 3, 390, 195, 0, 1438, 331, 1, 0, 0, 
+		0, 1439, 1440, 5, 30, 0, 0, 1440, 1442, 3, 334, 167, 0, 1441, 1443, 3, 
+		340, 170, 0, 1442, 1441, 1, 0, 0, 0, 1442, 1443, 1, 0, 0, 0, 1443, 1444, 
+		1, 0, 0, 0, 1444, 1445, 5, 11, 0, 0, 1445, 333, 1, 0, 0, 0, 1446, 1447, 
+		5, 94, 0, 0, 1447, 335, 1, 0, 0, 0, 1448, 1449, 5, 31, 0, 0, 1449, 1451, 
+		3, 338, 169, 0, 1450, 1452, 3, 340, 170, 0, 1451, 1450, 1, 0, 0, 0, 1451, 
+		1452, 1, 0, 0, 0, 1452, 1453, 1, 0, 0, 0, 1453, 1454, 5, 11, 0, 0, 1454, 
+		337, 1, 0, 0, 0, 1455, 1456, 3, 392, 196, 0, 1456, 339, 1, 0, 0, 0, 1457, 
+		1458, 5, 2, 0, 0, 1458, 1459, 3, 342, 171, 0, 1459, 341, 1, 0, 0, 0, 1460, 
+		1467, 5, 17, 0, 0, 1461, 1462, 5, 12, 0, 0, 1462, 1463, 3, 344, 172, 0, 
+		1463, 1464, 5, 13, 0, 0, 1464, 1467, 1, 0, 0, 0, 1465, 1467, 3, 386, 193, 
+		0, 1466, 1460, 1, 0, 0, 0, 1466, 1461, 1, 0, 0, 0, 1466, 1465, 1, 0, 0, 
+		0, 1467, 343, 1, 0, 0, 0, 1468, 1473, 3, 346, 173, 0, 1469, 1470, 5, 2, 
+		0, 0, 1470, 1472, 3, 346, 173, 0, 1471, 1469, 1, 0, 0, 0, 1472, 1475, 
+		1, 0, 0, 0, 1473, 1471, 1, 0, 0, 0, 1473, 1474, 1, 0, 0, 0, 1474, 345, 
+		1, 0, 0, 0, 1475, 1473, 1, 0, 0, 0, 1476, 1480, 3, 348, 174, 0, 1477, 
+		1480, 3, 354, 177, 0, 1478, 1480, 3, 382, 191, 0, 1479, 1476, 1, 0, 0, 
+		0, 1479, 1477, 1, 0, 0, 0, 1479, 1478, 1, 0, 0, 0, 1480, 347, 1, 0, 0, 
+		0, 1481, 1484, 3, 350, 175, 0, 1482, 1484, 3, 352, 176, 0, 1483, 1481, 
+		1, 0, 0, 0, 1483, 1482, 1, 0, 0, 0, 1484, 349, 1, 0, 0, 0, 1485, 1486, 
+		5, 32, 0, 0, 1486, 1487, 3, 392, 196, 0, 1487, 1488, 5, 11, 0, 0, 1488, 
+		351, 1, 0, 0, 0, 1489, 1490, 5, 33, 0, 0, 1490, 1491, 3, 392, 196, 0, 
+		1491, 1492, 5, 11, 0, 0, 1492, 353, 1, 0, 0, 0, 1493, 1498, 3, 356, 178, 
+		0, 1494, 1498, 3, 362, 181, 0, 1495, 1498, 3, 366, 183, 0, 1496, 1498, 
+		3, 364, 182, 0, 1497, 1493, 1, 0, 0, 0, 1497, 1494, 1, 0, 0, 0, 1497, 
+		1495, 1, 0, 0, 0, 1497, 1496, 1, 0, 0, 0, 1498, 355, 1, 0, 0, 0, 1499, 
+		1500, 5, 34, 0, 0, 1500, 1501, 3, 358, 179, 0, 1501, 1502, 5, 11, 0, 0, 
+		1502, 1505, 1, 0, 0, 0, 1503, 1505, 3, 360, 180, 0, 1504, 1499, 1, 0, 
+		0, 0, 1504, 1503, 1, 0, 0, 0, 1505, 357, 1, 0, 0, 0, 1506, 1507, 5, 94, 
+		0, 0, 1507, 359, 1, 0, 0, 0, 1508, 1509, 3, 312, 156, 0, 1509, 1510, 5, 
+		10, 0, 0, 1510, 1511, 3, 392, 196, 0, 1511, 1512, 5, 2, 0, 0, 1512, 1513, 
+		3, 386, 193, 0, 1513, 1514, 5, 11, 0, 0, 1514, 361, 1, 0, 0, 0, 1515, 
+		1516, 5, 35, 0, 0, 1516, 1517, 5, 12, 0, 0, 1517, 1518, 3, 376, 188, 0, 
+		1518, 1519, 5, 13, 0, 0, 1519, 1520, 5, 11, 0, 0, 1520, 363, 1, 0, 0, 
+		0, 1521, 1522, 5, 36, 0, 0, 1522, 1523, 3, 328, 164, 0, 1523, 1524, 5, 
+		11, 0, 0, 1524, 365, 1, 0, 0, 0, 1525, 1526, 5, 37, 0, 0, 1526, 1527, 
+		3, 392, 196, 0, 1527, 1528, 5, 2, 0, 0, 1528, 1529, 5, 12, 0, 0, 1529, 
+		1530, 3, 368, 184, 0, 1530, 1531, 5, 13, 0, 0, 1531, 1532, 5, 11, 0, 0, 
+		1532, 367, 1, 0, 0, 0, 1533, 1538, 3, 370, 185, 0, 1534, 1535, 5, 2, 0, 
+		0, 1535, 1537, 3, 370, 185, 0, 1536, 1534, 1, 0, 0, 0, 1537, 1540, 1, 
+		0, 0, 0, 1538, 1536, 1, 0, 0, 0, 1538, 1539, 1, 0, 0, 0, 1539, 369, 1, 
+		0, 0, 0, 1540, 1538, 1, 0, 0, 0, 1541, 1544, 3, 290, 145, 0, 1542, 1544, 
+		3, 302, 151, 0, 1543, 1541, 1, 0, 0, 0, 1543, 1542, 1, 0, 0, 0, 1544, 
+		371, 1, 0, 0, 0, 1545, 1546, 5, 38, 0, 0, 1546, 1548, 3, 400, 200, 0, 
+		1547, 1549, 3, 374, 187, 0, 1548, 1547, 1, 0, 0, 0, 1548, 1549, 1, 0, 
+		0, 0, 1549, 1550, 1, 0, 0, 0, 1550, 1551, 5, 3, 0, 0, 1551, 373, 1, 0, 
+		0, 0, 1552, 1553, 5, 2, 0, 0, 1553, 1554, 5, 12, 0, 0, 1554, 1555, 3, 
+		376, 188, 0, 1555, 1556, 5, 13, 0, 0, 1556, 375, 1, 0, 0, 0, 1557, 1562, 
+		3, 390, 195, 0, 1558, 1559, 5, 2, 0, 0, 1559, 1561, 3, 390, 195, 0, 1560, 
+		1558, 1, 0, 0, 0, 1561, 1564, 1, 0, 0, 0, 1562, 1560, 1, 0, 0, 0, 1562, 
+		1563, 1, 0, 0, 0, 1563, 377, 1, 0, 0, 0, 1564, 1562, 1, 0, 0, 0, 1565, 
+		1572, 3, 380, 190, 0, 1566, 1567, 3, 380, 190, 0, 1567, 1568, 5, 14, 0, 
+		0, 1568, 1569, 3, 378, 189, 0, 1569, 1572, 1, 0, 0, 0, 1570, 1572, 3, 
+		386, 193, 0, 1571, 1565, 1, 0, 0, 0, 1571, 1566, 1, 0, 0, 0, 1571, 1570, 
+		1, 0, 0, 0, 1572, 379, 1, 0, 0, 0, 1573, 1580, 3, 392, 196, 0, 1574, 1580, 
+		3, 382, 191, 0, 1575, 1580, 3, 302, 151, 0, 1576, 1580, 3, 398, 199, 0, 
+		1577, 1580, 5, 96, 0, 0, 1578, 1580, 3, 384, 192, 0, 1579, 1573, 1, 0, 
+		0, 0, 1579, 1574, 1, 0, 0, 0, 1579, 1575, 1, 0, 0, 0, 1579, 1576, 1, 0, 
+		0, 0, 1579, 1577, 1, 0, 0, 0, 1579, 1578, 1, 0, 0, 0, 1580, 381, 1, 0, 
+		0, 0, 1581, 1582, 3, 392, 196, 0, 1582, 1583, 5, 10, 0, 0, 1583, 1584, 
+		3, 388, 194, 0, 1584, 1585, 5, 11, 0, 0, 1585, 383, 1, 0, 0, 0, 1586, 
+		1587, 5, 39, 0, 0, 1587, 1588, 3, 26, 13, 0, 1588, 1589, 5, 11, 0, 0, 
+		1589, 1607, 1, 0, 0, 0, 1590, 1591, 5, 40, 0, 0, 1591, 1592, 3, 98, 49, 
+		0, 1592, 1593, 5, 11, 0, 0, 1593, 1607, 1, 0, 0, 0, 1594, 1595, 5, 41, 
+		0, 0, 1595, 1596, 3, 178, 89, 0, 1596, 1597, 5, 11, 0, 0, 1597, 1607, 
+		1, 0, 0, 0, 1598, 1599, 5, 42, 0, 0, 1599, 1600, 3, 242, 121, 0, 1600, 
+		1601, 5, 11, 0, 0, 1601, 1607, 1, 0, 0, 0, 1602, 1603, 5, 43, 0, 0, 1603, 
+		1604, 3, 226, 113, 0, 1604, 1605, 5, 11, 0, 0, 1605, 1607, 1, 0, 0, 0, 
+		1606, 1586, 1, 0, 0, 0, 1606, 1590, 1, 0, 0, 0, 1606, 1594, 1, 0, 0, 0, 
+		1606, 1598, 1, 0, 0, 0, 1606, 1602, 1, 0, 0, 0, 1607, 385, 1, 0, 0, 0, 
+		1608, 1614, 5, 17, 0, 0, 1609, 1610, 5, 12, 0, 0, 1610, 1611, 3, 388, 
+		194, 0, 1611, 1612, 5, 13, 0, 0, 1612, 1614, 1, 0, 0, 0, 1613, 1608, 1, 
+		0, 0, 0, 1613, 1609, 1, 0, 0, 0, 1614, 387, 1, 0, 0, 0, 1615, 1620, 3, 
+		378, 189, 0, 1616, 1617, 5, 2, 0, 0, 1617, 1619, 3, 378, 189, 0, 1618, 
+		1616, 1, 0, 0, 0, 1619, 1622, 1, 0, 0, 0, 1620, 1618, 1, 0, 0, 0, 1620, 
+		1621, 1, 0, 0, 0, 1621, 389, 1, 0, 0, 0, 1622, 1620, 1, 0, 0, 0, 1623, 
+		1626, 3, 392, 196, 0, 1624, 1626, 5, 80, 0, 0, 1625, 1623, 1, 0, 0, 0, 
+		1625, 1624, 1, 0, 0, 0, 1626, 391, 1, 0, 0, 0, 1627, 1628, 7, 7, 0, 0, 
+		1628, 393, 1, 0, 0, 0, 1629, 1630, 5, 91, 0, 0, 1630, 395, 1, 0, 0, 0, 
+		1631, 1632, 5, 92, 0, 0, 1632, 397, 1, 0, 0, 0, 1633, 1634, 7, 8, 0, 0, 
+		1634, 399, 1, 0, 0, 0, 1635, 1636, 5, 95, 0, 0, 1636, 401, 1, 0, 0, 0, 
+		125, 405, 412, 421, 430, 443, 454, 465, 476, 487, 498, 505, 511, 517, 
+		522, 531, 543, 556, 569, 582, 598, 603, 618, 636, 641, 668, 677, 686, 
+		696, 708, 721, 732, 744, 751, 756, 763, 768, 772, 780, 792, 805, 817, 
+		831, 836, 846, 870, 877, 884, 895, 905, 912, 919, 930, 940, 950, 957, 
+		964, 975, 988, 1002, 1009, 1019, 1026, 1043, 1048, 1052, 1063, 1067, 1071, 
+		1079, 1091, 1104, 1114, 1128, 1135, 1144, 1150, 1166, 1170, 1180, 1188, 
+		1195, 1203, 1208, 1230, 1237, 1247, 1254, 1261, 1269, 1279, 1286, 1291, 
+		1301, 1305, 1311, 1331, 1335, 1357, 1369, 1376, 1381, 1398, 1405, 1410, 
+		1418, 1427, 1432, 1442, 1451, 1466, 1473, 1479, 1483, 1497, 1504, 1538, 
+		1543, 1548, 1562, 1571, 1579, 1606, 1613, 1620, 1625
+	];
+}

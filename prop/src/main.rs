@@ -2,9 +2,8 @@ use std::result;
 
 use antlr4rust::common_token_stream::CommonTokenStream;
 use antlr4rust::token_factory::CommonTokenFactory;
-use antlr4rust::{tree::ParseTree, InputStream};
+use antlr4rust::{InputStream, tree::ParseTree};
 use prop::{propcalcLexer, propcalcParser};
-
 
 fn main() {
     let input = r#"( p v q) |- (q v p)"#.to_owned();

@@ -1,7 +1,7 @@
 pub use calc_parser::str_to_calc;
 
-pub use calc_parser_v3::str_to_calc_v3;
 use calc_parser_v3::Calc3;
+pub use calc_parser_v3::str_to_calc_v3;
 pub use grammar::*;
 
 pub mod calc_parser;
