@@ -1,6 +1,42 @@
-use reqwest::{Client, Url};
-use scraper::{Html, Selector};
+use reqwest::Client;
+use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderValue};
+use serde::{Deserialize, Serialize};
 use tokio::task::JoinSet;
+
+const IMDB_GRAPHQL_URL: &str = "https://caching.graphql.imdb.com/";
+
+#[derive(Serialize)]
+struct GraphQLQuery {
+    query: String,
+}
+
+#[derive(Deserialize, Debug)]
+struct GraphQLResponse {
+    data: GraphQLData,
+}
+
+#[derive(Deserialize, Debug)]
+struct GraphQLData {
+    title: Option<TitleData>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct TitleData {
+    ratings_summary: Option<RatingsSummary>,
+    title_type: Option<TitleType>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+struct RatingsSummary {
+    aggregate_rating: Option<f64>,
+}
+
+#[derive(Deserialize, Debug)]
+struct TitleType {
+    text: Option<String>,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -14,12 +50,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "tt17061910",
     ];
 
-    let client = reqwest::Client::builder()
-        .user_agent(
-            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
-        )
-        .build()
-        .unwrap();
+    let client = build_client();
 
     let mut join_set = JoinSet::new();
     for id in imdb_id {
@@ -30,78 +61,72 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-//https://users.rust-lang.org/t/check-if-a-string-in-a-list-exist/29316
-fn high_contain<'a>(mut strings: impl Iterator<Item = &'a str>, key: &'a str) -> bool {
-    strings.any(|item| key.contains(item))
+fn build_client() -> Client {
+    let mut headers = HeaderMap::new();
+    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+
+    reqwest::Client::builder()
+        .user_agent("Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0")
+        .default_headers(headers)
+        .build()
+        .unwrap()
 }
 
-async fn get_info(client: Client, id: &str) -> (Option<f64>, Option<bool>) {
-    let url = format!("https://www.imdb.com/title/{}", id);
-    let resp = client
-        .get(Url::parse(url.as_str()).unwrap())
-        .send()
-        .await
-        .unwrap();
-    assert!(resp.status().is_success());
-    let body = resp.text().await.unwrap();
-
-    //For debugging purpose only
-    //let mut debug_file = "/tmp/debug".to_string();
-    //write!(debug_file, "{}", url).unwrap();
-    //std::fs::write(debug_file, body.clone()).unwrap();
-
-    let fragment = Html::parse_document(&body);
-    get_info_with_fallback(fragment, false)
-}
-
-fn get_info_with_fallback(fragment: Html, fallback: bool) -> (Option<f64>, Option<bool>) {
+/// Checks if the title type indicates a non-theatrical release
+fn is_non_theatrical(title_type: &str) -> bool {
     let not_theatrical = [
         "TV Movie",
         "TV Short",
         "Video",
-        "Episode aired",
+        "TV Episode",
         "TV Series",
         "TV Special",
+        "TV Mini Series",
     ];
-
-    //
-    let rating_selector = match fallback {
-        false => Selector::parse("div.sc-8e956c5c-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
-        true => Selector::parse("div.sc-3a4309f8-0:nth-child(2) > div:nth-child(1) > div:nth-child(1) > a:nth-child(2) > span:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > span:nth-child(1)").unwrap(),
-    };
-
-    let rating = fragment.select(&rating_selector).next();
-    let rating = rating.map(|r| r.text().next().unwrap());
-    let rating = rating.map(|r| r.parse::<f64>().unwrap());
-
-    let theatrical_selector = match fallback {
-        false => Selector::parse("ul.ipc-inline-list--show-dividers:nth-child(2)").unwrap(),
-        true => Selector::parse("ul.ipc-inline-list:nth-child(3) > li:nth-child(1)").unwrap(),
-    };
-
-    let raw_threatrical = fragment.select(&theatrical_selector).next();
-    let theatrical = raw_threatrical.map(|r| {
-        r.text()
-            .any(|v| high_contain(IntoIterator::into_iter(not_theatrical), v))
-    });
-
-    if (rating.is_none() || theatrical.is_none()) && !fallback {
-        let (r, t) = get_info_with_fallback(fragment, true);
-        let sr = if r.is_none() { rating } else { r };
-        let st = if t.is_none() { theatrical } else { t };
-        (sr, st)
-    } else {
-        (rating, theatrical)
-    }
+    not_theatrical.iter().any(|&t| title_type.contains(t))
 }
+
+async fn get_info(client: Client, id: &str) -> (Option<f64>, Option<bool>) {
+    let query = format!(
+        r#"query {{ title(id: "{}") {{ ratingsSummary {{ aggregateRating }} titleType {{ text }} }} }}"#,
+        id
+    );
+
+    let graphql_query = GraphQLQuery { query };
+
+    let resp = client
+        .post(IMDB_GRAPHQL_URL)
+        .json(&graphql_query)
+        .send()
+        .await
+        .unwrap();
+
+    if !resp.status().is_success() {
+        return (None, None);
+    }
+
+    let body: GraphQLResponse = match resp.json().await {
+        Ok(body) => body,
+        Err(_) => return (None, None),
+    };
+
+    let title = match body.data.title {
+        Some(t) => t,
+        None => return (None, None),
+    };
+
+    let rating = title.ratings_summary.and_then(|rs| rs.aggregate_rating);
+
+    let theatrical = title
+        .title_type
+        .and_then(|tt| tt.text.map(|text| is_non_theatrical(&text)));
+
+    (rating, theatrical)
+}
+
 #[tokio::test]
 async fn get_correct_ratings_and_detect_theatrical_film() {
-    let client = reqwest::Client::builder()
-        .user_agent(
-            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
-        )
-        .build()
-        .unwrap();
+    let client = build_client();
     assert!(
         get_info(client.clone(), "tt1390411").await == (Some(6.9), Some(false)),
         "tt1390411"
@@ -123,7 +148,7 @@ async fn get_correct_ratings_and_detect_theatrical_film() {
         "tt5031232"
     );
     assert!(
-        get_info(client.clone(), "tt4049416").await == (Some(5.2), Some(true)),
+        get_info(client.clone(), "tt4049416").await == (Some(5.3), Some(true)),
         "tt4049416"
     );
     assert!(
