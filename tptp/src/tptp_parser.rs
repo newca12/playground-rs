@@ -1,26 +1,19 @@
-#![feature(try_blocks)]
-#![feature(inner_deref)]
-#![feature(specialization)]
-#![feature(coerce_unsized)]
-
 use antlr4rust::InputStream;
 use antlr4rust::common_token_stream::CommonTokenStream;
 use antlr4rust::errors::ANTLRError;
 use antlr4rust::token::Token;
 use antlr4rust::token_factory::CommonTokenFactory;
-use antlr4rust::tree::{ParseTree, ParseTreeListener, ParseTreeVisitor};
+use antlr4rust::tree::{ParseTree, ParseTreeListener};
 
-use crate::grammar::tptp_v7_0_0_0parser::tptp_v7_0_0_0ParserContextType;
-use crate::{
-    Tptp_inputContextAttrs, tptp_v7_0_0_0Lexer, tptp_v7_0_0_0Listener, tptp_v7_0_0_0Parser,
-    tptp_v7_0_0_0ParserContext, tptp_v7_0_0_0parser,
-};
+use crate::grammar::tptplexer::TPTPLexer;
+use crate::grammar::tptpparser::TPTPParserContextType;
+use crate::{TPTPListener, TPTPParser, TPTPParserContext, Tptp_inputContextAttrs, tptpparser};
 
-pub fn str_to_visit<'input>(input: &str) -> () {
-    let tf = CommonTokenFactory::default();
-    let mut lexer = tptp_v7_0_0_0Lexer::new_with_token_factory(InputStream::new(&*input), &tf);
+pub fn str_to_visit(input: &str) {
+    let tf = CommonTokenFactory;
+    let lexer = TPTPLexer::new_with_token_factory(InputStream::new(input), &tf);
     let token_source = CommonTokenStream::new(lexer);
-    let mut parser = tptp_v7_0_0_0Parser::new(token_source);
+    let mut parser = TPTPParser::new(token_source);
     parser.add_parse_listener(Box::new(TptpListener));
     let result = parser.tptp_input().expect("parsed unsuccessfully");
     println!(
@@ -28,7 +21,6 @@ pub fn str_to_visit<'input>(input: &str) -> () {
         result.annotated_formula().unwrap().to_string_tree(&*parser)
     );
     //let listener = tptp_v7_0_0_0TreeWalker::walk(Box::new(TptpListener), &*result);
-    ()
 }
 
 /*
@@ -84,37 +76,33 @@ impl tptp_v7_0_0_0Listener for Listener {
 
 struct TptpListener;
 
-impl<'input> ParseTreeListener<'input, tptp_v7_0_0_0ParserContextType> for TptpListener {
+impl<'input> ParseTreeListener<'input, TPTPParserContextType> for TptpListener {
     fn visit_terminal(
         &mut self,
-        node: &antlr4rust::tree::TerminalNode<'input, tptp_v7_0_0_0ParserContextType>,
+        node: &antlr4rust::tree::TerminalNode<'input, TPTPParserContextType>,
     ) {
         println!("terminal node {:#?}", node.symbol.get_text());
     }
 
-    fn enter_every_rule(
-        &mut self,
-        ctx: &dyn tptp_v7_0_0_0ParserContext<'input>,
-    ) -> Result<(), ANTLRError> {
-        Ok(println!(
+    fn enter_every_rule(&mut self, ctx: &dyn TPTPParserContext<'input>) -> Result<(), ANTLRError> {
+        println!(
             "rule entered {}",
-            tptp_v7_0_0_0parser::ruleNames
+            tptpparser::ruleNames
                 .get(ctx.get_rule_index())
                 .unwrap_or(&"error")
-        ))
+        );
+        Ok(())
     }
 
-    fn exit_every_rule(
-        &mut self,
-        ctx: &dyn tptp_v7_0_0_0ParserContext<'input>,
-    ) -> Result<(), ANTLRError> {
-        Ok(println!(
+    fn exit_every_rule(&mut self, ctx: &dyn TPTPParserContext<'input>) -> Result<(), ANTLRError> {
+        println!(
             "rule exited {}",
-            tptp_v7_0_0_0parser::ruleNames
+            tptpparser::ruleNames
                 .get(ctx.get_rule_index())
                 .unwrap_or(&"error")
-        ))
+        );
+        Ok(())
     }
 }
 
-impl<'input> tptp_v7_0_0_0Listener<'input> for TptpListener {}
+impl<'input> TPTPListener<'input> for TptpListener {}
