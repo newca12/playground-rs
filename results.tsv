@@ -1,0 +1,3 @@
+commit_hash	execution_time_ns	description
+9f5ac07dfad15e2bacb3d215d05de593861f0d06	200	iterative approach
+2d5752adee09bc447f0a331cc1bf83f4732d1a56	100	fast doubling approach
