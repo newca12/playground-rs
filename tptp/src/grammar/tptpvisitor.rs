@@ -99,16 +99,16 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	fn visit_thf_binary_formula(&mut self, ctx: &Thf_binary_formulaContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_nonassoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_pair}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_thf_binary_nonassoc(&mut self, ctx: &Thf_binary_nonassocContext<'input>) { self.visit_children(ctx) }
+	fn visit_thf_binary_pair(&mut self, ctx: &Thf_binary_pairContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_assoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_list}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_thf_binary_assoc(&mut self, ctx: &Thf_binary_assocContext<'input>) { self.visit_children(ctx) }
+	fn visit_thf_binary_list(&mut self, ctx: &Thf_binary_listContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link TPTPParser#thf_or_formula}.
@@ -387,16 +387,16 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	fn visit_tff_binary_formula(&mut self, ctx: &Tff_binary_formulaContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_nonassoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_pair}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_tff_binary_nonassoc(&mut self, ctx: &Tff_binary_nonassocContext<'input>) { self.visit_children(ctx) }
+	fn visit_tff_binary_pair(&mut self, ctx: &Tff_binary_pairContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_assoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_list}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_tff_binary_assoc(&mut self, ctx: &Tff_binary_assocContext<'input>) { self.visit_children(ctx) }
+	fn visit_tff_binary_list(&mut self, ctx: &Tff_binary_listContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link TPTPParser#tff_or_formula}.
@@ -735,6 +735,12 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	fn visit_ntf_connective_name(&mut self, ctx: &Ntf_connective_nameContext<'input>) { self.visit_children(ctx) }
 
 	/**
+	 * Visit a parse tree produced by {@link TPTPParser#ntf_defined_connective}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_ntf_defined_connective(&mut self, ctx: &Ntf_defined_connectiveContext<'input>) { self.visit_children(ctx) }
+
+	/**
 	 * Visit a parse tree produced by {@link TPTPParser#ntf_index}.
 	 * @param ctx the parse tree
 	 */
@@ -783,16 +789,16 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	fn visit_fof_binary_formula(&mut self, ctx: &Fof_binary_formulaContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_nonassoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_pair}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_fof_binary_nonassoc(&mut self, ctx: &Fof_binary_nonassocContext<'input>) { self.visit_children(ctx) }
+	fn visit_fof_binary_pair(&mut self, ctx: &Fof_binary_pairContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_assoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_list}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_fof_binary_assoc(&mut self, ctx: &Fof_binary_assocContext<'input>) { self.visit_children(ctx) }
+	fn visit_fof_binary_list(&mut self, ctx: &Fof_binary_listContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link TPTPParser#fof_or_formula}.
@@ -1053,6 +1059,18 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	fn visit_identical(&mut self, ctx: &IdenticalContext<'input>) { self.visit_children(ctx) }
 
 	/**
+	 * Visit a parse tree produced by {@link TPTPParser#typeable_atom}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_typeable_atom(&mut self, ctx: &Typeable_atomContext<'input>) { self.visit_children(ctx) }
+
+	/**
+	 * Visit a parse tree produced by {@link TPTPParser#atomic_type}.
+	 * @param ctx the parse tree
+	 */
+	fn visit_atomic_type(&mut self, ctx: &Atomic_typeContext<'input>) { self.visit_children(ctx) }
+
+	/**
 	 * Visit a parse tree produced by {@link TPTPParser#type_constant}.
 	 * @param ctx the parse tree
 	 */
@@ -1071,16 +1089,10 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	fn visit_defined_type(&mut self, ctx: &Defined_typeContext<'input>) { self.visit_children(ctx) }
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#atom}.
+	 * Visit a parse tree produced by {@link TPTPParser#system_type}.
 	 * @param ctx the parse tree
 	 */
-	fn visit_atom(&mut self, ctx: &AtomContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#untyped_atom}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_untyped_atom(&mut self, ctx: &Untyped_atomContext<'input>) { self.visit_children(ctx) }
+	fn visit_system_type(&mut self, ctx: &System_typeContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link TPTPParser#defined_infix_pred}.
@@ -1135,12 +1147,6 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	 * @param ctx the parse tree
 	 */
 	fn visit_system_functor(&mut self, ctx: &System_functorContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#def_or_sys_constant}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_def_or_sys_constant(&mut self, ctx: &Def_or_sys_constantContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link TPTPParser#th1_defined_term}.
@@ -1219,30 +1225,6 @@ pub trait TPTPVisitor<'input>: ParseTreeVisitor<'input,TPTPParserContextType>{
 	 * @param ctx the parse tree
 	 */
 	fn visit_file_info(&mut self, ctx: &File_infoContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#theory}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_theory(&mut self, ctx: &TheoryContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#theory_name}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_theory_name(&mut self, ctx: &Theory_nameContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#creator_source}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_creator_source(&mut self, ctx: &Creator_sourceContext<'input>) { self.visit_children(ctx) }
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#creator_name}.
-	 * @param ctx the parse tree
-	 */
-	fn visit_creator_name(&mut self, ctx: &Creator_nameContext<'input>) { self.visit_children(ctx) }
 
 	/**
 	 * Visit a parse tree produced by {@link TPTPParser#parents}.
@@ -1524,18 +1506,18 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_nonassoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_pair}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_thf_binary_nonassoc(&mut self, ctx: &Thf_binary_nonassocContext<'input>) -> Self::Return {
+		fn visit_thf_binary_pair(&mut self, ctx: &Thf_binary_pairContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_assoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#thf_binary_list}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_thf_binary_assoc(&mut self, ctx: &Thf_binary_assocContext<'input>) -> Self::Return {
+		fn visit_thf_binary_list(&mut self, ctx: &Thf_binary_listContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -1908,18 +1890,18 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_nonassoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_pair}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_tff_binary_nonassoc(&mut self, ctx: &Tff_binary_nonassocContext<'input>) -> Self::Return {
+		fn visit_tff_binary_pair(&mut self, ctx: &Tff_binary_pairContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_assoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#tff_binary_list}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_tff_binary_assoc(&mut self, ctx: &Tff_binary_assocContext<'input>) -> Self::Return {
+		fn visit_tff_binary_list(&mut self, ctx: &Tff_binary_listContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -2372,6 +2354,14 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 		}
 
 	/**
+	 * Visit a parse tree produced by {@link TPTPParser#ntf_defined_connective}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_ntf_defined_connective(&mut self, ctx: &Ntf_defined_connectiveContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
 	 * Visit a parse tree produced by {@link TPTPParser#ntf_index}.
 	 * @param ctx the parse tree
 	 */
@@ -2436,18 +2426,18 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_nonassoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_pair}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_fof_binary_nonassoc(&mut self, ctx: &Fof_binary_nonassocContext<'input>) -> Self::Return {
+		fn visit_fof_binary_pair(&mut self, ctx: &Fof_binary_pairContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_assoc}.
+	 * Visit a parse tree produced by {@link TPTPParser#fof_binary_list}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_fof_binary_assoc(&mut self, ctx: &Fof_binary_assocContext<'input>) -> Self::Return {
+		fn visit_fof_binary_list(&mut self, ctx: &Fof_binary_listContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -2796,6 +2786,22 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 		}
 
 	/**
+	 * Visit a parse tree produced by {@link TPTPParser#typeable_atom}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_typeable_atom(&mut self, ctx: &Typeable_atomContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
+	 * Visit a parse tree produced by {@link TPTPParser#atomic_type}.
+	 * @param ctx the parse tree
+	 */
+		fn visit_atomic_type(&mut self, ctx: &Atomic_typeContext<'input>) -> Self::Return {
+			self.visit_children(ctx)
+		}
+
+	/**
 	 * Visit a parse tree produced by {@link TPTPParser#type_constant}.
 	 * @param ctx the parse tree
 	 */
@@ -2820,18 +2826,10 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 		}
 
 	/**
-	 * Visit a parse tree produced by {@link TPTPParser#atom}.
+	 * Visit a parse tree produced by {@link TPTPParser#system_type}.
 	 * @param ctx the parse tree
 	 */
-		fn visit_atom(&mut self, ctx: &AtomContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#untyped_atom}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_untyped_atom(&mut self, ctx: &Untyped_atomContext<'input>) -> Self::Return {
+		fn visit_system_type(&mut self, ctx: &System_typeContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -2904,14 +2902,6 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 	 * @param ctx the parse tree
 	 */
 		fn visit_system_functor(&mut self, ctx: &System_functorContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#def_or_sys_constant}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_def_or_sys_constant(&mut self, ctx: &Def_or_sys_constantContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -3016,38 +3006,6 @@ pub trait TPTPVisitorCompat<'input>:ParseTreeVisitorCompat<'input, Node= TPTPPar
 	 * @param ctx the parse tree
 	 */
 		fn visit_file_info(&mut self, ctx: &File_infoContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#theory}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_theory(&mut self, ctx: &TheoryContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#theory_name}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_theory_name(&mut self, ctx: &Theory_nameContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#creator_source}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_creator_source(&mut self, ctx: &Creator_sourceContext<'input>) -> Self::Return {
-			self.visit_children(ctx)
-		}
-
-	/**
-	 * Visit a parse tree produced by {@link TPTPParser#creator_name}.
-	 * @param ctx the parse tree
-	 */
-		fn visit_creator_name(&mut self, ctx: &Creator_nameContext<'input>) -> Self::Return {
 			self.visit_children(ctx)
 		}
 
@@ -3340,13 +3298,13 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_thf_binary_nonassoc(&mut self, ctx: &Thf_binary_nonassocContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_thf_binary_nonassoc(self, ctx);
+	fn visit_thf_binary_pair(&mut self, ctx: &Thf_binary_pairContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_thf_binary_pair(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_thf_binary_assoc(&mut self, ctx: &Thf_binary_assocContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_thf_binary_assoc(self, ctx);
+	fn visit_thf_binary_list(&mut self, ctx: &Thf_binary_listContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_thf_binary_list(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -3580,13 +3538,13 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_tff_binary_nonassoc(&mut self, ctx: &Tff_binary_nonassocContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_tff_binary_nonassoc(self, ctx);
+	fn visit_tff_binary_pair(&mut self, ctx: &Tff_binary_pairContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_tff_binary_pair(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_tff_binary_assoc(&mut self, ctx: &Tff_binary_assocContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_tff_binary_assoc(self, ctx);
+	fn visit_tff_binary_list(&mut self, ctx: &Tff_binary_listContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_tff_binary_list(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -3870,6 +3828,11 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
+	fn visit_ntf_defined_connective(&mut self, ctx: &Ntf_defined_connectiveContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_ntf_defined_connective(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
 	fn visit_ntf_index(&mut self, ctx: &Ntf_indexContext<'input>){
 		let result = <Self as TPTPVisitorCompat>::visit_ntf_index(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
@@ -3910,13 +3873,13 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_fof_binary_nonassoc(&mut self, ctx: &Fof_binary_nonassocContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_fof_binary_nonassoc(self, ctx);
+	fn visit_fof_binary_pair(&mut self, ctx: &Fof_binary_pairContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_fof_binary_pair(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_fof_binary_assoc(&mut self, ctx: &Fof_binary_assocContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_fof_binary_assoc(self, ctx);
+	fn visit_fof_binary_list(&mut self, ctx: &Fof_binary_listContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_fof_binary_list(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -4135,6 +4098,16 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
+	fn visit_typeable_atom(&mut self, ctx: &Typeable_atomContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_typeable_atom(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
+	fn visit_atomic_type(&mut self, ctx: &Atomic_typeContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_atomic_type(self, ctx);
+        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
+	}
+
 	fn visit_type_constant(&mut self, ctx: &Type_constantContext<'input>){
 		let result = <Self as TPTPVisitorCompat>::visit_type_constant(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
@@ -4150,13 +4123,8 @@ where
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
-	fn visit_atom(&mut self, ctx: &AtomContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_atom(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_untyped_atom(&mut self, ctx: &Untyped_atomContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_untyped_atom(self, ctx);
+	fn visit_system_type(&mut self, ctx: &System_typeContext<'input>){
+		let result = <Self as TPTPVisitorCompat>::visit_system_type(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -4202,11 +4170,6 @@ where
 
 	fn visit_system_functor(&mut self, ctx: &System_functorContext<'input>){
 		let result = <Self as TPTPVisitorCompat>::visit_system_functor(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_def_or_sys_constant(&mut self, ctx: &Def_or_sys_constantContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_def_or_sys_constant(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 
@@ -4272,26 +4235,6 @@ where
 
 	fn visit_file_info(&mut self, ctx: &File_infoContext<'input>){
 		let result = <Self as TPTPVisitorCompat>::visit_file_info(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_theory(&mut self, ctx: &TheoryContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_theory(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_theory_name(&mut self, ctx: &Theory_nameContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_theory_name(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_creator_source(&mut self, ctx: &Creator_sourceContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_creator_source(self, ctx);
-        *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
-	}
-
-	fn visit_creator_name(&mut self, ctx: &Creator_nameContext<'input>){
-		let result = <Self as TPTPVisitorCompat>::visit_creator_name(self, ctx);
         *<Self as ParseTreeVisitorCompat>::temp_result(self) = result;
 	}
 

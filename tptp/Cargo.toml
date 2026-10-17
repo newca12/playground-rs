@@ -5,4 +5,4 @@ authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
 edition = "2024"
 
 [dependencies]
-antlr4rust = "0.5.2"
+antlr4rust = "0.6.0"

@@ -192,24 +192,24 @@ pub trait TPTPBaseListener<'input>:
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_thf_binary_nonassoc(&mut self, _ctx: &Thf_binary_nonassocContext<'input>) {}
+    fn enter_thf_binary_pair(&mut self, _ctx: &Thf_binary_pairContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_thf_binary_nonassoc(&mut self, _ctx: &Thf_binary_nonassocContext<'input>) {}
+    fn exit_thf_binary_pair(&mut self, _ctx: &Thf_binary_pairContext<'input>) {}
 
 
     /**
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_thf_binary_assoc(&mut self, _ctx: &Thf_binary_assocContext<'input>) {}
+    fn enter_thf_binary_list(&mut self, _ctx: &Thf_binary_listContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_thf_binary_assoc(&mut self, _ctx: &Thf_binary_assocContext<'input>) {}
+    fn exit_thf_binary_list(&mut self, _ctx: &Thf_binary_listContext<'input>) {}
 
 
     /**
@@ -768,24 +768,24 @@ pub trait TPTPBaseListener<'input>:
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_tff_binary_nonassoc(&mut self, _ctx: &Tff_binary_nonassocContext<'input>) {}
+    fn enter_tff_binary_pair(&mut self, _ctx: &Tff_binary_pairContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_tff_binary_nonassoc(&mut self, _ctx: &Tff_binary_nonassocContext<'input>) {}
+    fn exit_tff_binary_pair(&mut self, _ctx: &Tff_binary_pairContext<'input>) {}
 
 
     /**
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_tff_binary_assoc(&mut self, _ctx: &Tff_binary_assocContext<'input>) {}
+    fn enter_tff_binary_list(&mut self, _ctx: &Tff_binary_listContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_tff_binary_assoc(&mut self, _ctx: &Tff_binary_assocContext<'input>) {}
+    fn exit_tff_binary_list(&mut self, _ctx: &Tff_binary_listContext<'input>) {}
 
 
     /**
@@ -1464,6 +1464,18 @@ pub trait TPTPBaseListener<'input>:
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
+    fn enter_ntf_defined_connective(&mut self, _ctx: &Ntf_defined_connectiveContext<'input>) {}
+    /**
+     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
+     * @param ctx the parse tree
+     */
+    fn exit_ntf_defined_connective(&mut self, _ctx: &Ntf_defined_connectiveContext<'input>) {}
+
+
+    /**
+     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
+     * @param ctx the parse tree
+     */
     fn enter_ntf_index(&mut self, _ctx: &Ntf_indexContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
@@ -1560,24 +1572,24 @@ pub trait TPTPBaseListener<'input>:
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_fof_binary_nonassoc(&mut self, _ctx: &Fof_binary_nonassocContext<'input>) {}
+    fn enter_fof_binary_pair(&mut self, _ctx: &Fof_binary_pairContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_fof_binary_nonassoc(&mut self, _ctx: &Fof_binary_nonassocContext<'input>) {}
+    fn exit_fof_binary_pair(&mut self, _ctx: &Fof_binary_pairContext<'input>) {}
 
 
     /**
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_fof_binary_assoc(&mut self, _ctx: &Fof_binary_assocContext<'input>) {}
+    fn enter_fof_binary_list(&mut self, _ctx: &Fof_binary_listContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_fof_binary_assoc(&mut self, _ctx: &Fof_binary_assocContext<'input>) {}
+    fn exit_fof_binary_list(&mut self, _ctx: &Fof_binary_listContext<'input>) {}
 
 
     /**
@@ -2100,6 +2112,30 @@ pub trait TPTPBaseListener<'input>:
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
+    fn enter_typeable_atom(&mut self, _ctx: &Typeable_atomContext<'input>) {}
+    /**
+     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
+     * @param ctx the parse tree
+     */
+    fn exit_typeable_atom(&mut self, _ctx: &Typeable_atomContext<'input>) {}
+
+
+    /**
+     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
+     * @param ctx the parse tree
+     */
+    fn enter_atomic_type(&mut self, _ctx: &Atomic_typeContext<'input>) {}
+    /**
+     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
+     * @param ctx the parse tree
+     */
+    fn exit_atomic_type(&mut self, _ctx: &Atomic_typeContext<'input>) {}
+
+
+    /**
+     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
+     * @param ctx the parse tree
+     */
     fn enter_type_constant(&mut self, _ctx: &Type_constantContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
@@ -2136,24 +2172,12 @@ pub trait TPTPBaseListener<'input>:
      * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn enter_atom(&mut self, _ctx: &AtomContext<'input>) {}
+    fn enter_system_type(&mut self, _ctx: &System_typeContext<'input>) {}
     /**
      * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
      * @param ctx the parse tree
      */
-    fn exit_atom(&mut self, _ctx: &AtomContext<'input>) {}
-
-
-    /**
-     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn enter_untyped_atom(&mut self, _ctx: &Untyped_atomContext<'input>) {}
-    /**
-     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn exit_untyped_atom(&mut self, _ctx: &Untyped_atomContext<'input>) {}
+    fn exit_system_type(&mut self, _ctx: &System_typeContext<'input>) {}
 
 
     /**
@@ -2262,18 +2286,6 @@ pub trait TPTPBaseListener<'input>:
      * @param ctx the parse tree
      */
     fn exit_system_functor(&mut self, _ctx: &System_functorContext<'input>) {}
-
-
-    /**
-     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn enter_def_or_sys_constant(&mut self, _ctx: &Def_or_sys_constantContext<'input>) {}
-    /**
-     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn exit_def_or_sys_constant(&mut self, _ctx: &Def_or_sys_constantContext<'input>) {}
 
 
     /**
@@ -2430,54 +2442,6 @@ pub trait TPTPBaseListener<'input>:
      * @param ctx the parse tree
      */
     fn exit_file_info(&mut self, _ctx: &File_infoContext<'input>) {}
-
-
-    /**
-     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn enter_theory(&mut self, _ctx: &TheoryContext<'input>) {}
-    /**
-     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn exit_theory(&mut self, _ctx: &TheoryContext<'input>) {}
-
-
-    /**
-     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn enter_theory_name(&mut self, _ctx: &Theory_nameContext<'input>) {}
-    /**
-     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn exit_theory_name(&mut self, _ctx: &Theory_nameContext<'input>) {}
-
-
-    /**
-     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn enter_creator_source(&mut self, _ctx: &Creator_sourceContext<'input>) {}
-    /**
-     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn exit_creator_source(&mut self, _ctx: &Creator_sourceContext<'input>) {}
-
-
-    /**
-     * Enter a parse tree produced by \{@link TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn enter_creator_name(&mut self, _ctx: &Creator_nameContext<'input>) {}
-    /**
-     * Exit a parse tree produced by \{@link  TPTPBaseParser#s}.
-     * @param ctx the parse tree
-     */
-    fn exit_creator_name(&mut self, _ctx: &Creator_nameContext<'input>) {}
 
 
     /**
